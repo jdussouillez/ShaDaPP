@@ -1,4 +1,5 @@
 #include <shadapp/Folder.h>
+
 namespace shadapp {
 
     Folder::Folder(std::string id, std::string path) : id(id), path(path) {
@@ -12,5 +13,3 @@ namespace shadapp {
         return path;
     }
 }
-
-
