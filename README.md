@@ -35,4 +35,4 @@ cd ShaDaPP
 # Run ShaDaPP
 ./auto.sh r
 ```
-Note: Use the option "help" for more information
+Note: Use the script "auto.sh" option "help" for more information
