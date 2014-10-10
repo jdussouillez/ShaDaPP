@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shadapp version="0">
+	<port>6543</port>
+	<name>MY_NAME</name>
+	<folders>
+		<folder id="0987654321CBA" path="/home/junior/test/shadapp1">
+			<devices>
+				<device id="1234" flag="65536" maxLocalVersion="850000000"/>
+			</devices>
+		</folder>
+		<folder id="1234567890ABC" path="/home/junior/test/shadapp2">
+			<devices>
+				<device id="5678" flag="4096" maxLocalVersion="960000000"/>
+				<device id="1011" flag="8192" maxLocalVersion="960000500"/>
+			</devices>
+		</folder>
+	</folders>
+	<options>
+		<option name="priority" value="2"/>
+	</options>
+</shadapp>
+

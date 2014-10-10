@@ -2,8 +2,8 @@
 
 namespace shadapp {
 
-    ClientConfig::ClientConfig(std::string version)
-    : version(version) {
+    void ClientConfig::setVersion(std::string version) {
+        this->version = version;
     }
 
     void ClientConfig::setPort(unsigned short port) {

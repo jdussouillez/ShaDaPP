@@ -2,9 +2,10 @@
 #define	CLIENTCONFIG_H
 
 #include <map>
-#include <shadapp/Folder.h>
 #include <string>
 #include <vector>
+
+#include <shadapp/Folder.h>
 
 namespace shadapp {
 
@@ -17,8 +18,7 @@ namespace shadapp {
         std::map<std::string, std::string> options;
 
     public:
-        explicit ClientConfig(std::string version);
-
+        void setVersion(std::string port);
         void setPort(unsigned short port);
         void setName(std::string name);
         void addFolder(Folder folder);

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    
+    <xsd:element name="shadapp">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="port" type="type_integer"/>
+                <xsd:element name="name" type="type_nonemptystring"/>
+                <xsd:element name="folders" type="type_folders"/>
+                <xsd:element name="options" type="type_options"/>
+            </xsd:sequence>
+            <xsd:attribute name="version" type="type_nonemptystring"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:complexType name="type_folders">
+        <xsd:sequence>
+            <xsd:element name="folder" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="devices" type="type_devices"/>
+                    </xsd:sequence>
+                    <xsd:attribute name="id" type="type_nonemptystring"/>
+                    <xsd:attribute name="path" type="type_nonemptystring"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="type_devices">
+        <xsd:sequence>
+            <xsd:element name="device" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:attribute name="id" type="type_nonemptystring"/>
+                    <xsd:attribute name="flag" type="type_integer"/>
+                    <xsd:attribute name="maxLocalVersion" type="type_integer"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="type_options">
+        <xsd:sequence>
+            <xsd:element name="option" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:attribute name="name" type="type_nonemptystring"/>
+                    <xsd:attribute name="value" type="type_nonemptystring"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:simpleType name="type_nonemptystring">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="type_integer">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9]+"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+</xsd:schema>

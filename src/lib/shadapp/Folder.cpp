@@ -2,7 +2,13 @@
 
 namespace shadapp {
 
-    Folder::Folder(std::string id, std::string path) : id(id), path(path) {
+    Folder::Folder(std::string id, std::string path)
+    : id(id),
+    path(path) {
+    }
+
+    void Folder::addDevice(Device device) {
+        devices.push_back(device);
     }
 
     std::string Folder::getId() const {
@@ -11,5 +17,9 @@ namespace shadapp {
 
     std::string Folder::getPath() const {
         return path;
+    }
+
+    std::vector<Device> Folder::getDevices() const {
+        return devices;
     }
 }

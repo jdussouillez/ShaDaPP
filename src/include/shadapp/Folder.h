@@ -1,9 +1,10 @@
 #ifndef FOLDER_H
 #define	FOLDER_H
 
-#include <shadapp/Device.h>
 #include <string>
 #include <vector>
+
+#include <shadapp/Device.h>
 
 namespace shadapp {
 
@@ -16,8 +17,11 @@ namespace shadapp {
     public:
         explicit Folder(std::string id, std::string path);
 
+        void addDevice(Device device);
+
         std::string getId() const;
         std::string getPath() const;
+        std::vector<Device> getDevices() const;
     };
 }
 
