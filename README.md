@@ -4,7 +4,7 @@ ShaDaPP
 Required libraries
 ------------------
 
-- Qt4, modules : QtCore and QtNetwork (http://qt-project.org/)
+- Qt4, modules : QtCore, QtNetwork, QtXml, QtXmlPatterns (http://qt-project.org/)
 
 Build & run
 -----------
