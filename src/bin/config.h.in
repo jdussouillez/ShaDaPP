@@ -1,0 +1,7 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define VERSION "@CPACK_PACKAGE_VERSION@"
+#define DATADIR "@CMAKE_INSTALL_PREFIX@/share/shadapp"
+
+#endif // CONFIG_H
