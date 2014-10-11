@@ -49,6 +49,7 @@ namespace shadapp {
         if (!reader.parse(inputSource)) {
             throw std::runtime_error("Error: error while parsing \"" + fileName + "\"");
         }
+        delete inputSource;
         return configReader.getClientConfig();
     }
 

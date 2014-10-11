@@ -81,8 +81,8 @@ rebuild() {
 run() {
     build
     format_string "Running '$EXEC'..."
-    $EXEC
-    format_string "Done!"
+    $EXEC "$@"
+    print_done
 }
 
 help() {
@@ -96,7 +96,8 @@ help() {
     $ECHO "cleant, ct\t\tClean the temporary files (with extension '~')"
     $ECHO "help, h\t\t\tDisplay this help"
     $ECHO "rbuild, rb\t\tRebuild all the project (cleana + build)"
-    $ECHO "run, r\t\t\tRun the binary file '$EXEC' (build the project if needed)"
+    $ECHO "run, r [ARGS]\t\tRun the binary file '$EXEC' (build the project if needed)"
+    $ECHO "\t\t\tARGS are the arguments for the executable"
 }
 
 # Open the script's directory
@@ -127,7 +128,8 @@ case "$1" in
 	rebuild
 	;;
     "run"|"r")
-	run
+	shift # Remove the first argument ("r" or "run")
+	run "$@"
 	;;
     *)
 	help
