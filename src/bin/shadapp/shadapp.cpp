@@ -11,7 +11,6 @@
 #include "config.h"
 
 #define APPNAME "shadapp"
-#define DEFAULT_CONFIG "config.xml"
 
 static void printUsage(void) {
     std::cout << "Usage: " << APPNAME << " -c CONFIG_FILE" << std::endl;
