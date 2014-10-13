@@ -2,15 +2,11 @@
 
 namespace shadapp {
 
-    BlockInfo::BlockInfo(unsigned int size) : size(size) {
-        hash = new char[size];
+    BlockInfo::BlockInfo(unsigned int size = BLOCK_SIZE) : size(size) {
+        std::memset(hash, 0, BLOCK_SIZE * sizeof (char));
     }
 
-    BlockInfo::~BlockInfo() {
-        delete[] hash;
-    }
-
-    char* BlockInfo::getHash() const {
+    const char* BlockInfo::getHash() const {
         return hash;
     }
 

@@ -1,21 +1,22 @@
 #ifndef BLOCKINFO_H
 #define	BLOCKINFO_H
 
+#include <cstring>
+
+#include <shadapp/Core.h>
+
 namespace shadapp {
 
     class BlockInfo {
     private:
         unsigned int size;
-        char* hash;
+        char hash[BLOCK_SIZE];
 
     public:
         explicit BlockInfo(unsigned int size);
-        virtual ~BlockInfo();
 
         unsigned int getSize() const;
-        char* getHash() const;
-
-
+        const char* getHash() const;
     };
 }
 
