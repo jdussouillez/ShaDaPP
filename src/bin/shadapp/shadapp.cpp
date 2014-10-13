@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
     // We have to start a QCoreApplication to use the XSD validation.
     // Otherwise, there is an error "QEventLoop: Cannot be used without QApplication".
     QCoreApplication a(argc, argv);
-    
+
     // Parse arguments
     bool usage = false, version = false;
     char* configFile = NULL;

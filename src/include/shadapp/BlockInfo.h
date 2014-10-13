@@ -7,11 +7,11 @@ namespace shadapp {
     private:
         unsigned int size;
         char* hash;
-        
+
     public:
         explicit BlockInfo(unsigned int size);
         virtual ~BlockInfo();
-        
+
         unsigned int getSize() const;
         char* getHash() const;
 
@@ -22,4 +22,3 @@ namespace shadapp {
 
 
 #endif	// BLOCKINFO_H 
-

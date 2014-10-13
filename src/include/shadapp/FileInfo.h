@@ -28,4 +28,3 @@ namespace shadapp {
 }
 
 #endif	// FILEINFO_H 
-

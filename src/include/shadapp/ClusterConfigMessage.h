@@ -18,7 +18,7 @@ namespace shadapp {
 
     public:
         explicit ClusterConfigMessage(std::string clientName,
-                std::string clientVersion, 
+                std::string clientVersion,
                 std::vector<Folder> folders,
                 std::map<std::string,
                 std::string> options);

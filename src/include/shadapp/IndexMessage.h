@@ -7,7 +7,8 @@
 #include <shadapp/FileInfo.h>
 
 namespace shadapp {
-class IndexMessage {
+
+    class IndexMessage {
     private:
         std::string folderID;
         std::vector<FileInfo> files;
@@ -24,4 +25,3 @@ class IndexMessage {
 
 
 #endif	// INDEXMESSAGE_H 
-

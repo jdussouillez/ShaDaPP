@@ -29,4 +29,3 @@ namespace shadapp {
         return options;
     }
 }
-
