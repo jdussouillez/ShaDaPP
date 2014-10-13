@@ -6,10 +6,11 @@
 #include <vector>
 
 #include <shadapp/Folder.h>
+#include <shadapp/AbstractMessage.h>
 
 namespace shadapp {
 
-    class ClusterConfigMessage {
+    class ClusterConfigMessage : public AbstractMessage {
     private:
         std::string clientName;
         std::string clientVersion;
@@ -17,7 +18,9 @@ namespace shadapp {
         std::map<std::string, std::string> options;
 
     public:
-        explicit ClusterConfigMessage(std::string clientName,
+        explicit ClusterConfigMessage(
+                std::bitset<4> version,
+                std::string clientName,
                 std::string clientVersion,
                 std::vector<Folder> folders,
                 std::map<std::string,

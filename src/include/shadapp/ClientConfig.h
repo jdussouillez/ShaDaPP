@@ -1,6 +1,7 @@
 #ifndef CLIENTCONFIG_H
 #define	CLIENTCONFIG_H
 
+#include <bitset>
 #include <map>
 #include <string>
 #include <vector>
@@ -11,20 +12,23 @@ namespace shadapp {
 
     class ClientConfig {
     private:
-        std::string version;
+        std::bitset<4>* version;
         unsigned short port;
         std::string name;
         std::vector<Folder> folders;
         std::map<std::string, std::string> options;
 
     public:
-        void setVersion(std::string port);
+        ClientConfig();
+        ~ClientConfig();
+
+        void setVersion(std::string version);
         void setPort(unsigned short port);
         void setName(std::string name);
         void addFolder(Folder folder);
         void addOption(std::string name, std::string value);
 
-        std::string getVersion() const;
+        std::bitset<4> getVersion() const;
         unsigned short getPort() const;
         std::string getName() const;
         std::vector<Folder> getFolders() const;

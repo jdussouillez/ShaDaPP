@@ -1,20 +1,20 @@
-#ifndef INDEXMESSAGE_H
-#define	INDEXMESSAGE_H
+#ifndef INDEXUPDATEMESSAGE_H
+#define	INDEXUPDATEMESSAGE_H
 
 #include <bitset>
 
+#include <shadapp/AbstractMessage.h>
 #include <shadapp/AbstractIndexMessage.h>
-#include <shadapp/FileInfo.h>
 
 namespace shadapp {
 
-    class IndexMessage : public AbstractIndexMessage {
+    class IndexUpdateMessage : public AbstractIndexMessage {
     public:
-        explicit IndexMessage(
+        explicit IndexUpdateMessage(
                 std::bitset<4> version,
                 std::string folder,
                 std::vector<FileInfo> files);
     };
 }
 
-#endif	// INDEXMESSAGE_H
+#endif	// INDEXUPDATEMESSAGE_H

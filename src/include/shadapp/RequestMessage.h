@@ -1,13 +1,15 @@
 #ifndef REQUESTMESSAGE_H
 #define	REQUESTMESSAGE_H
 
+#include <bitset>
 #include <stdint.h>
 #include <string>
 
+#include <shadapp/AbstractMessage.h>
 
 namespace shadapp {
 
-    class RequestMessage {
+    class RequestMessage : public AbstractMessage {
     private:
         std::string folder;
         std::string name;
@@ -15,7 +17,9 @@ namespace shadapp {
         unsigned int size;
 
     public:
-        explicit RequestMessage(std::string folder,
+        explicit RequestMessage(
+                std::bitset<4> version,
+                std::string folder,
                 std::string name,
                 uint64_t offset,
                 unsigned int size);

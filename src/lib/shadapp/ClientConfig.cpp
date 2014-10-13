@@ -1,9 +1,19 @@
+#include <cstdlib>
+
 #include <shadapp/ClientConfig.h>
 
 namespace shadapp {
 
+    ClientConfig::ClientConfig() : version(NULL) {
+    }
+
+    ClientConfig::~ClientConfig() {
+        delete version;
+    }
+
     void ClientConfig::setVersion(std::string version) {
-        this->version = version;
+        int versionInteger = std::atoi(version.c_str());
+        this->version = new std::bitset<4>(versionInteger);
     }
 
     void ClientConfig::setPort(unsigned short port) {
@@ -22,8 +32,8 @@ namespace shadapp {
         options[name] = value;
     }
 
-    std::string ClientConfig::getVersion() const {
-        return version;
+    std::bitset<4> ClientConfig::getVersion() const {
+        return *version;
     }
 
     unsigned short ClientConfig::getPort() const {

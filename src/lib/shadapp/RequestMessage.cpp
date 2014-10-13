@@ -2,11 +2,14 @@
 
 namespace shadapp {
 
-    RequestMessage::RequestMessage(std::string folder,
+    RequestMessage::RequestMessage(
+            std::bitset<4> version,
+            std::string folder,
             std::string name,
             uint64_t offset,
             unsigned int size)
-    : folder(folder),
+    : AbstractMessage(version, Type::REQUEST, false),
+    folder(folder),
     name(name),
     offset(offset),
     size(size) {
