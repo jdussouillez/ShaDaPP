@@ -2,8 +2,15 @@
 
 namespace shadapp {
 
-    ClusterConfigMessage::ClusterConfigMessage(std::string clientName, std::string clientVersion, std::vector<Folder> folders, std::map<std::string, std::string> options) :
-    clientName(clientName), clientVersion(clientVersion), folders(folders), options(options) {
+    ClusterConfigMessage::ClusterConfigMessage(std::string clientName,
+            std::string clientVersion,
+            std::vector<Folder> folders,
+            std::map<std::string,
+            std::string> options)
+    : clientName(clientName),
+    clientVersion(clientVersion),
+    folders(folders),
+    options(options) {
     }
 
     std::string ClusterConfigMessage::getClientName() const {

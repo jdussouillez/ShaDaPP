@@ -1,10 +1,11 @@
 #ifndef CLUSTERCONFIGMESSAGE_H
 #define	CLUSTERCONFIGMESSAGE_H
 
-#include <shadapp/Folder.h>
 #include <map>
 #include <string>
 #include <vector>
+
+#include <shadapp/Folder.h>
 
 namespace shadapp {
 
@@ -16,7 +17,11 @@ namespace shadapp {
         std::map<std::string, std::string> options;
 
     public:
-        ClusterConfigMessage(std::string clientName, std::string clientVersion, std::vector<Folder> folders, std::map<std::string, std::string> options);
+        explicit ClusterConfigMessage(std::string clientName,
+                std::string clientVersion, 
+                std::vector<Folder> folders,
+                std::map<std::string,
+                std::string> options);
 
         std::string getClientName() const;
         std::string getClientVersion() const;
