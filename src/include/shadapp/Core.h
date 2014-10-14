@@ -6,4 +6,6 @@
 
 #define MAX_STR_LENGTH 1024
 
+#define MAX_PEER_CONNECTIONS 128
+
 #endif	// CORE_H 
