@@ -12,6 +12,7 @@
 #include <shadapp/PingMessage.h>
 
 #include "config.h"
+#include "shadapp/PongMessage.h"
 
 #define APPNAME "shadapp"
 
@@ -63,10 +64,15 @@ int main(int argc, char **argv) {
     std::bitset<4> v;
     v.set(0);
     shadapp::PingMessage ping(v);
+    shadapp::PongMessage pong(v, ping);
     char out[4] = {0};
     int size = 4;
-    ping.serialize(out, &size);
+    pong.serialize(out, &size);
     std::cout << "size = " << size << std::endl;
+    std::cout << (int)out[0] << std::endl;
+    std::cout << (int)out[1] << std::endl;
+    std::cout << (int)out[2] << std::endl;
+    std::cout << (int)out[3] << std::endl;
 
     // Parse arguments
     bool usage = false, version = false;
