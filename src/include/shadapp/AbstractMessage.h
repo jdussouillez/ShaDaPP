@@ -2,7 +2,6 @@
 #define	ABSTRACTMESSAGE_H
 
 #include <bitset>
-#include <stdint.h>
 #include <string>
 
 namespace shadapp {
@@ -34,6 +33,7 @@ namespace shadapp {
         std::bitset<12> getId() const;
         Type getType() const;
         bool isCompressed() const;
+        void serialize(char* dest, int* size) const;
     };
 }
 

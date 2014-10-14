@@ -26,4 +26,13 @@ namespace shadapp {
     bool AbstractMessage::isCompressed() const {
         return compressed;
     }
+
+    void AbstractMessage::serialize(char* dest, int* size) const {
+        unsigned long longId = id.to_ulong();
+        dest[0] = 0 | (version.to_ulong() << 4) | (longId >> 8);
+        dest[1] = 0 | (longId & 0xFF);
+        dest[2] = 0 | (unsigned char) type;
+        dest[3] = (unsigned char) compressed;
+        *size = 4;
+    }
 }

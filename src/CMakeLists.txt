@@ -8,7 +8,7 @@ include(GNUInstallDirs)
 find_package(Qt4 REQUIRED COMPONENTS QtCore QtNetwork QtXml QtXmlPatterns)
 include(${QT_USE_FILE})
 
-add_definitions(-Wall -Wextra -g -O3)
+add_definitions(-Wall -Wextra -g -O0)
 add_definitions(-std=c++11)
 
 include_directories("${CMAKE_SOURCE_DIR}/include")

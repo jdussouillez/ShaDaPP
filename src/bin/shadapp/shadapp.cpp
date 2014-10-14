@@ -1,5 +1,7 @@
 #include <iostream>
+#include <bitset>
 #include <getopt.h>
+#include <stdint.h>
 #include <string>
 
 #include <QCoreApplication>
@@ -7,6 +9,7 @@
 
 #include <shadapp/ClientConfig.h>
 #include <shadapp/ConfigReader.h>
+#include <shadapp/PingMessage.h>
 
 #include "config.h"
 
@@ -54,6 +57,16 @@ int main(int argc, char **argv) {
     // We have to start a QCoreApplication to use the XSD validation.
     // Otherwise, there is an error "QEventLoop: Cannot be used without QApplication".
     QCoreApplication a(argc, argv);
+
+
+    // TODO: remove this !
+    std::bitset<4> v;
+    v.set(0);
+    shadapp::PingMessage ping(v);
+    char out[4] = {0};
+    int size = 4;
+    ping.serialize(out, &size);
+    std::cout << "size = " << size << std::endl;
 
     // Parse arguments
     bool usage = false, version = false;
