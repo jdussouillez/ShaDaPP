@@ -18,11 +18,11 @@ namespace shadapp {
         ConfigReader::ConfigReader() : folder(NULL), inPort(false), inName(false) {
         }
 
-        ClientConfig ConfigReader::getClientConfig() const {
-            return clientConfig;
+        PeerConfig ConfigReader::getClientConfig() const {
+            return peerConfig;
         }
 
-        ClientConfig ConfigReader::parse(std::string fileName, std::string XsdFile) {
+        PeerConfig ConfigReader::parse(std::string fileName, std::string XsdFile) {
             // Check if the file exists
             QFile file(QString(fileName.c_str()));
             if (!file.exists()) {
@@ -63,7 +63,7 @@ namespace shadapp {
             DISABLE_UNUSED_WARN(namespaceURI);
             DISABLE_UNUSED_WARN(localName);
             if (qName.compare("shadapp") == 0) {
-                clientConfig.setVersion(att.value("version").toStdString());
+                peerConfig.setVersion(att.value("version").toStdString());
             } else if (qName.compare("port") == 0) {
                 inPort = true;
             } else if (qName.compare("name") == 0) {
@@ -86,10 +86,10 @@ namespace shadapp {
                 if (!ok) {
                     throw new std::runtime_error("Error: port is invalid");
                 }
-                clientConfig.setPort(port);
+                peerConfig.setPort(port);
                 inPort = false;
             } else if (inName) {
-                clientConfig.setName(str.toStdString());
+                peerConfig.setName(str.toStdString());
                 inName = false;
             }
             return true;
@@ -102,7 +102,7 @@ namespace shadapp {
             DISABLE_UNUSED_WARN(namespaceURI);
             DISABLE_UNUSED_WARN(localName);
             if (qName.compare("folder") == 0) {
-                clientConfig.addFolder(*folder);
+                peerConfig.addFolder(*folder);
                 delete folder;
             }
             return true;

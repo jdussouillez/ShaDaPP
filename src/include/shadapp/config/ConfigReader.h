@@ -6,7 +6,7 @@
 #include <QtCore/QString>
 #include <QtXml/QXmlDefaultHandler>
 
-#include <shadapp/config/ClientConfig.h>
+#include <shadapp/config/PeerConfig.h>
 
 #define DISABLE_UNUSED_WARN(var) \
     do { \
@@ -19,7 +19,7 @@ namespace shadapp {
 
         class ConfigReader : public QXmlDefaultHandler {
         private:
-            ClientConfig clientConfig;
+            PeerConfig peerConfig;
             shadapp::fs::Folder* folder;
             bool inPort;
             bool inName;
@@ -27,9 +27,9 @@ namespace shadapp {
         public:
             ConfigReader();
 
-            ClientConfig getClientConfig() const;
+            PeerConfig getClientConfig() const;
 
-            static ClientConfig parse(std::string fileName, std::string XsdFile);
+            static PeerConfig parse(std::string fileName, std::string XsdFile);
 
             virtual bool startElement(
                     const QString& namespaceURI,

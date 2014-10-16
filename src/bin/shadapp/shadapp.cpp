@@ -7,7 +7,7 @@
 #include <QCoreApplication>
 #include <QtCore/QDir>
 
-#include <shadapp/config/ClientConfig.h>
+#include <shadapp/config/PeerConfig.h>
 #include <shadapp/config/ConfigReader.h>
 #include <shadapp/Core.h>
 #include <shadapp/protocol/PingMessage.h>
@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
     }
 
     std::cout << "Using file: " << configFile << std::endl;
-    shadapp::config::ClientConfig config;
+    shadapp::config::PeerConfig config;
     try {
         config = shadapp::config::ConfigReader::parse(std::string(configFile), "src/resources/shadapp/configSchema.xsd");
         std::cout << "Version = " << config.getVersion() << std::endl;

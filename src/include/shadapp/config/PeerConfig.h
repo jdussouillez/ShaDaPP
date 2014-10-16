@@ -1,5 +1,5 @@
-#ifndef CLIENTCONFIG_H
-#define	CLIENTCONFIG_H
+#ifndef PEERCONFIG_H
+#define	PEERCONFIG_H
 
 #include <bitset>
 #include <map>
@@ -12,7 +12,7 @@ namespace shadapp {
 
     namespace config {
 
-        class ClientConfig {
+        class PeerConfig {
         private:
             std::bitset<4>* version;
             unsigned short port;
@@ -21,8 +21,8 @@ namespace shadapp {
             std::map<std::string, std::string> options;
 
         public:
-            ClientConfig();
-            ~ClientConfig();
+            PeerConfig();
+            ~PeerConfig();
 
             void setVersion(std::string version);
             void setPort(unsigned short port);
@@ -40,4 +40,4 @@ namespace shadapp {
     }
 }
 
-#endif	// CLIENTCONFIG_H
+#endif	// PEERCONFIG_H
