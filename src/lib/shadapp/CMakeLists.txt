@@ -1,9 +1,15 @@
 include_directories(${QT_INCLUDE_DIRS})
 
 file(GLOB LIBSHADAPP_SRC "*.cpp")
+file(GLOB LIBSHADAPP_PROTOCOL_SRC "protocol/*.cpp")
+file(GLOB LIBSHADAPP_CONFIG_SRC "config/*.cpp")
+file(GLOB LIBSHADAPP_FS_SRC "fs/*.cpp")
 
 add_library(shadapp0 SHARED
   ${LIBSHADAPP_SRC}
+  ${LIBSHADAPP_PROTOCOL_SRC}
+  ${LIBSHADAPP_CONFIG_SRC}
+  ${LIBSHADAPP_FS_SRC}
 )
 
 target_link_libraries(shadapp0

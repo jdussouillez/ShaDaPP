@@ -7,14 +7,13 @@
 #include <QCoreApplication>
 #include <QtCore/QDir>
 
-#include <shadapp/ClientConfig.h>
-#include <shadapp/ConfigReader.h>
-#include <shadapp/PingMessage.h>
+#include <shadapp/config/ClientConfig.h>
+#include <shadapp/config/ConfigReader.h>
+#include <shadapp/Core.h>
+#include <shadapp/protocol/PingMessage.h>
+#include <shadapp/protocol/PongMessage.h>
 
 #include "config.h"
-#include "shadapp/PongMessage.h"
-
-#define APPNAME "shadapp"
 
 static void printUsage(void) {
     std::cout << "Usage: " << APPNAME << " -c CONFIG_FILE" << std::endl;
@@ -63,16 +62,17 @@ int main(int argc, char **argv) {
     // TODO: remove this !
     std::bitset<4> v;
     v.set(0);
-    shadapp::PingMessage ping(v);
-    shadapp::PongMessage pong(v, ping);
+    shadapp::protocol::PingMessage ping(v);
+    shadapp::protocol::PongMessage pong(v, ping);
     char out[4] = {0};
     int size = 4;
     pong.serialize(out, &size);
     std::cout << "size = " << size << std::endl;
-    std::cout << (int)out[0] << std::endl;
-    std::cout << (int)out[1] << std::endl;
-    std::cout << (int)out[2] << std::endl;
-    std::cout << (int)out[3] << std::endl;
+    std::cout << (int) out[0] << std::endl;
+    std::cout << (int) out[1] << std::endl;
+    std::cout << (int) out[2] << std::endl;
+    std::cout << (int) out[3] << std::endl;
+    // TODO: end "remove this"
 
     // Parse arguments
     bool usage = false, version = false;
@@ -93,9 +93,9 @@ int main(int argc, char **argv) {
     }
 
     std::cout << "Using file: " << configFile << std::endl;
-    shadapp::ClientConfig config;
+    shadapp::config::ClientConfig config;
     try {
-        config = shadapp::ConfigReader::parse(std::string(configFile), "src/resources/shadapp/configSchema.xsd");
+        config = shadapp::config::ConfigReader::parse(std::string(configFile), "src/resources/shadapp/configSchema.xsd");
         std::cout << "Version = " << config.getVersion() << std::endl;
         std::cout << "Port = " << config.getPort() << std::endl;
         std::cout << "Folders :" << std::endl;
