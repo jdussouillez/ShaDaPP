@@ -38,7 +38,7 @@ namespace shadapp {
             std::bitset<12> getId() const;
             Type getType() const;
             bool isCompressed() const;
-            
+
             unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
         };
     }

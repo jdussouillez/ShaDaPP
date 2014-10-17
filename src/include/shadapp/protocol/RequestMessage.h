@@ -16,7 +16,7 @@ namespace shadapp {
             std::string folder;
             std::string name;
             uint64_t offset;
-            unsigned int size;
+            uint32_t size;
 
         public:
             explicit RequestMessage(
@@ -24,12 +24,13 @@ namespace shadapp {
                     std::string folder,
                     std::string name,
                     uint64_t offset,
-                    unsigned int size);
+                    uint32_t size);
+            explicit RequestMessage(unsigned char* bytes);
 
             std::string getFolder() const;
             std::string getName() const;
             uint64_t getOffset() const;
-            unsigned int getSize() const;
+            uint32_t getSize() const;
 
             unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
         };

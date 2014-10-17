@@ -60,29 +60,34 @@ int main(int argc, char **argv) {
     QCoreApplication a(argc, argv);
 
     // TODO: remove this !
-    std::bitset<4> v;
-    v.set(0);
-    shadapp::protocol::PingMessage ping(v);
-    shadapp::protocol::PongMessage pong(v, ping);
-    unsigned char out[4] = {0};
-    unsigned int size = 0;
-    pong.serialize(out, &size);
-    shadapp::protocol::PongMessage pong2(out);
-    std::cout << pong2.getVersion() << " - " << pong2.getVersion().to_ulong() << std::endl;
-    std::cout << pong2.getId() << " - " << pong2.getId().to_ullong() << std::endl;
-    std::cout << pong2.getType() << std::endl;
-    std::cout << pong2.isCompressed() << std::endl;
+    //    std::bitset<4> v;
+    //    v.set(0);
+    //    shadapp::protocol::PingMessage ping(v);
+    //    shadapp::protocol::PongMessage pong(v, ping);
+    //    unsigned char out[4] = {0};
+    //    unsigned int size = 0;
+    //    pong.serialize(out, &size);
+    //    shadapp::protocol::PongMessage pong2(out);
+    //    std::cout << pong2.getVersion() << " - " << pong2.getVersion().to_ulong() << std::endl;
+    //    std::cout << pong2.getId() << " - " << pong2.getId().to_ullong() << std::endl;
+    //    std::cout << pong2.getType() << std::endl;
+    //    std::cout << pong2.isCompressed() << std::endl;
+
 
     //    std::bitset<4> v;
     //    v.set(0);
     //    shadapp::protocol::RequestMessage req(v, "folderA", "filenameB", 123456, 20);
-    //    unsigned char out[2048]
+    //    unsigned char out[2048];
     //    unsigned int size;
     //    req.serialize(out, &size);
-    //    std::cout << "size = " << size << std::endl;
-    //    for (unsigned int i = 0; i < size; i++) {
-    //        std::cout << (int) out[i] << " - " << out[i] << " - " << std::bitset<8>(out[i]) << std::endl;
-    //    }
+    //    shadapp::protocol::RequestMessage req2(out);
+    //    std::cout << req.getId() << " - " << req2.getId() << std::endl;
+    //    std::cout << req.getFolder() << " - " << req2.getFolder() << std::endl;
+    //    std::cout << req.getName() << " - " << req2.getName() << std::endl;
+    //    std::cout << req.getOffset() << " - " << req2.getOffset() << std::endl;
+    //    std::cout << req.getSize() << " - " << req2.getSize() << std::endl;
+    //    std::cout << req.getType() << " - " << req2.getType() << std::endl;
+    //    std::cout << req.getVersion() << " - " << req2.getVersion() << std::endl;
     // TODO: end "remove this"
 
 
