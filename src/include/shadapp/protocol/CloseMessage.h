@@ -20,7 +20,7 @@ namespace shadapp {
             explicit CloseMessage(unsigned char* bytes);
 
             std::string getReason() const;
-            
+
             unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
         };
     }

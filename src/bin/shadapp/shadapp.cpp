@@ -9,13 +9,13 @@
 
 #include <shadapp/config/PeerConfig.h>
 #include <shadapp/config/ConfigReader.h>
-#include <shadapp/Core.h>
+#include <shadapp/protocol/CloseMessage.h>
 #include <shadapp/protocol/PingMessage.h>
 #include <shadapp/protocol/PongMessage.h>
 #include <shadapp/protocol/RequestMessage.h>
+#include <shadapp/protocol/ResponseMessage.h>
 
 #include "config.h"
-#include "shadapp/protocol/CloseMessage.h"
 
 static void printUsage(void) {
     std::cout << "Usage: " << APPNAME << " -c CONFIG_FILE" << std::endl;
@@ -76,12 +76,12 @@ int main(int argc, char **argv) {
 
     //    std::bitset<4> v;
     //    v.set(0);
-    //    shadapp::protocol::CloseMessage cl(v, "This is a test msg");
+    //    shadapp::protocol::ResponseMessage cl(v, "RAW DATA HERE");
     //    unsigned char out[128] = {0};
     //    unsigned int size = 0;
     //    cl.serialize(out, &size);
-    //    shadapp::protocol::CloseMessage cl2(out);
-    //    std::cout << cl.getReason() << " - " << cl2.getReason() << std::endl;
+    //    shadapp::protocol::ResponseMessage cl2(out);
+    //    std::cout << cl.getData() << " - " << cl2.getData() << std::endl;
 
 
     //    std::bitset<4> v;

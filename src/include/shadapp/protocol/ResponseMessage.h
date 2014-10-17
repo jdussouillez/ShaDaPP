@@ -1,8 +1,6 @@
 #ifndef RESPONSEMESSAGE_H
 #define	RESPONSEMESSAGE_H
 
-#include <bitset>
-
 #include <shadapp/Core.h>
 #include <shadapp/protocol/AbstractMessage.h>
 
@@ -12,12 +10,15 @@ namespace shadapp {
 
         class ResponseMessage : public AbstractMessage {
         private:
-            char data[BLOCK_SIZE];
+            std::string data;
 
         public:
-            ResponseMessage(std::bitset<4> version);
+            explicit ResponseMessage(std::bitset<4> version, std::string data);
+            explicit ResponseMessage(unsigned char* bytes);
 
-            const char* getData() const;
+            std::string getData() const;
+
+            unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
         };
     }
 }
