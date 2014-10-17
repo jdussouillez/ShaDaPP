@@ -6,7 +6,7 @@
 
 namespace shadapp {
 
-    namespace protocol {
+    namespace data {
 
         class Serializer {
         public:

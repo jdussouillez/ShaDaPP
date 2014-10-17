@@ -1,8 +1,8 @@
-#include <shadapp/protocol/Serializer.h>
+#include <shadapp/data/Serializer.h>
 
 namespace shadapp {
 
-    namespace protocol {
+    namespace data {
 
         unsigned char* Serializer::serializeInt32(unsigned char* dest, unsigned int offset, uint32_t value, unsigned int* size) {
             unsigned int shift = 24, mask = 0xFF000000;

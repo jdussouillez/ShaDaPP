@@ -3,7 +3,7 @@
 
 namespace shadapp {
 
-    namespace protocol {
+    namespace data {
 
         class Serializable {
         public:

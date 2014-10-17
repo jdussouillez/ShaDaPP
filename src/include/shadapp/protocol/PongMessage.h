@@ -3,7 +3,6 @@
 
 #include <bitset>
 
-#include <shadapp/protocol/AbstractMessage.h>
 #include <shadapp/protocol/PingMessage.h>
 
 namespace shadapp {

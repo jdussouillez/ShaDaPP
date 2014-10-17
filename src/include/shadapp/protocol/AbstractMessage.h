@@ -4,7 +4,7 @@
 #include <bitset>
 #include <string>
 
-#include <shadapp/protocol/Serializable.h>
+#include <shadapp/data/Serializable.h>
 
 namespace shadapp {
 
@@ -21,7 +21,7 @@ namespace shadapp {
             CLOSE
         };
 
-        class AbstractMessage : public Serializable {
+        class AbstractMessage : public shadapp::data::Serializable {
         private:
             std::bitset<4> version;
             std::bitset<12> id; // 1,5 byte

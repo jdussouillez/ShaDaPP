@@ -1,5 +1,5 @@
 #include <shadapp/protocol/CloseMessage.h>
-#include <shadapp/protocol/Serializer.h>
+#include <shadapp/data/Serializer.h>
 
 namespace shadapp {
 
@@ -13,8 +13,8 @@ namespace shadapp {
         CloseMessage::CloseMessage(unsigned char* bytes)
         : AbstractMessage(bytes) {
             unsigned int startIndex = 4;
-            uint32_t length = Serializer::deserializeInt32(bytes, &startIndex);
-            reason = Serializer::deserializeString(bytes, &startIndex, length);
+            uint32_t length = shadapp::data::Serializer::deserializeInt32(bytes, &startIndex);
+            reason = shadapp::data::Serializer::deserializeString(bytes, &startIndex, length);
         }
 
         std::string CloseMessage::getReason() const {
@@ -26,8 +26,8 @@ namespace shadapp {
                 return nullptr;
             }
             uint32_t length = reason.size();
-            Serializer::serializeInt32(dest, *size, length, size);
-            Serializer::serializeString(dest, *size, reason, size);
+            shadapp::data::Serializer::serializeInt32(dest, *size, length, size);
+            shadapp::data::Serializer::serializeString(dest, *size, reason, size);
             return dest;
         }
     }
