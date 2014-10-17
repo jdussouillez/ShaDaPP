@@ -16,9 +16,9 @@ namespace shadapp {
             static unsigned char* serializeInt64(unsigned char* dest, unsigned int offset, uint64_t value, unsigned int* size);
             static unsigned char* serializeString(unsigned char* dest, unsigned int offset, std::string str, unsigned int* size);
 
-            static uint32_t deserializeInt32(unsigned char* bytes, unsigned int startIndex);
-            static uint64_t deserializeInt64(unsigned char* bytes, unsigned int startIndex);
-            static std::string deserializeString(unsigned char* bytes, unsigned int startIndex, uint32_t length);
+            static uint32_t deserializeInt32(unsigned char* bytes, unsigned int* startIndex);
+            static uint64_t deserializeInt64(unsigned char* bytes, unsigned int* startIndex);
+            static std::string deserializeString(unsigned char* bytes, unsigned int* startIndex, uint32_t length);
         };
     }
 }

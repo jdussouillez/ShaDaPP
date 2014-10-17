@@ -36,28 +36,32 @@ namespace shadapp {
             return dest;
         }
 
-        uint32_t Serializer::deserializeInt32(unsigned char* bytes, unsigned int startIndex) {
+        uint32_t Serializer::deserializeInt32(unsigned char* bytes, unsigned int* startIndex) {
             uint32_t integer(0);
             unsigned int shift = 24;
-            for (unsigned int i = startIndex; i < startIndex + sizeof(uint32_t); i++) {
+            for (unsigned int i = *startIndex; i < *startIndex + sizeof(uint32_t); i++) {
                 integer |= bytes[i] << shift;
                 shift -= 8;
             }
+            *startIndex += sizeof(uint32_t);
             return integer;
         }
 
-        uint64_t Serializer::deserializeInt64(unsigned char* bytes, unsigned int startIndex) {
+        uint64_t Serializer::deserializeInt64(unsigned char* bytes, unsigned int* startIndex) {
             uint64_t integer(0);
             unsigned int shift = 56;
-            for (unsigned int i = startIndex; i < startIndex + sizeof(uint64_t); i++) {
+            for (unsigned int i = *startIndex; i < *startIndex + sizeof(uint64_t); i++) {
                 integer |= bytes[i] << shift;
                 shift -= 8;
             }
+            *startIndex += sizeof(uint64_t);
             return integer;
         }
 
-        std::string Serializer::deserializeString(unsigned char* bytes, unsigned int startIndex, uint32_t length) {
-            return std::string((const char*) (bytes + startIndex), length);
+        std::string Serializer::deserializeString(unsigned char* bytes, unsigned int* startIndex, uint32_t length) {
+            std::string str((const char*) (bytes + *startIndex), length);
+            *startIndex += length;
+            return str;
         }
     }
 }
