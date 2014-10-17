@@ -8,8 +8,8 @@ file(GLOB LIBSHADAPP_FS_SRC "fs/*.cpp")
 add_library(shadapp0 SHARED
   ${LIBSHADAPP_SRC}
   ${LIBSHADAPP_PROTOCOL_SRC}
-  ${LIBSHADAPP_CONFIG_SRC}
   ${LIBSHADAPP_FS_SRC}
+  ${LIBSHADAPP_CONFIG_SRC}
 )
 
 target_link_libraries(shadapp0

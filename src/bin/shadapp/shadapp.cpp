@@ -1,7 +1,7 @@
-#include <iostream>
 #include <bitset>
+#include <cstdint>
 #include <getopt.h>
-#include <stdint.h>
+#include <iostream>
 #include <string>
 
 #include <QCoreApplication>
@@ -12,6 +12,7 @@
 #include <shadapp/Core.h>
 #include <shadapp/protocol/PingMessage.h>
 #include <shadapp/protocol/PongMessage.h>
+#include <shadapp/protocol/RequestMessage.h>
 
 #include "config.h"
 
@@ -58,21 +59,32 @@ int main(int argc, char **argv) {
     // Otherwise, there is an error "QEventLoop: Cannot be used without QApplication".
     QCoreApplication a(argc, argv);
 
-
     // TODO: remove this !
     std::bitset<4> v;
     v.set(0);
     shadapp::protocol::PingMessage ping(v);
     shadapp::protocol::PongMessage pong(v, ping);
-    char out[4] = {0};
-    int size = 4;
+    unsigned char out[4] = {0};
+    unsigned int size = 0;
     pong.serialize(out, &size);
-    std::cout << "size = " << size << std::endl;
-    std::cout << (int) out[0] << std::endl;
-    std::cout << (int) out[1] << std::endl;
-    std::cout << (int) out[2] << std::endl;
-    std::cout << (int) out[3] << std::endl;
+    shadapp::protocol::PongMessage pong2(out);
+    std::cout << pong2.getVersion() << " - " << pong2.getVersion().to_ulong() << std::endl;
+    std::cout << pong2.getId() << " - " << pong2.getId().to_ullong() << std::endl;
+    std::cout << pong2.getType() << std::endl;
+    std::cout << pong2.isCompressed() << std::endl;
+
+    //    std::bitset<4> v;
+    //    v.set(0);
+    //    shadapp::protocol::RequestMessage req(v, "folderA", "filenameB", 123456, 20);
+    //    unsigned char out[2048]
+    //    unsigned int size;
+    //    req.serialize(out, &size);
+    //    std::cout << "size = " << size << std::endl;
+    //    for (unsigned int i = 0; i < size; i++) {
+    //        std::cout << (int) out[i] << " - " << out[i] << " - " << std::bitset<8>(out[i]) << std::endl;
+    //    }
     // TODO: end "remove this"
+
 
     // Parse arguments
     bool usage = false, version = false;

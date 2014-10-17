@@ -12,6 +12,7 @@ namespace shadapp {
         class PingMessage : public AbstractMessage {
         public:
             explicit PingMessage(std::bitset<4> version);
+            explicit PingMessage(unsigned char* bytes);
         };
     }
 }

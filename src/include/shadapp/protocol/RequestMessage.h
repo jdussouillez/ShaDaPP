@@ -30,6 +30,8 @@ namespace shadapp {
             std::string getName() const;
             uint64_t getOffset() const;
             unsigned int getSize() const;
+
+            unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
         };
     }
 }

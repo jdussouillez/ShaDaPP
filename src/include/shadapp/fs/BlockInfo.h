@@ -12,7 +12,7 @@ namespace shadapp {
         class BlockInfo {
         private:
             unsigned int size;
-            char hash[BLOCK_SIZE];
+            char hash[HASH_SIZE];
 
         public:
             explicit BlockInfo(unsigned int size);

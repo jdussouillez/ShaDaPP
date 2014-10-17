@@ -4,6 +4,8 @@
 #include <bitset>
 #include <string>
 
+#include <shadapp/protocol/Serializer.h>
+
 namespace shadapp {
 
     namespace protocol {
@@ -19,7 +21,7 @@ namespace shadapp {
             CLOSE
         };
 
-        class AbstractMessage {
+        class AbstractMessage : public Serializer {
         private:
             std::bitset<4> version;
             std::bitset<12> id; // 1,5 byte
@@ -29,13 +31,15 @@ namespace shadapp {
         protected:
             explicit AbstractMessage(std::bitset<4> version, Type type, bool compressed);
             explicit AbstractMessage(std::bitset<12> id, std::bitset<4> version, Type type, bool compressed);
+            explicit AbstractMessage(unsigned char* bytes);
 
         public:
             std::bitset<4> getVersion() const;
             std::bitset<12> getId() const;
             Type getType() const;
             bool isCompressed() const;
-            void serialize(char* dest, int* size) const;
+            
+            unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
         };
     }
 }
