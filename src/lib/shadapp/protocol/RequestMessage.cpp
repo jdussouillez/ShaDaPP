@@ -1,5 +1,6 @@
 #include <shadapp/Core.h>
 #include <shadapp/protocol/RequestMessage.h>
+#include <shadapp/protocol/Serializer.h>
 
 namespace shadapp {
 

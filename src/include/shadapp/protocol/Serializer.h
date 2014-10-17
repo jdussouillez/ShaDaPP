@@ -10,8 +10,6 @@ namespace shadapp {
 
         class Serializer {
         public:
-            virtual unsigned char* serialize(unsigned char* dest, unsigned int* size) const = 0;
-
             static unsigned char* serializeInt32(unsigned char* dest, unsigned int offset, uint32_t value, unsigned int* size);
             static unsigned char* serializeInt64(unsigned char* dest, unsigned int offset, uint64_t value, unsigned int* size);
             static unsigned char* serializeString(unsigned char* dest, unsigned int offset, std::string str, unsigned int* size);

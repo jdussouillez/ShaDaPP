@@ -1,4 +1,5 @@
 #include <shadapp/protocol/CloseMessage.h>
+#include <shadapp/protocol/Serializer.h>
 
 namespace shadapp {
 
