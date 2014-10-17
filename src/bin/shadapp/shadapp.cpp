@@ -15,6 +15,7 @@
 #include <shadapp/protocol/RequestMessage.h>
 
 #include "config.h"
+#include "shadapp/protocol/CloseMessage.h"
 
 static void printUsage(void) {
     std::cout << "Usage: " << APPNAME << " -c CONFIG_FILE" << std::endl;
@@ -73,21 +74,30 @@ int main(int argc, char **argv) {
     //    std::cout << pong2.getType() << std::endl;
     //    std::cout << pong2.isCompressed() << std::endl;
 
+    //    std::bitset<4> v;
+    //    v.set(0);
+    //    shadapp::protocol::CloseMessage cl(v, "This is a test msg");
+    //    unsigned char out[128] = {0};
+    //    unsigned int size = 0;
+    //    cl.serialize(out, &size);
+    //    shadapp::protocol::CloseMessage cl2(out);
+    //    std::cout << cl.getReason() << " - " << cl2.getReason() << std::endl;
 
-    std::bitset<4> v;
-    v.set(0);
-    shadapp::protocol::RequestMessage req(v, "folderA", "filenameB", 123456, 20);
-    unsigned char out[2048];
-    unsigned int size;
-    req.serialize(out, &size);
-    shadapp::protocol::RequestMessage req2(out);
-    std::cout << req.getId() << " - " << req2.getId() << std::endl;
-    std::cout << req.getFolder() << " - " << req2.getFolder() << std::endl;
-    std::cout << req.getName() << " - " << req2.getName() << std::endl;
-    std::cout << req.getOffset() << " - " << req2.getOffset() << std::endl;
-    std::cout << req.getSize() << " - " << req2.getSize() << std::endl;
-    std::cout << req.getType() << " - " << req2.getType() << std::endl;
-    std::cout << req.getVersion() << " - " << req2.getVersion() << std::endl;
+
+    //    std::bitset<4> v;
+    //    v.set(0);
+    //    shadapp::protocol::RequestMessage req(v, "folderA", "filenameB", 123456, 20);
+    //    unsigned char out[2048];
+    //    unsigned int size;
+    //    req.serialize(out, &size);
+    //    shadapp::protocol::RequestMessage req2(out);
+    //    std::cout << req.getId() << " - " << req2.getId() << std::endl;
+    //    std::cout << req.getFolder() << " - " << req2.getFolder() << std::endl;
+    //    std::cout << req.getName() << " - " << req2.getName() << std::endl;
+    //    std::cout << req.getOffset() << " - " << req2.getOffset() << std::endl;
+    //    std::cout << req.getSize() << " - " << req2.getSize() << std::endl;
+    //    std::cout << req.getType() << " - " << req2.getType() << std::endl;
+    //    std::cout << req.getVersion() << " - " << req2.getVersion() << std::endl;
     // TODO: end "remove this"
 
 

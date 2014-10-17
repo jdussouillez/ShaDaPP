@@ -2,7 +2,7 @@
 #define	CLOSEMESSAGE_H
 
 #include <bitset>
-#include <string.h>
+#include <string>
 
 #include <shadapp/Core.h>
 #include <shadapp/protocol/AbstractMessage.h>
@@ -13,12 +13,15 @@ namespace shadapp {
 
         class CloseMessage : public AbstractMessage {
         private:
-            char reason[MAX_STR_LENGTH];
+            std::string reason;
 
         public:
-            explicit CloseMessage(std::bitset<4> version, const char* reason);
+            explicit CloseMessage(std::bitset<4> version, std::string reason);
+            explicit CloseMessage(unsigned char* bytes);
 
-            const char* getReason() const;
+            std::string getReason() const;
+            
+            unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
         };
     }
 }
