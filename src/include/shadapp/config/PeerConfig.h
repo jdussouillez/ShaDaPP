@@ -30,12 +30,11 @@ namespace shadapp {
             void addFolder(shadapp::fs::Folder folder);
             void addOption(std::string name, std::string value);
 
-            std::bitset<4> getVersion() const;
+            std::bitset<4>* getVersion() const;
             unsigned short getPort() const;
             std::string getName() const;
             std::vector<shadapp::fs::Folder> getFolders() const;
             std::map<std::string, std::string> getOptions() const;
-
         };
     }
 }

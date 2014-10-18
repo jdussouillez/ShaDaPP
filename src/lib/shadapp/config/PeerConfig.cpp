@@ -6,11 +6,12 @@ namespace shadapp {
 
     namespace config {
 
-        PeerConfig::PeerConfig() : version(NULL) {
+        PeerConfig::PeerConfig() : version(nullptr) {
         }
 
         PeerConfig::~PeerConfig() {
             delete version;
+            version = nullptr;
         }
 
         void PeerConfig::setVersion(std::string version) {
@@ -34,8 +35,8 @@ namespace shadapp {
             options[name] = value;
         }
 
-        std::bitset<4> PeerConfig::getVersion() const {
-            return *version;
+        std::bitset<4>* PeerConfig::getVersion() const {
+            return version;
         }
 
         unsigned short PeerConfig::getPort() const {

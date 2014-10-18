@@ -16,6 +16,7 @@
 #include <shadapp/protocol/ResponseMessage.h>
 
 #include "config.h"
+#include "shadapp/protocol/ClusterConfigMessage.h"
 
 static void printUsage(void) {
     std::cout << "Usage: " << APPNAME << " -c CONFIG_FILE" << std::endl;
@@ -55,7 +56,7 @@ static int parseArguments(int argc, char** argv, bool* usage, bool* version, cha
     return (*usage || *version || configFile != NULL) ? 0 : 1;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) {    
     // We have to start a QCoreApplication to use the XSD validation.
     // Otherwise, there is an error "QEventLoop: Cannot be used without QApplication".
     QCoreApplication a(argc, argv);
@@ -120,9 +121,8 @@ int main(int argc, char **argv) {
     }
 
     std::cout << "Using file: " << configFile << std::endl;
-    shadapp::config::PeerConfig config;
     try {
-        config = shadapp::config::ConfigReader::parse(std::string(configFile), "src/resources/shadapp/configSchema.xsd");
+        shadapp::config::PeerConfig config = shadapp::config::ConfigReader::parse(std::string(configFile), "src/resources/shadapp/configSchema.xsd");
         std::cout << "Version = " << config.getVersion() << std::endl;
         std::cout << "Port = " << config.getPort() << std::endl;
         std::cout << "Folders :" << std::endl;
@@ -131,11 +131,47 @@ int main(int argc, char **argv) {
             std::cout << "\tPath = " << f.getPath() << std::endl;
             for (auto d : f.getDevices()) {
                 std::cout << "\t\tID = " << d.getId() << std::endl;
-                std::cout << "\t\tFlag = " << d.getFlag() << std::endl;
+                std::cout << "\t\tFlag = " << d.getFlags() << std::endl;
                 std::cout << "\t\tMaxLocalVersion = " << d.getMaxLocalVersion() << std::endl;
                 std::cout << std::endl;
             }
         }
+        
+        //TODO: "remove this"
+        shadapp::protocol::ClusterConfigMessage conf(
+                *config.getVersion(),
+                config.getName(),
+                "blabla",
+                config.getFolders(),
+                config.getOptions());
+        unsigned char out[2048] = {0};
+        unsigned int size;
+        conf.serialize(out, &size);
+//        for (unsigned int i = 0; i < size; i++) {
+//            std::cout << std::bitset<8>(out[i]) << " - " << out[i] << std::endl;
+//        }
+        shadapp::protocol::ClusterConfigMessage conf2(out);
+        std::cout << conf.getVersion() << " - " << conf2.getVersion() << std::endl;
+        std::cout << conf.getType() << " - " << conf2.getType() << std::endl;
+        std::cout << conf.getClientName() << " - " << conf2.getClientName() << std::endl;
+        std::cout << conf.getClientVersion() << " - " << conf2.getClientVersion() << std::endl;
+        std::cout << conf.getId() << " - " << conf2.getId() << std::endl;
+        std::cout << conf.getFolders().size() << " - " << conf2.getFolders().size() << std::endl;
+        for (unsigned int i = 0; i < conf.getFolders().size(); i++) {
+            std::cout << std::endl;
+            std::cout << conf.getFolders().at(i).getId() << " - " << conf2.getFolders().at(i).getId() << std::endl;
+            std::cout << conf.getFolders().at(i).getPath() << " - " << conf2.getFolders().at(i).getPath() << std::endl;
+            for (unsigned int j = 0; j < conf.getFolders().at(i).getDevices().size(); j++) {
+                std::cout << conf.getFolders().at(i).getDevices().at(j).getId() << " - " << conf2.getFolders().at(i).getDevices().at(j).getId() << std::endl;
+                std::cout << conf.getFolders().at(i).getDevices().at(j).getFlags() << " - " << conf2.getFolders().at(i).getDevices().at(j).getFlags() << std::endl;
+                std::cout << conf.getFolders().at(i).getDevices().at(j).getMaxLocalVersion() << " - " << conf2.getFolders().at(i).getDevices().at(j).getMaxLocalVersion() << std::endl;
+                std::cout << std::endl;
+            }
+        }
+        std::cout << std::endl;
+        std::cout << conf.getOptions().size() << " - " << conf2.getOptions().size() << std::endl;
+        std::cout << "total size (in bytes) : " << size << std::endl;
+        //TODO: end "remove this"
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }

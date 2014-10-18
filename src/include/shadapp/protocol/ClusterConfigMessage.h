@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 
-#include <shadapp/protocol/AbstractMessage.h>
 #include <shadapp/fs/Folder.h>
+#include <shadapp/protocol/AbstractMessage.h>
 
 namespace shadapp {
 
@@ -27,11 +27,14 @@ namespace shadapp {
                     std::vector<shadapp::fs::Folder> folders,
                     std::map<std::string,
                     std::string> options);
+            explicit ClusterConfigMessage(unsigned char* bytes);
 
             std::string getClientName() const;
             std::string getClientVersion() const;
             std::vector<shadapp::fs::Folder> getFolders() const;
             std::map<std::string, std::string> getOptions() const;
+
+            unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
         };
     }
 }
