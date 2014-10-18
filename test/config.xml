@@ -4,7 +4,9 @@
     <name>MY_NAME</name>
     <folders>
         <folder id="0987654321CBA" path="/home/junior/test/shadapp1">
-            <device id="1234" flag="65536" maxLocalVersion="850000000"/>
+            <devices>
+                <device id="1234" flag="65536" maxLocalVersion="850000000"/>
+            </devices>
         </folder>
         <folder id="1234567890ABC" path="/home/junior/test/shadapp2">
             <devices>
