@@ -75,6 +75,8 @@ namespace shadapp {
                 uint32_t flag = std::stoul(att.value("flag").toStdString(), nullptr, 10);
                 uint64_t maxLocalVersion = std::stoull(att.value("maxLocalVersion").toStdString(), nullptr, 10);
                 folder->addDevice(shadapp::fs::Device(id, flag, maxLocalVersion));
+            } else if (qName.compare("option") == 0) {
+                peerConfig.addOption(att.value("name").toStdString(), att.value("value").toStdString());
             }
             return true;
         }

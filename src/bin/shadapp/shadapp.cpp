@@ -147,9 +147,6 @@ int main(int argc, char **argv) {
         unsigned char out[2048] = {0};
         unsigned int size;
         conf.serialize(out, &size);
-//        for (unsigned int i = 0; i < size; i++) {
-//            std::cout << std::bitset<8>(out[i]) << " - " << out[i] << std::endl;
-//        }
         shadapp::protocol::ClusterConfigMessage conf2(out);
         std::cout << conf.getVersion() << " - " << conf2.getVersion() << std::endl;
         std::cout << conf.getType() << " - " << conf2.getType() << std::endl;
@@ -170,6 +167,12 @@ int main(int argc, char **argv) {
         }
         std::cout << std::endl;
         std::cout << conf.getOptions().size() << " - " << conf2.getOptions().size() << std::endl;
+        for (auto it = conf.getOptions().begin(); it != conf.getOptions().end(); it++) {
+            std::cout << it->first << " = " << it->second << std::endl;
+        }
+        for (auto it = conf2.getOptions().begin(); it != conf2.getOptions().end(); it++) {
+            std::cout << it->first << " = " << it->second << std::endl;
+        }
         std::cout << "total size (in bytes) : " << size << std::endl;
         //TODO: end "remove this"
     } catch (std::exception& e) {
