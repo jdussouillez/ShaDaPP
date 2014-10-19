@@ -9,14 +9,16 @@
 
 #include <shadapp/config/PeerConfig.h>
 #include <shadapp/config/ConfigReader.h>
+#include <shadapp/protocol/ClusterConfigMessage.h>
 #include <shadapp/protocol/CloseMessage.h>
+#include <shadapp/protocol/IndexMessage.h>
+#include <shadapp/protocol/IndexUpdateMessage.h>
 #include <shadapp/protocol/PingMessage.h>
 #include <shadapp/protocol/PongMessage.h>
 #include <shadapp/protocol/RequestMessage.h>
 #include <shadapp/protocol/ResponseMessage.h>
 
 #include "config.h"
-#include "shadapp/protocol/ClusterConfigMessage.h"
 
 static void printUsage(void) {
     std::cout << "Usage: " << APPNAME << " -c CONFIG_FILE" << std::endl;
@@ -56,7 +58,7 @@ static int parseArguments(int argc, char** argv, bool* usage, bool* version, cha
     return (*usage || *version || configFile != NULL) ? 0 : 1;
 }
 
-int main(int argc, char **argv) {    
+int main(int argc, char **argv) {
     // We have to start a QCoreApplication to use the XSD validation.
     // Otherwise, there is an error "QEventLoop: Cannot be used without QApplication".
     QCoreApplication a(argc, argv);
@@ -136,7 +138,7 @@ int main(int argc, char **argv) {
                 std::cout << std::endl;
             }
         }
-        
+
         //TODO: "remove this"
         shadapp::protocol::ClusterConfigMessage conf(
                 *config.getVersion(),
@@ -175,6 +177,35 @@ int main(int argc, char **argv) {
         }
         std::cout << "total size (in bytes) : " << size << std::endl;
         //TODO: end "remove this"
+
+
+        // TODO: remove "this"
+        std::bitset<4> v;
+        v.set(0);
+        std::vector<shadapp::fs::BlockInfo> blocks;
+        blocks.push_back(shadapp::fs::BlockInfo("my_data_1", 9));
+        blocks.push_back(shadapp::fs::BlockInfo("my_data_2", 9));
+        std::vector<shadapp::fs::FileInfo> files;
+        files.push_back(shadapp::fs::FileInfo("name1", 42, blocks));
+        shadapp::protocol::IndexMessage idx1(v, "my_folder", files);
+        unsigned char b[1024];
+        uint32_t x;
+        idx1.serialize(b, &x);
+        shadapp::protocol::IndexMessage idx2(b);
+        std::cout << "\n\n";
+        std::cout << idx1.getType() << " = " << idx2.getType() << std::endl;
+        std::cout << idx1.getFolder() << " = " << idx2.getFolder() << std::endl;
+        std::cout << idx1.getFiles().size() << " = " << idx2.getFiles().size() << std::endl;
+        std::cout << "--> File info : " << std::endl;
+        for (unsigned int i2 = 0; i2 < idx1.getFiles().size(); i2++) {
+            std::cout << idx1.getFiles().at(i2).getName() << " = " << idx1.getFiles().at(i2).getName() << std::endl;
+            std::cout << "-----> Blocks : " << std::endl;
+            for (unsigned int i3 = 0; i3 < idx1.getFiles().at(i2).getBlocks().size(); i3++) {
+                std::cout << idx1.getFiles().at(i2).getBlocks().at(i3).getSize() << " = " << idx2.getFiles().at(i2).getBlocks().at(i3).getSize() << std::endl;
+                std::cout << idx1.getFiles().at(i2).getBlocks().at(i3).getHash() << " = " << idx2.getFiles().at(i2).getBlocks().at(i3).getHash() << std::endl;
+            }
+        }
+        // TODO: end remove "this"
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }

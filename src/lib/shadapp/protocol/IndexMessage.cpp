@@ -10,5 +10,9 @@ namespace shadapp {
                 std::vector<shadapp::fs::FileInfo> files)
         : AbstractIndexMessage(Type::INDEX, version, folder, files) {
         }
+        
+        IndexMessage::IndexMessage(unsigned char* bytes)
+        : AbstractIndexMessage(bytes) {
+        }
     }
 }

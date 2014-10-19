@@ -4,13 +4,13 @@
 #define APPNAME "shadapp"
 
 // Block size = 128 KB = 131072 B
-#define BLOCK_SIZE 131072
+#define MAX_BLOCK_SIZE 131072
 
-#define HASH_SIZE 64
+#define MAX_HASH_SIZE 64
 
-#define FOLDERNAME_SIZE 64
+#define MAX_FOLDERNAME_SIZE 64
 
-#define FILENAME_SIZE 1024
+#define MAX_FILENAME_SIZE 1024
 
 #define MAX_STR_LENGTH 1024
 

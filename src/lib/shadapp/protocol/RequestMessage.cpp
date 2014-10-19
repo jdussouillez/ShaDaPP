@@ -13,8 +13,8 @@ namespace shadapp {
                 uint64_t offset,
                 uint32_t size)
         : AbstractMessage(version, Type::REQUEST, false),
-        folder(folder.substr(0, FOLDERNAME_SIZE)),
-        name(name.substr(0, FILENAME_SIZE)),
+        folder(folder.substr(0, MAX_FOLDERNAME_SIZE)),
+        name(name.substr(0, MAX_FILENAME_SIZE)),
         offset(offset),
         size(size) {
         }

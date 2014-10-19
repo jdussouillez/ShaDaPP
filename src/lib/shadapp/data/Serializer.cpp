@@ -4,35 +4,35 @@ namespace shadapp {
 
     namespace data {
 
-        unsigned char* Serializer::serializeInt32(unsigned char* dest, unsigned int offset, uint32_t value, unsigned int* size) {
+        unsigned char* Serializer::serializeInt32(unsigned char* dest, unsigned int startIndex, uint32_t value, unsigned int* endIndex) {
             unsigned int shift = 24, mask = 0xFF000000;
-            for (unsigned int i = offset; i < offset + sizeof (uint32_t); i++) {
+            for (unsigned int i = startIndex; i < startIndex + sizeof (uint32_t); i++) {
                 dest[i] = (value & mask) >> shift;
                 shift -= 8;
                 mask >>= 8;
             }
-            *size += sizeof (uint32_t);
+            *endIndex += sizeof (uint32_t);
             return dest;
         }
 
-        unsigned char* Serializer::serializeInt64(unsigned char* dest, unsigned int offset, uint64_t value, unsigned int* size) {
+        unsigned char* Serializer::serializeInt64(unsigned char* dest, unsigned int startIndex, uint64_t value, unsigned int* endIndex) {
             unsigned int shift = 56;
             uint64_t mask = 0xFF00000000000000;
-            for (unsigned int i = offset; i < offset + sizeof (uint64_t); i++) {
+            for (unsigned int i = startIndex; i < startIndex + sizeof (uint64_t); i++) {
                 dest[i] = (value & mask) >> shift;
                 shift -= 8;
                 mask >>= 8;
             }
-            *size += sizeof (uint64_t);
+            *endIndex += sizeof (uint64_t);
             return dest;
         }
 
-        unsigned char* Serializer::serializeString(unsigned char* dest, unsigned int offset, std::string str, unsigned int* size) {
+        unsigned char* Serializer::serializeString(unsigned char* dest, unsigned int startIndex, std::string str, unsigned int* endIndex) {
             int length = str.length();
             for (int i = 0; i < length; i++) {
-                dest[offset + i] = str.at(i);
+                dest[startIndex + i] = str.at(i);
             }
-            *size += length;
+            *endIndex += length;
             return dest;
         }
 

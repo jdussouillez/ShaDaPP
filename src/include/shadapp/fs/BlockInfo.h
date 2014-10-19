@@ -1,24 +1,29 @@
 #ifndef BLOCKINFO_H
 #define	BLOCKINFO_H
 
-#include <cstring>
+#include <string>
 
 #include <shadapp/Core.h>
+#include <shadapp/data/Serializable.h>
 
 namespace shadapp {
 
     namespace fs {
 
-        class BlockInfo {
+        class BlockInfo : public shadapp::data::Serializable {
         private:
-            unsigned int size;
-            char hash[HASH_SIZE];
+            uint32_t size;
+            std::string hash;
 
         public:
-            explicit BlockInfo(unsigned int size);
+            explicit BlockInfo(std::string data, uint32_t size);
 
             unsigned int getSize() const;
-            const char* getHash() const;
+            std::string getHash() const;
+
+            unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
+            
+            static BlockInfo getFromBytes(unsigned char* bytes, unsigned int* size);
         };
     }
 }

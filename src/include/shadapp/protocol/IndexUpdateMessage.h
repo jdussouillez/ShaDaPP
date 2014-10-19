@@ -1,8 +1,5 @@
 #ifndef INDEXUPDATEMESSAGE_H
 #define	INDEXUPDATEMESSAGE_H
-
-#include <bitset>
-
 #include <shadapp/protocol/AbstractIndexMessage.h>
 
 namespace shadapp {
@@ -15,6 +12,7 @@ namespace shadapp {
                     std::bitset<4> version,
                     std::string folder,
                     std::vector<shadapp::fs::FileInfo> files);
+            explicit IndexUpdateMessage(unsigned char* bytes);
         };
     }
 }

@@ -7,7 +7,7 @@ namespace shadapp {
 
         ResponseMessage::ResponseMessage(std::bitset<4> version, std::string data)
         : AbstractMessage(version, Type::RESPONSE, false),
-        data(data.substr(0, BLOCK_SIZE)) {
+        data(data.substr(0, MAX_BLOCK_SIZE)) {
         }
 
         ResponseMessage::ResponseMessage(unsigned char* bytes)
