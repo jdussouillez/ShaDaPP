@@ -12,6 +12,12 @@ namespace shadapp {
 
     namespace protocol {
 
+        enum FileFlag : uint32_t {
+            NO_PERM_INFO = 0x4000, // bit 17
+            INVALID = 0x2000, // bit 18
+            DELETED = 0x1000 // bit 19
+        };
+
         class AbstractIndexMessage : public AbstractMessage {
         private:
             std::string folder;
@@ -30,7 +36,7 @@ namespace shadapp {
 
             std::string getFolder() const;
             std::vector<shadapp::fs::FileInfo> getFiles() const;
-            
+
             unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
         };
     }

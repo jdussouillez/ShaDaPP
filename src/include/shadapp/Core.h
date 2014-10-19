@@ -1,9 +1,11 @@
 #ifndef CORE_H
 #define	CORE_H
 
-#define APPNAME "shadapp"
+#define APPNAME "shadapp" // Block size = 128 KB = 131072 B
 
-// Block size = 128 KB = 131072 B
+/*
+ * Limits
+ */
 #define MAX_BLOCK_SIZE 131072
 
 #define MAX_HASH_SIZE 64
