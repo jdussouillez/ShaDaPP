@@ -26,7 +26,7 @@ namespace shadapp {
             shadapp::data::Serializer::serializeString(dest, *size, hash, size);
             return dest;
         }
-        
+
         BlockInfo BlockInfo::getFromBytes(unsigned char* bytes, unsigned int* size) {
             uint32_t blockSize = shadapp::data::Serializer::deserializeInt32(bytes, size);
             uint32_t hashLength = shadapp::data::Serializer::deserializeInt32(bytes, size);

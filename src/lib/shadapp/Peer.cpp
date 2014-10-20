@@ -3,7 +3,6 @@
 
 #include <shadapp/Core.h>
 #include <shadapp/Peer.h>
-#include <shadapp/protocol/AbstractMessage.h>
 
 namespace shadapp {
 
@@ -21,7 +20,7 @@ namespace shadapp {
     }
 
     int Peer::send(std::string id, shadapp::protocol::AbstractMessage msg) {
-        QTcpSocket *socket = sockets[id];
+        QTcpSocket* socket = sockets[id];
         unsigned char data[MAX_MESSAGE_SIZE];
         unsigned int size;
         msg.serialize(data, &size);
@@ -33,10 +32,9 @@ namespace shadapp {
     }
 
     int Peer::receive(std::string id, char* data) {
-        QTcpSocket *socket = sockets[id];
+        QTcpSocket* socket = sockets[id];
         int sizeRead = socket->readBufferSize();
         socket->read(data, sizeRead);
         return sizeRead;
     }
 }
-

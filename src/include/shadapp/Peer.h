@@ -1,13 +1,13 @@
 #ifndef PEERSHADAPP_H
 #define	PEERSHADAPP_H
 
-
 #include <map>
-#include <QtNetwork/QTcpSocket>
 #include <string>
 
-#include <shadapp/protocol/AbstractMessage.h>
+#include <QtNetwork/QTcpSocket>
+
 #include <shadapp/config/PeerConfig.h>
+#include <shadapp/protocol/AbstractMessage.h>
 
 namespace shadapp {
 
@@ -18,8 +18,8 @@ namespace shadapp {
 
     public:
         bool connexionToPeer(std::string name,
-            std::string id,
-            unsigned int port);
+                std::string id,
+                unsigned int port);
         int send(std::string id, shadapp::protocol::AbstractMessage msg);
         int receive(std::string id, char* data);
 

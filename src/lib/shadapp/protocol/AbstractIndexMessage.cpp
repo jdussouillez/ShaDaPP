@@ -14,7 +14,7 @@ namespace shadapp {
         folder(folder),
         files(files) {
         }
-        
+
         AbstractIndexMessage::AbstractIndexMessage(unsigned char* bytes) : AbstractMessage(bytes) {
             unsigned int startIndex = 4;
             uint32_t size;
@@ -37,7 +37,7 @@ namespace shadapp {
         std::vector<shadapp::fs::FileInfo> AbstractIndexMessage::getFiles() const {
             return files;
         }
-        
+
         unsigned char* AbstractIndexMessage::serialize(unsigned char* dest, unsigned int* size) const {
             if (AbstractMessage::serialize(dest, size) == nullptr) {
                 return nullptr;

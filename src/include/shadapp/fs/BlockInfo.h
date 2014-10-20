@@ -22,7 +22,7 @@ namespace shadapp {
             std::string getHash() const;
 
             unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
-            
+
             static BlockInfo getFromBytes(unsigned char* bytes, unsigned int* size);
         };
     }
