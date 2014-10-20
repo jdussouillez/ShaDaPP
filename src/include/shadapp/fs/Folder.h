@@ -15,18 +15,18 @@ namespace shadapp {
         private:
             std::string id;
             std::string path;
-            std::vector<Device> devices;
+            std::vector<Device*> devices;
 
         public:
             explicit Folder(std::string id, std::string path);
             explicit Folder(std::string id);
             virtual ~Folder();
 
-            void addDevice(Device device);
+            void addDevice(Device* device);
 
             std::string getId() const;
             std::string getPath() const;
-            std::vector<Device> getDevices() const;
+            std::vector<Device*> getDevices() const;
 
             unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
 

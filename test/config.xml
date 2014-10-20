@@ -2,20 +2,31 @@
 <shadapp version="0">
     <port>6543</port>
     <name>MY_NAME</name>
+    <devices>
+        <device id="1234567890ABC" trusted="true" introducer="true">
+            <name>Dev_1</name>
+            <address>127.0.0.1:20001</address>
+        </device>
+        <device id="4568976546554" read-only="true" priority="high">
+            <name>Dev_2</name>
+            <address>127.0.0.1:20002</address>
+        </device>
+        <device id="9876535485666">
+            <name>Dev_3</name>
+            <address>127.0.0.1:20003</address>
+        </device>
+    </devices>
     <folders>
-        <folder id="0987654321CBA" path="/home/junior/test/shadapp1">
-            <devices>
-                <device id="1234" flag="65536" maxLocalVersion="850000000"/>
-            </devices>
+        <folder id="f123456789" path="/home/junior/test/shadapp1">
+            <device id="1234567890ABC" />
         </folder>
-        <folder id="1234567890ABC" path="/home/junior/test/shadapp2">
-            <devices>
-                <device id="5678" flag="4096" maxLocalVersion="960000000"/>
-                <device id="1011" flag="8192" maxLocalVersion="960000500"/>
-            </devices>
+        <folder id="f8983848138" path="/home/junior/test/shadapp2">
+            <device id="1234567890ABC" />
+            <device id="4568976546554" />
+            <device id="9876535485666" />
         </folder>
     </folders>
     <options>
-        <option name="priority" value="2"/>
+        <option name="test" value="10"/>
     </options>
 </shadapp>

@@ -61,7 +61,7 @@ static int parseArguments(int argc, char** argv, bool* usage, bool* version, cha
 int main(int argc, char **argv) {
     // We have to start a QCoreApplication to use the XSD validation.
     // Otherwise, there is an error "QEventLoop: Cannot be used without QApplication".
-    QCoreApplication a(argc, argv);
+    QCoreApplication app(argc, argv);
 
     // TODO: remove this !
     //    std::bitset<4> v;
@@ -132,9 +132,8 @@ int main(int argc, char **argv) {
             std::cout << "\tID = " << f.getId() << std::endl;
             std::cout << "\tPath = " << f.getPath() << std::endl;
             for (auto d : f.getDevices()) {
-                std::cout << "\t\tID = " << d.getId() << std::endl;
-                std::cout << "\t\tFlag = " << d.getFlags() << std::endl;
-                std::cout << "\t\tMaxLocalVersion = " << d.getMaxLocalVersion() << std::endl;
+                std::cout << "\t\tID = " << d->getId() << std::endl;
+                std::cout << "\t\tName = " << d->getName() << "  (mem addr: " << d << ")" << std::endl;
                 std::cout << std::endl;
             }
         }
@@ -161,19 +160,18 @@ int main(int argc, char **argv) {
             std::cout << conf.getFolders().at(i).getId() << " - " << conf2.getFolders().at(i).getId() << std::endl;
             std::cout << conf.getFolders().at(i).getPath() << " - " << conf2.getFolders().at(i).getPath() << std::endl;
             for (unsigned int j = 0; j < conf.getFolders().at(i).getDevices().size(); j++) {
-                std::cout << conf.getFolders().at(i).getDevices().at(j).getId() << " - " << conf2.getFolders().at(i).getDevices().at(j).getId() << std::endl;
-                std::cout << conf.getFolders().at(i).getDevices().at(j).getFlags() << " - " << conf2.getFolders().at(i).getDevices().at(j).getFlags() << std::endl;
-                std::cout << conf.getFolders().at(i).getDevices().at(j).getMaxLocalVersion() << " - " << conf2.getFolders().at(i).getDevices().at(j).getMaxLocalVersion() << std::endl;
+                std::cout << conf.getFolders().at(i).getDevices().at(j)->getId() << " - " << conf2.getFolders().at(i).getDevices().at(j)->getId() << std::endl;
+                std::cout << conf.getFolders().at(i).getDevices().at(j)->getMaxLocalVersion() << " - " << conf2.getFolders().at(i).getDevices().at(j)->getMaxLocalVersion() << std::endl;
                 std::cout << std::endl;
             }
         }
         std::cout << std::endl;
         std::cout << conf.getOptions().size() << " - " << conf2.getOptions().size() << std::endl;
-        for (auto it = conf.getOptions().begin(); it != conf.getOptions().end(); it++) {
-            std::cout << it->first << " = " << it->second << std::endl;
+        for (auto it : conf.getOptions()) {
+            std::cout << it.first << " = " << it.second << std::endl;
         }
-        for (auto it = conf2.getOptions().begin(); it != conf2.getOptions().end(); it++) {
-            std::cout << it->first << " = " << it->second << std::endl;
+        for (auto it : conf2.getOptions()) {
+            std::cout << it.first << " = " << it.second << std::endl;
         }
         std::cout << "total size (in bytes) : " << size << std::endl;
         //TODO: end "remove this"
@@ -209,5 +207,6 @@ int main(int argc, char **argv) {
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
+    app.exit(0);
     return 0;
 }

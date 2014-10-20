@@ -22,6 +22,7 @@ namespace shadapp {
 
         public:
             PeerConfig();
+            PeerConfig(const PeerConfig& other);
             ~PeerConfig();
 
             void setVersion(std::string version);
@@ -35,6 +36,8 @@ namespace shadapp {
             std::string getName() const;
             std::vector<shadapp::fs::Folder> getFolders() const;
             std::map<std::string, std::string> getOptions() const;
+
+            PeerConfig& operator=(const PeerConfig& other);
         };
     }
 }

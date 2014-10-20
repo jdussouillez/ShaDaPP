@@ -9,9 +9,12 @@ namespace shadapp {
         PeerConfig::PeerConfig() : version(nullptr) {
         }
 
+        PeerConfig::PeerConfig(const PeerConfig& other) {
+            operator=(other);
+        }
+
         PeerConfig::~PeerConfig() {
             delete version;
-            version = nullptr;
         }
 
         void PeerConfig::setVersion(std::string version) {
@@ -53,6 +56,17 @@ namespace shadapp {
 
         std::map<std::string, std::string> PeerConfig::getOptions() const {
             return options;
+        }
+
+        PeerConfig& PeerConfig::operator=(const PeerConfig& other) {
+            if (this != &other) {
+                version = new std::bitset<4>(other.version);
+                port = other.port;
+                name = other.name;
+                folders = other.folders;
+                options = other.options;
+            }
+            return *this;
         }
     }
 }

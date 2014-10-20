@@ -1,9 +1,6 @@
-#include <iostream>
-#include <stdint.h>
-#include <string>
+#include <cstdlib>
 
 #include <QtCore/QFile>
-#include <QtCore/QFileInfo>
 #include <QtXml/QXmlInputSource>
 #include <QtXml/QXmlSimpleReader>
 #include <QtXmlPatterns/QXmlSchema>
@@ -15,10 +12,16 @@ namespace shadapp {
 
     namespace config {
 
-        ConfigReader::ConfigReader() : folder(NULL), inPort(false), inName(false) {
+        ConfigReader::ConfigReader()
+        : folder(nullptr), device(nullptr), inPort(false),
+        inName(false), inDevice(false), inAddress(false), inFolder(false) {
         }
 
-        PeerConfig ConfigReader::getClientConfig() const {
+        ConfigReader::ConfigReader(const ConfigReader& other) : QXmlDefaultHandler() {
+            operator=(other);
+        }
+
+        PeerConfig ConfigReader::getPeerConfig() const {
             return peerConfig;
         }
 
@@ -43,7 +46,7 @@ namespace shadapp {
             file.close();
 
             // Parse the file
-            QXmlInputSource *inputSource;
+            QXmlInputSource* inputSource;
             QXmlSimpleReader reader;
             ConfigReader configReader;
             inputSource = new QXmlInputSource(&file);
@@ -52,7 +55,7 @@ namespace shadapp {
                 throw std::runtime_error("Error: error while parsing \"" + fileName + "\"");
             }
             delete inputSource;
-            return configReader.getClientConfig();
+            return configReader.getPeerConfig();
         }
 
         bool ConfigReader::startElement(
@@ -68,13 +71,32 @@ namespace shadapp {
                 inPort = true;
             } else if (qName.compare("name") == 0) {
                 inName = true;
-            } else if (qName.compare("folder") == 0) {
-                folder = new shadapp::fs::Folder(att.value("id").toStdString(), att.value("path").toStdString());
+            } else if (qName.compare("address") == 0) {
+                inAddress = true;
             } else if (qName.compare("device") == 0) {
                 std::string id = att.value("id").toStdString();
-                uint32_t flag = std::stoul(att.value("flag").toStdString(), nullptr, 10);
-                uint64_t maxLocalVersion = std::stoull(att.value("maxLocalVersion").toStdString(), nullptr, 10);
-                folder->addDevice(shadapp::fs::Device(id, flag, maxLocalVersion));
+                if (!inFolder) {
+                    inDevice = true;
+                    bool trust = toBool(att.value("trusted").toStdString());
+                    bool readOnly = toBool(att.value("read-only").toStdString());
+                    bool introducer = toBool(att.value("introducer").toStdString());
+                    device = new shadapp::fs::Device(id);
+                    device->setTrusted(trust);
+                    device->setReadOnly(readOnly);
+                    device->setIntroducer(introducer);
+                    // TODO: get priority attribute
+                } else {
+                    for (shadapp::fs::Device* d : devices) {
+                        if (d->getId().compare(id) == 0) {
+                            folder->addDevice(d);
+                            return true;
+                        }
+                    }
+                    throw std::runtime_error("The device \"" + id + "\" does not exist");
+                }
+            } else if (qName.compare("folder") == 0) {
+                inFolder = true;
+                folder = new shadapp::fs::Folder(att.value("id").toStdString(), att.value("path").toStdString());
             } else if (qName.compare("option") == 0) {
                 peerConfig.addOption(att.value("name").toStdString(), att.value("value").toStdString());
             }
@@ -82,17 +104,23 @@ namespace shadapp {
         }
 
         bool ConfigReader::characters(const QString& str) {
-            bool ok = true;
+            std::string s = str.toStdString();
             if (inPort) {
-                unsigned short port = str.toUShort(&ok);
-                if (!ok) {
-                    throw new std::runtime_error("Error: port is invalid");
-                }
+                unsigned short port = std::atoi(s.c_str());
                 peerConfig.setPort(port);
                 inPort = false;
             } else if (inName) {
-                peerConfig.setName(str.toStdString());
+                if (inDevice) {
+                    device->setName(s);
+                } else {
+                    peerConfig.setName(s);
+                }
                 inName = false;
+            } else if (inAddress) {
+                int splitIndex = s.find(":");
+                device->setAddress(s.substr(0, splitIndex));
+                device->setPort(std::atoi(s.substr(splitIndex + 1).c_str()));
+                inAddress = false;
             }
             return true;
         }
@@ -106,8 +134,34 @@ namespace shadapp {
             if (qName.compare("folder") == 0) {
                 peerConfig.addFolder(*folder);
                 delete folder;
+                inFolder = false;
+            } else if (qName.compare("device") == 0) {
+                devices.push_back(device);
+                inDevice = false;
             }
             return true;
+        }
+
+        bool ConfigReader::toBool(std::string const& s) {
+            if (s.empty()) {
+                return false;
+            }
+            return s.compare("1") == 0 || s.compare("true") == 0;
+        }
+
+        ConfigReader& ConfigReader::operator=(const ConfigReader& other) {
+            if (this != &other) {
+                peerConfig = other.peerConfig;
+                folder = other.folder;
+                device = other.device;
+                devices = other.devices;
+                inPort = other.inPort;
+                inName = other.inName;
+                inDevice = other.inDevice;
+                inAddress = other.inAddress;
+                inFolder = other.inFolder;
+            }
+            return *this;
         }
     }
 }

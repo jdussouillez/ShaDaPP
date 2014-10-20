@@ -2,16 +2,14 @@
 #define	CONFIGREADER_H
 
 #include <string>
+#include <vector>
 
 #include <QtCore/QString>
 #include <QtXml/QXmlDefaultHandler>
 
 #include <shadapp/config/PeerConfig.h>
 
-#define DISABLE_UNUSED_WARN(var) \
-    do { \
-        (void) var; \
-    } while (false)
+#define DISABLE_UNUSED_WARN(var) ((void) var)
 
 namespace shadapp {
 
@@ -21,13 +19,21 @@ namespace shadapp {
         private:
             PeerConfig peerConfig;
             shadapp::fs::Folder* folder;
+            shadapp::fs::Device* device;
+            std::vector<shadapp::fs::Device*> devices;
             bool inPort;
             bool inName;
+            bool inDevice;
+            bool inAddress;
+            bool inFolder;
+
+            static bool toBool(std::string const& s);
 
         public:
             ConfigReader();
+            ConfigReader(const ConfigReader& other);
 
-            PeerConfig getClientConfig() const;
+            PeerConfig getPeerConfig() const;
 
             static PeerConfig parse(std::string fileName, std::string XsdFile);
 
@@ -41,6 +47,8 @@ namespace shadapp {
                     const QString& namespaceURI,
                     const QString& localName,
                     const QString& qName);
+
+            ConfigReader& operator=(const ConfigReader& other);
         };
     }
 }

@@ -1,5 +1,8 @@
+#include <iostream>
+
 #include <shadapp/data/Serializer.h>
 #include <shadapp/fs/Folder.h>
+#include <algorithm>
 
 namespace shadapp {
 
@@ -17,7 +20,7 @@ namespace shadapp {
         Folder::~Folder() {
         }
 
-        void Folder::addDevice(Device device) {
+        void Folder::addDevice(Device* device) {
             devices.push_back(device);
         }
 
@@ -29,7 +32,7 @@ namespace shadapp {
             return path;
         }
 
-        std::vector<Device> Folder::getDevices() const {
+        std::vector<Device*> Folder::getDevices() const {
             return devices;
         }
 
@@ -39,7 +42,7 @@ namespace shadapp {
             uint32_t nbDevices = devices.size();
             shadapp::data::Serializer::serializeInt32(dest, *size, nbDevices, size);
             for (auto device : devices) {
-                device.serialize(dest, size);
+                device->serialize(dest, size);
             }
             return dest;
         }
