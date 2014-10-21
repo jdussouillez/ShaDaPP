@@ -123,12 +123,13 @@ int main(int argc, char **argv) {
     }
 
     std::cout << "Using file: " << configFile << std::endl;
+    shadapp::config::PeerConfig* config = nullptr;
     try {
-        shadapp::config::PeerConfig config = shadapp::config::ConfigReader::parse(std::string(configFile), "src/resources/shadapp/configSchema.xsd");
-        std::cout << "Version = " << config.getVersion()->to_string() << std::endl;
-        std::cout << "Port = " << config.getPort() << std::endl;
+        config = shadapp::config::ConfigReader::parse(std::string(configFile), "src/resources/shadapp/configSchema.xsd");
+        std::cout << "Version = " << config->getVersion()->to_string() << std::endl;
+        std::cout << "Port = " << config->getPort() << std::endl;
         std::cout << "Folders :" << std::endl;
-        for (auto f : config.getFolders()) {
+        for (auto f : config->getFolders()) {
             std::cout << "\tID = " << f.getId() << std::endl;
             std::cout << "\tPath = " << f.getPath() << std::endl;
             for (auto d : f.getDevices()) {
@@ -140,11 +141,11 @@ int main(int argc, char **argv) {
 
         //TODO: "remove this"
         shadapp::protocol::ClusterConfigMessage conf(
-                *config.getVersion(),
-                config.getName(),
+                *config->getVersion(),
+                config->getName(),
                 "blabla",
-                config.getFolders(),
-                config.getOptions());
+                config->getFolders(),
+                config->getOptions());
         unsigned char out[2048] = {0};
         unsigned int size;
         conf.serialize(out, &size);
@@ -207,6 +208,7 @@ int main(int argc, char **argv) {
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
+    delete config;
     app.exit(0);
     return 0;
 }

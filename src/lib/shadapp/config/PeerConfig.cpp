@@ -15,6 +15,10 @@ namespace shadapp {
 
         PeerConfig::~PeerConfig() {
             delete version;
+            for (auto &d : devices) {
+                delete d;
+            }
+            devices.clear();
         }
 
         void PeerConfig::setVersion(std::string version) {
@@ -28,6 +32,10 @@ namespace shadapp {
 
         void PeerConfig::setName(std::string name) {
             this->name = name;
+        }
+
+        void PeerConfig::addDevice(shadapp::fs::Device* device) {
+            devices.push_back(device);
         }
 
         void PeerConfig::addFolder(shadapp::fs::Folder folder) {
@@ -50,6 +58,10 @@ namespace shadapp {
             return name;
         }
 
+        std::vector<shadapp::fs::Device*> PeerConfig::getDevices() const {
+            return devices;
+        }
+
         std::vector<shadapp::fs::Folder> PeerConfig::getFolders() const {
             return folders;
         }
@@ -63,6 +75,7 @@ namespace shadapp {
                 version = new std::bitset<4>(other.version);
                 port = other.port;
                 name = other.name;
+                devices = other.devices;
                 folders = other.folders;
                 options = other.options;
             }

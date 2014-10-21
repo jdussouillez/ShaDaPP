@@ -18,6 +18,7 @@ namespace shadapp {
         }
 
         Folder::~Folder() {
+            devices.clear();
         }
 
         void Folder::addDevice(Device* device) {
@@ -53,7 +54,9 @@ namespace shadapp {
             Folder folder(id);
             uint32_t nbDevices = shadapp::data::Serializer::deserializeInt32(bytes, size);
             for (uint32_t i = 0; i < nbDevices; i++) {
-                folder.addDevice(Device::getFromBytes(bytes, size));
+                Device* d = Device::getFromBytes(bytes, size);
+                folder.addDevice(d);
+                // TODO: Fix memory leak (delete d)
             }
             return folder;
         }
