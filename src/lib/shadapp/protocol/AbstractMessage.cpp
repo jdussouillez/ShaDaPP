@@ -13,11 +13,12 @@ namespace shadapp {
             this->id = id;
         }
 
-        AbstractMessage::AbstractMessage(unsigned char* bytes)
-        : version(0 | (bytes[0] >> 4)),
-        id(0 | ((bytes[0] & 0xF) << 8) | bytes[1]),
-        type((Type) bytes[2]),
-        compressed(bytes[3] & 0x1) {
+        AbstractMessage::AbstractMessage(std::vector<uint8_t>* bytes)
+        : version(0 | (bytes->at(0) >> 4)),
+        id(0 | ((bytes->at(0) & 0xF) << 8) | bytes->at(1)),
+        type((Type) bytes->at(2)),
+        compressed(bytes->at(3) & 0x1) {
+            bytes->erase(bytes->begin(), bytes->begin() + 4); // Remove bytes 0 to 3
         }
 
         std::bitset<4> AbstractMessage::getVersion() const {
@@ -36,17 +37,17 @@ namespace shadapp {
             return compressed;
         }
 
-        unsigned char* AbstractMessage::serialize(unsigned char* dest, unsigned int* size) const {
-            if (dest == nullptr || size == nullptr) {
+        std::vector<uint8_t>* AbstractMessage::serialize(std::vector<uint8_t>* bytes) const {
+            if (bytes == nullptr) {
                 return nullptr;
             }
             unsigned long longId = id.to_ulong();
-            dest[0] = 0 | (version.to_ulong() << 4) | (longId >> 8);
-            dest[1] = 0 | (longId & 0xFF);
-            dest[2] = 0 | type;
-            dest[3] = compressed; // 7 bits reserved and the last bit for the compression
-            *size = 4;
-            return dest;
+            bytes->clear();
+            bytes->push_back(version.to_ulong() << 4 | longId >> 8);
+            bytes->push_back(longId & 0xFF);
+            bytes->push_back(type);
+            bytes->push_back(compressed ? 0x1 : 0x0);
+            return bytes;
         }
     }
 }

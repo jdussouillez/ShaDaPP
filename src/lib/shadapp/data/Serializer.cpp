@@ -4,63 +4,60 @@ namespace shadapp {
 
     namespace data {
 
-        unsigned char* Serializer::serializeInt32(unsigned char* dest, unsigned int startIndex, uint32_t value, unsigned int* endIndex) {
-            unsigned int shift = 24, mask = 0xFF000000;
-            for (unsigned int i = startIndex; i < startIndex + sizeof (uint32_t); i++) {
-                dest[i] = (value & mask) >> shift;
+        std::vector<uint8_t>* Serializer::serializeInt32(std::vector<uint8_t>* bytes, uint32_t value) {
+            int shift = 24;
+            uint32_t mask = 0xFF000000;
+            for (std::size_t i = 0; i < sizeof(uint32_t); i++) {
+                bytes->push_back(static_cast<uint8_t>((value & mask) >> shift));
                 shift -= 8;
                 mask >>= 8;
             }
-            *endIndex += sizeof (uint32_t);
-            return dest;
+            return bytes;
         }
 
-        unsigned char* Serializer::serializeInt64(unsigned char* dest, unsigned int startIndex, uint64_t value, unsigned int* endIndex) {
-            unsigned int shift = 56;
+        std::vector<uint8_t>* Serializer::serializeInt64(std::vector<uint8_t>* bytes, uint64_t value) {
+            int shift = 56;
             uint64_t mask = 0xFF00000000000000;
-            for (unsigned int i = startIndex; i < startIndex + sizeof (uint64_t); i++) {
-                dest[i] = (value & mask) >> shift;
+            for (std::size_t i = 0; i < sizeof(uint64_t); i++) {
+                bytes->push_back(static_cast<uint8_t>((value & mask) >> shift));
                 shift -= 8;
                 mask >>= 8;
             }
-            *endIndex += sizeof (uint64_t);
-            return dest;
+            return bytes;
         }
 
-        unsigned char* Serializer::serializeString(unsigned char* dest, unsigned int startIndex, std::string str, unsigned int* endIndex) {
-            int length = str.length();
-            for (int i = 0; i < length; i++) {
-                dest[startIndex + i] = str.at(i);
+        std::vector<uint8_t>* Serializer::serializeString(std::vector<uint8_t>* bytes, std::string str) {
+            for (std::size_t i = 0; i < str.length(); i++) {
+                bytes->push_back(static_cast<uint8_t>(str.at(i)));
             }
-            *endIndex += length;
-            return dest;
+            return bytes;
         }
 
-        uint32_t Serializer::deserializeInt32(unsigned char* bytes, unsigned int* startIndex) {
+        uint32_t Serializer::deserializeInt32(std::vector<uint8_t>* bytes) {
+            int shift = 24;
             uint32_t integer(0);
-            unsigned int shift = 24;
-            for (unsigned int i = *startIndex; i < *startIndex + sizeof (uint32_t); i++) {
-                integer |= bytes[i] << shift;
+            for (std::size_t i = 0; i < sizeof(uint32_t); i++) {
+                integer |= bytes->at(0) << shift;
+                bytes->erase(bytes->begin());
                 shift -= 8;
             }
-            *startIndex += sizeof (uint32_t);
             return integer;
         }
 
-        uint64_t Serializer::deserializeInt64(unsigned char* bytes, unsigned int* startIndex) {
-            uint64_t integer(0);
-            unsigned int shift = 56;
-            for (unsigned int i = *startIndex; i < *startIndex + sizeof (uint64_t); i++) {
-                integer |= bytes[i] << shift;
+        uint64_t Serializer::deserializeInt64(std::vector<uint8_t>* bytes) {
+            int shift = 56;
+            uint32_t integer(0);
+            for (std::size_t i = 0; i < sizeof(uint64_t); i++) {
+                integer |= bytes->at(0) << shift;
+                bytes->erase(bytes->begin());
                 shift -= 8;
             }
-            *startIndex += sizeof (uint64_t);
             return integer;
         }
 
-        std::string Serializer::deserializeString(unsigned char* bytes, unsigned int* startIndex, uint32_t length) {
-            std::string str((const char*) (bytes + *startIndex), length);
-            *startIndex += length;
+        std::string Serializer::deserializeString(std::vector<uint8_t>* bytes, uint32_t length) {
+            std::string str(bytes->begin(), bytes->begin() + length);
+            bytes->erase(bytes->begin(), bytes->begin() + length);
             return str;
         }
     }

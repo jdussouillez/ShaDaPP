@@ -29,7 +29,7 @@ namespace shadapp {
                     std::bitset<4> version,
                     std::string folder,
                     std::vector<shadapp::fs::FileInfo> files);
-            explicit AbstractIndexMessage(unsigned char* bytes);
+            explicit AbstractIndexMessage(std::vector<uint8_t>* bytes);
 
         public:
             void addFile(shadapp::fs::FileInfo file);
@@ -37,7 +37,7 @@ namespace shadapp {
             std::string getFolder() const;
             std::vector<shadapp::fs::FileInfo> getFiles() const;
 
-            unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
+            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
         };
     }
 }

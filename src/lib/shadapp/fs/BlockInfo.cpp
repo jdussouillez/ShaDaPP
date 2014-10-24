@@ -7,9 +7,14 @@ namespace shadapp {
 
     namespace fs {
 
-        BlockInfo::BlockInfo(std::string hash, uint32_t size = MAX_BLOCK_SIZE)
-        : size(size),
-        hash(hash.substr(0, MAX_BLOCK_SIZE)) {
+        BlockInfo::BlockInfo(std::string hash, uint32_t size)
+        : size(size), hash(hash) {
+        }
+
+        BlockInfo::BlockInfo(std::vector<uint8_t>* bytes) {
+            size = shadapp::data::Serializer::deserializeInt32(bytes);
+            uint32_t hashLength = shadapp::data::Serializer::deserializeInt32(bytes);
+            hash = shadapp::data::Serializer::deserializeString(bytes, hashLength);
         }
 
         std::string BlockInfo::getHash() const {
@@ -20,18 +25,11 @@ namespace shadapp {
             return size;
         }
 
-        unsigned char* BlockInfo::serialize(unsigned char* dest, unsigned int* size) const {
-            shadapp::data::Serializer::serializeInt32(dest, *size, this->size, size);
-            shadapp::data::Serializer::serializeInt32(dest, *size, hash.length(), size);
-            shadapp::data::Serializer::serializeString(dest, *size, hash, size);
-            return dest;
-        }
-
-        BlockInfo BlockInfo::getFromBytes(unsigned char* bytes, unsigned int* size) {
-            uint32_t blockSize = shadapp::data::Serializer::deserializeInt32(bytes, size);
-            uint32_t hashLength = shadapp::data::Serializer::deserializeInt32(bytes, size);
-            std::string hash = shadapp::data::Serializer::deserializeString(bytes, size, hashLength);
-            return BlockInfo(hash, blockSize);
+        std::vector<uint8_t>* BlockInfo::serialize(std::vector<uint8_t>* bytes) const {
+            shadapp::data::Serializer::serializeInt32(bytes, size);
+            shadapp::data::Serializer::serializeInt32(bytes, hash.length());
+            shadapp::data::Serializer::serializeString(bytes, hash);
+            return bytes;
         }
     }
 }

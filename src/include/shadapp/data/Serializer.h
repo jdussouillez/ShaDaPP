@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 namespace shadapp {
 
@@ -10,13 +11,13 @@ namespace shadapp {
 
         class Serializer {
         public:
-            static unsigned char* serializeInt32(unsigned char* dest, unsigned int startIndex, uint32_t value, unsigned int* endIndex);
-            static unsigned char* serializeInt64(unsigned char* dest, unsigned int startIndex, uint64_t value, unsigned int* endIndex);
-            static unsigned char* serializeString(unsigned char* dest, unsigned int startIndex, std::string str, unsigned int* endIndex);
+            static std::vector<uint8_t>* serializeInt32(std::vector<uint8_t>* bytes, uint32_t value);
+            static std::vector<uint8_t>* serializeInt64(std::vector<uint8_t>* bytes, uint64_t value);
+            static std::vector<uint8_t>* serializeString(std::vector<uint8_t>* bytes, std::string str);
 
-            static uint32_t deserializeInt32(unsigned char* bytes, unsigned int* startIndex);
-            static uint64_t deserializeInt64(unsigned char* bytes, unsigned int* startIndex);
-            static std::string deserializeString(unsigned char* bytes, unsigned int* startIndex, uint32_t length);
+            static uint32_t deserializeInt32(std::vector<uint8_t>* bytes);
+            static uint64_t deserializeInt64(std::vector<uint8_t>* bytes);
+            static std::string deserializeString(std::vector<uint8_t>* bytes, uint32_t length);
         };
     }
 }

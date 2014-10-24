@@ -10,7 +10,7 @@ namespace shadapp {
 
     namespace protocol {
 
-        enum Type : unsigned char { // 1 byte enum
+        enum Type : uint8_t { // 1 byte enum
             CLUSTER_CONFIG = 0,
             INDEX,
             REQUEST,
@@ -31,7 +31,7 @@ namespace shadapp {
         protected:
             explicit AbstractMessage(std::bitset<4> version, Type type, bool compressed);
             explicit AbstractMessage(std::bitset<12> id, std::bitset<4> version, Type type, bool compressed);
-            explicit AbstractMessage(unsigned char* bytes);
+            explicit AbstractMessage(std::vector<uint8_t>* bytes);
 
         public:
             std::bitset<4> getVersion() const;
@@ -39,7 +39,7 @@ namespace shadapp {
             Type getType() const;
             bool isCompressed() const;
 
-            unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
+            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
         };
     }
 }

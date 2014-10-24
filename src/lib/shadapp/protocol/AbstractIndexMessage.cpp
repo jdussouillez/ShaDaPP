@@ -15,14 +15,13 @@ namespace shadapp {
         files(files) {
         }
 
-        AbstractIndexMessage::AbstractIndexMessage(unsigned char* bytes) : AbstractMessage(bytes) {
-            unsigned int startIndex = 4;
-            uint32_t size;
-            size = shadapp::data::Serializer::deserializeInt32(bytes, &startIndex);
-            folder = shadapp::data::Serializer::deserializeString(bytes, &startIndex, size);
-            size = shadapp::data::Serializer::deserializeInt32(bytes, &startIndex);
+        AbstractIndexMessage::AbstractIndexMessage(std::vector<uint8_t>* bytes)
+        : AbstractMessage(bytes) {
+            uint32_t size = shadapp::data::Serializer::deserializeInt32(bytes);
+            folder = shadapp::data::Serializer::deserializeString(bytes, size);
+            size = shadapp::data::Serializer::deserializeInt32(bytes);
             for (uint32_t i = 0; i < size; i++) {
-                files.push_back(shadapp::fs::FileInfo::getFromBytes(bytes, &startIndex));
+                files.push_back(shadapp::fs::FileInfo(bytes));
             }
         }
 
@@ -38,17 +37,17 @@ namespace shadapp {
             return files;
         }
 
-        unsigned char* AbstractIndexMessage::serialize(unsigned char* dest, unsigned int* size) const {
-            if (AbstractMessage::serialize(dest, size) == nullptr) {
+        std::vector<uint8_t>* AbstractIndexMessage::serialize(std::vector<uint8_t>* bytes) const {
+            if (AbstractMessage::serialize(bytes) == nullptr) {
                 return nullptr;
             }
-            shadapp::data::Serializer::serializeInt32(dest, *size, folder.length(), size);
-            shadapp::data::Serializer::serializeString(dest, *size, folder, size);
-            shadapp::data::Serializer::serializeInt32(dest, *size, files.size(), size);
+            shadapp::data::Serializer::serializeInt32(bytes, folder.length());
+            shadapp::data::Serializer::serializeString(bytes, folder);
+            shadapp::data::Serializer::serializeInt32(bytes, files.size());
             for (auto f : files) {
-                f.serialize(dest, size);
+                f.serialize(bytes);
             }
-            return dest;
+            return bytes;
         }
     }
 }

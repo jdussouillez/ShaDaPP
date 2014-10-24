@@ -9,7 +9,6 @@ namespace shadapp {
     bool Peer::connexionToPeer(std::string name,
             std::string id,
             unsigned int port) {
-
         QTcpSocket socket;
         socket.connectToHost(QString(name.c_str()), port, QIODevice::ReadWrite);
         if (socket.state() != QAbstractSocket::ConnectedState) {
@@ -21,11 +20,12 @@ namespace shadapp {
 
     int Peer::send(std::string id, shadapp::protocol::AbstractMessage msg) {
         QTcpSocket* socket = sockets[id];
-        unsigned char data[MAX_MESSAGE_SIZE];
-        unsigned int size;
-        msg.serialize(data, &size);
-        unsigned int sizeSend = socket->write((const char*) data, size);
-        if (sizeSend != size) {
+        std::vector<uint8_t> bytes;
+        if (msg.serialize(&bytes) == nullptr) {
+            // TODO: error
+        }
+        unsigned int sizeSend = socket->write((const char*) &bytes.at(0), bytes.size());
+        if (sizeSend != bytes.size()) {
             return 0;
         }
         return sizeSend;

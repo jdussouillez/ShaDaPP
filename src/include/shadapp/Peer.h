@@ -2,7 +2,6 @@
 #define	PEERSHADAPP_H
 
 #include <map>
-#include <string>
 
 #include <QtNetwork/QTcpSocket>
 
