@@ -127,6 +127,7 @@ int main(int argc, char **argv) {
     try {
         config = shadapp::config::ConfigReader::parse(std::string(configFile), "src/resources/shadapp/configSchema.xsd");
         std::cout << "Version = " << config->getVersion()->to_string() << std::endl;
+        std::cout << "Id = " << config->getID() << std::endl;
         std::cout << "Port = " << config->getPort() << std::endl;
         std::cout << "Folders :" << std::endl;
         for (auto f : config->getFolders()) {

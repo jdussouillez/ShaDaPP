@@ -15,6 +15,7 @@ namespace shadapp {
         class PeerConfig {
         private:
             std::bitset<4>* version;
+            std::string id;
             unsigned short port;
             std::string name;
             std::vector<shadapp::fs::Device*> devices;
@@ -27,6 +28,7 @@ namespace shadapp {
             ~PeerConfig();
 
             void setVersion(std::string version);
+            void setID(std::string id);
             void setPort(unsigned short port);
             void setName(std::string name);
             void addDevice(shadapp::fs::Device* device);
@@ -34,6 +36,7 @@ namespace shadapp {
             void addOption(std::string name, std::string value);
 
             std::bitset<4>* getVersion() const;
+            std::string getID() const;
             unsigned short getPort() const;
             std::string getName() const;
             std::vector<shadapp::fs::Device*> getDevices() const;
