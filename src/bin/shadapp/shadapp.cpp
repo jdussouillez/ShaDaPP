@@ -217,6 +217,11 @@ int main(int argc, char **argv) {
     // TODO: remove this
     shadapp::fs::FileSplitter splitter("test/config.xml");
     std::cout << "Blocks = " << splitter.getNbBlocks() << std::endl;
+    std::vector<char> block = splitter.getBlock(0, 100);
+    for (std::vector<char>::size_type i = 0; i != block.size(); i++) {
+        std::cout << block.at(i);
+    }
+    std::cout << std::endl;
     
     delete config;
     app.exit(0);

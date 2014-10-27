@@ -1,8 +1,10 @@
 #ifndef FILESPLITTER_H
 #define FILESPLITTER_H
 
+#include <cstdint>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include <shadapp/Core.h>
 
@@ -14,7 +16,7 @@ namespace shadapp {
         private:
             std::string filepath;
             std::ifstream stream;
-            unsigned int size;
+            unsigned int fileSize;
             unsigned int nbBlocks;
             
         public:
@@ -22,6 +24,7 @@ namespace shadapp {
             virtual ~FileSplitter();
             
             unsigned int getNbBlocks() const;
+            std::vector<char> getBlock(uint64_t offset, uint32_t size);
         };
     }
 }
