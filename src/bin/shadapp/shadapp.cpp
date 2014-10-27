@@ -18,6 +18,8 @@
 #include <shadapp/protocol/RequestMessage.h>
 #include <shadapp/protocol/ResponseMessage.h>
 
+#include <shadapp/Shadapp.h>
+
 #include "config.h"
 
 static void printUsage(void) {
@@ -191,7 +193,7 @@ int main(int argc, char **argv) {
         shadapp::protocol::IndexMessage idx1(v, "my_folder", files);
         std::vector<uint8_t> bytes2;
         if (idx1.serialize(&bytes2) == nullptr) {
-             std::cout << "SERIALIZER ERROR #2" << std::endl;
+            std::cout << "SERIALIZER ERROR #2" << std::endl;
             return 20;
         }
         shadapp::protocol::IndexMessage idx2(&bytes2);
@@ -209,10 +211,16 @@ int main(int argc, char **argv) {
             }
         }
         // TODO: end remove "this"
+
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
+    //tests Maxime
+    shadapp::Shadapp localPeer(0, std::string(configFile));
+    localPeer.start();
+    //fin test Maxime
+    app.exec();
     delete config;
-    app.exit(0);
+    //app.exit(0);
     return 0;
 }
