@@ -215,7 +215,7 @@ int main(int argc, char **argv) {
     }
     
     // TODO: remove this
-    shadapp::fs::FileSplitter splitter("/home/junior/Documents/NetBeans_IDE/src-jdk.zip");//test/config.xml");
+    shadapp::fs::FileSplitter splitter("test/config.xml");
     std::cout << "Blocks = " << splitter.getNbBlocks() << std::endl;
     
     delete config;
