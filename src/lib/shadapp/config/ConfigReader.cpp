@@ -13,7 +13,7 @@ namespace shadapp {
     namespace config {
 
         ConfigReader::ConfigReader()
-        : folder(nullptr), device(nullptr), inPort(false),
+        : folder(nullptr), device(nullptr), inID(false), inPort(false),
         inName(false), inDevice(false), inAddress(false), inFolder(false) {
             peerConfig = new PeerConfig();
         }
@@ -68,6 +68,8 @@ namespace shadapp {
             DISABLE_UNUSED_WARN(localName);
             if (qName.compare("shadapp") == 0) {
                 peerConfig->setVersion(att.value("version").toStdString());
+            } else if (qName.compare("id") == 0) {
+                inID = true;
             } else if (qName.compare("port") == 0) {
                 inPort = true;
             } else if (qName.compare("name") == 0) {
@@ -107,7 +109,10 @@ namespace shadapp {
 
         bool ConfigReader::characters(const QString& str) {
             std::string s = str.toStdString();
-            if (inPort) {
+            if (inID) {
+                peerConfig->setID(s);
+                inID = false;
+            } else if (inPort) {
                 unsigned short port = std::atoi(s.c_str());
                 peerConfig->setPort(port);
                 inPort = false;
