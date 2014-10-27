@@ -33,7 +33,8 @@ namespace shadapp {
         }
 
         Device::~Device() {
-            delete socket;
+            //TODO: memory fix
+            //delete socket;
         }
 
         /*

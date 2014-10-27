@@ -1,5 +1,8 @@
 include_directories(${QT_INCLUDE_DIRS})
 
+set(SHADAPP_MOC_FILES "${CMAKE_SOURCE_DIR}/include/shadapp/Shadapp.h")
+qt4_wrap_cpp(LIBSHADAPP_MOC ${SHADAPP_MOC_FILES})
+
 file(GLOB LIBSHADAPP_SRC "*.cpp")
 file(GLOB LIBSHADAPP_CONFIG_SRC "config/*.cpp")
 file(GLOB LIBSHADAPP_DATA_SRC "data/*.cpp")
@@ -11,7 +14,8 @@ add_library(shadapp0 SHARED
   ${LIBSHADAPP_CONFIG_SRC}
   ${LIBSHADAPP_DATA_SRC}
   ${LIBSHADAPP_FS_SRC}
-  ${LIBSHADAPP_PROTOCOL_SRC}  
+  ${LIBSHADAPP_PROTOCOL_SRC}
+  ${LIBSHADAPP_MOC}
 )
 
 target_link_libraries(shadapp0

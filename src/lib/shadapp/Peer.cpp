@@ -68,9 +68,9 @@ namespace shadapp {
     //    }
     //
     //    int Peer::receive(std::string id, char* data) {
-    //        QTcpSocket* socket = sockets[id];
-    //        int sizeRead = socket->readBufferSize();
-    //        socket->read(data, sizeRead);
-    //        return sizeRead;
+//            QTcpSocket* socket = sockets[id];
+//            int sizeRead = socket->readBufferSize();
+//            socket->read(data, sizeRead);
+//            return sizeRead;
     //    }
 }

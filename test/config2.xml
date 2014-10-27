@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shadapp version="0">
+    <port>20002</port>
+    <name>Dev_2</name>
+    <devices>
+        <device id="1234567890ABC" trusted="true" introducer="true">
+            <name>Dev_1</name>
+            <address>127.0.0.1:20001</address>
+        </device>
+        <device id="4568976546554" read-only="true" priority="high">
+            <name>Dev_4</name>
+            <address>127.0.0.1:6543</address>
+        </device>
+        <device id="9876535485666">
+            <name>Dev_3</name>
+            <address>127.0.0.1:20003</address>
+        </device>
+    </devices>
+    <folders>
+        <folder id="f126456786" path="/home/junior/test/shadapp3">
+            <device id="" />
+        </folder>
+    </folders>
+    <options>
+        <option name="test" value="10"/>
+    </options>
+</shadapp>
