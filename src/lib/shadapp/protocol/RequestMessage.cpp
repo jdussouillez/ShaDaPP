@@ -19,16 +19,15 @@ namespace shadapp {
         size(size) {
         }
 
-        RequestMessage::RequestMessage(unsigned char* bytes)
+        RequestMessage::RequestMessage(std::vector<uint8_t>* bytes)
         : AbstractMessage(bytes) {
-            uint32_t folderLength, nameLength;
-            unsigned int startIndex = 4; // Message header ends at byte 3
-            folderLength = shadapp::data::Serializer::deserializeInt32(bytes, &startIndex);
-            folder = shadapp::data::Serializer::deserializeString(bytes, &startIndex, folderLength);
-            nameLength = shadapp::data::Serializer::deserializeInt32(bytes, &startIndex);
-            name = shadapp::data::Serializer::deserializeString(bytes, &startIndex, nameLength);
-            offset = shadapp::data::Serializer::deserializeInt64(bytes, &startIndex);
-            size = shadapp::data::Serializer::deserializeInt32(bytes, &startIndex);
+            uint32_t length;
+            length = shadapp::data::Serializer::deserializeInt32(bytes);
+            folder = shadapp::data::Serializer::deserializeString(bytes, length);
+            length = shadapp::data::Serializer::deserializeInt32(bytes);
+            name = shadapp::data::Serializer::deserializeString(bytes, length);
+            offset = shadapp::data::Serializer::deserializeInt64(bytes);
+            size = shadapp::data::Serializer::deserializeInt32(bytes);
         }
 
         std::string RequestMessage::getFolder() const {
@@ -47,25 +46,17 @@ namespace shadapp {
             return size;
         }
 
-        unsigned char* RequestMessage::serialize(unsigned char* dest, unsigned int* size) const {
-            if (AbstractMessage::serialize(dest, size) == nullptr) {
+        std::vector<uint8_t>* RequestMessage::serialize(std::vector<uint8_t>* bytes) const {
+            if (AbstractMessage::serialize(bytes) == nullptr) {
                 return nullptr;
             }
-            uint32_t foldernameSize = folder.size();
-            shadapp::data::Serializer::serializeInt32(dest, *size, foldernameSize, size);
-            for (unsigned int i = 0; i < foldernameSize; i++) {
-                dest[*size] = (unsigned char) folder.at(i);
-                (*size)++;
-            }
-            uint32_t filenameSize = name.size();
-            shadapp::data::Serializer::serializeInt32(dest, *size, filenameSize, size);
-            for (unsigned int i = 0; i < filenameSize; i++) {
-                dest[*size] = (unsigned char) name.at(i);
-                (*size)++;
-            }
-            shadapp::data::Serializer::serializeInt64(dest, *size, offset, size);
-            shadapp::data::Serializer::serializeInt32(dest, *size, this->size, size);
-            return dest;
+            shadapp::data::Serializer::serializeInt32(bytes, folder.length());
+            shadapp::data::Serializer::serializeString(bytes, folder);
+            shadapp::data::Serializer::serializeInt32(bytes, name.length());
+            shadapp::data::Serializer::serializeString(bytes, name);
+            shadapp::data::Serializer::serializeInt64(bytes, offset);
+            shadapp::data::Serializer::serializeInt32(bytes, size);
+            return bytes;
         }
     }
 }

@@ -17,10 +17,9 @@ namespace shadapp {
 
         class ConfigReader : public QXmlDefaultHandler {
         private:
-            PeerConfig peerConfig;
+            PeerConfig* peerConfig;
             shadapp::fs::Folder* folder;
             shadapp::fs::Device* device;
-            std::vector<shadapp::fs::Device*> devices;
             bool inPort;
             bool inName;
             bool inDevice;
@@ -33,9 +32,9 @@ namespace shadapp {
             ConfigReader();
             ConfigReader(const ConfigReader& other);
 
-            PeerConfig getPeerConfig() const;
+            PeerConfig* getPeerConfig() const;
 
-            static PeerConfig parse(std::string fileName, std::string XsdFile);
+            static PeerConfig* parse(std::string fileName, std::string XsdFile);
 
             virtual bool startElement(
                     const QString& namespaceURI,

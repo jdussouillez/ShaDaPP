@@ -12,17 +12,24 @@ namespace shadapp {
          */
         Device::Device(std::string id, std::string name,
                 std::string address, unsigned short port,
-                uint32_t flags, uint32_t maxLocalVersion)
+                uint32_t flags, uint64_t maxLocalVersion)
         : id(id), name(name), address(address), port(port),
         flags(flags), maxLocalVersion(maxLocalVersion) {
         }
 
-        Device::Device(std::string id, uint32_t flags, uint32_t maxLocalVersion)
+        Device::Device(std::string id, uint32_t flags, uint64_t maxLocalVersion)
         : Device(id, "", "", 0, flags, maxLocalVersion) {
         }
 
         Device::Device(std::string id)
         : Device(id, 0, 0) {
+        }
+
+        Device::Device(std::vector<uint8_t>* bytes) {
+            uint32_t idLength = shadapp::data::Serializer::deserializeInt32(bytes);
+            id = shadapp::data::Serializer::deserializeString(bytes, idLength);
+            flags = shadapp::data::Serializer::deserializeInt32(bytes);
+            maxLocalVersion = shadapp::data::Serializer::deserializeInt64(bytes);
         }
 
         Device::~Device() {
@@ -114,20 +121,12 @@ namespace shadapp {
          * Others
          * 
          */
-        unsigned char* Device::serialize(unsigned char* dest, unsigned int* size) const {
-            shadapp::data::Serializer::serializeInt32(dest, *size, id.length(), size);
-            shadapp::data::Serializer::serializeString(dest, *size, id, size);
-            shadapp::data::Serializer::serializeInt32(dest, *size, flags, size);
-            shadapp::data::Serializer::serializeInt64(dest, *size, maxLocalVersion, size);
-            return dest;
-        }
-
-        Device* Device::getFromBytes(unsigned char* bytes, unsigned int* size) {
-            uint32_t idLength = shadapp::data::Serializer::deserializeInt32(bytes, size);
-            std::string id = shadapp::data::Serializer::deserializeString(bytes, size, idLength);
-            uint32_t flags = shadapp::data::Serializer::deserializeInt32(bytes, size);
-            uint64_t maxLocalVersion = shadapp::data::Serializer::deserializeInt64(bytes, size);
-            return new Device(id, flags, maxLocalVersion);
+        std::vector<uint8_t>* Device::serialize(std::vector<uint8_t>* bytes) const {
+            shadapp::data::Serializer::serializeInt32(bytes, id.length());
+            shadapp::data::Serializer::serializeString(bytes, id);
+            shadapp::data::Serializer::serializeInt32(bytes, flags);
+            shadapp::data::Serializer::serializeInt64(bytes, maxLocalVersion);
+            return bytes;
         }
     }
 }

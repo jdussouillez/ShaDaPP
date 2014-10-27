@@ -11,7 +11,7 @@ namespace shadapp {
         : AbstractIndexMessage(Type::INDEX, version, folder, files) {
         }
 
-        IndexMessage::IndexMessage(unsigned char* bytes)
+        IndexMessage::IndexMessage(std::vector<uint8_t>* bytes)
         : AbstractIndexMessage(bytes) {
         }
     }

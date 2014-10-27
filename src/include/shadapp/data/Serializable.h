@@ -1,13 +1,16 @@
 #ifndef SERIALIZABLE_H
 #define	SERIALIZABLE_H
 
+#include <cstdlib>
+#include <vector>
+
 namespace shadapp {
 
     namespace data {
 
         class Serializable {
         public:
-            virtual unsigned char* serialize(unsigned char* dest, unsigned int* size) const = 0;
+            virtual std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const = 0;
         };
     }
 }

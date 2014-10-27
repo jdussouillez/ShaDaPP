@@ -14,11 +14,11 @@ namespace shadapp {
 
         public:
             explicit ResponseMessage(std::bitset<4> version, std::string data);
-            explicit ResponseMessage(unsigned char* bytes);
+            explicit ResponseMessage(std::vector<uint8_t>* bytes);
 
             std::string getData() const;
 
-            unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
+            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
         };
     }
 }

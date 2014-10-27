@@ -26,7 +26,7 @@ namespace shadapp {
     int Shadapp::connection() {
         QTcpSocket* socket = new QTcpSocket;
         int peerConnected = 0;
-        for (auto &folder : config.getFolders()) {
+        for (auto &folder : config->getFolders()) {
             for (auto &device : folder.getDevices()) {
                 socket->connectToHost(QString(device->getAddress().c_str()),
                         device->getPort(), QIODevice::ReadWrite);

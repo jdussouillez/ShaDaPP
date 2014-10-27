@@ -17,6 +17,7 @@ namespace shadapp {
             std::bitset<4>* version;
             unsigned short port;
             std::string name;
+            std::vector<shadapp::fs::Device*> devices;
             std::vector<shadapp::fs::Folder> folders;
             std::map<std::string, std::string> options;
 
@@ -28,12 +29,14 @@ namespace shadapp {
             void setVersion(std::string version);
             void setPort(unsigned short port);
             void setName(std::string name);
+            void addDevice(shadapp::fs::Device* device);
             void addFolder(shadapp::fs::Folder folder);
             void addOption(std::string name, std::string value);
 
             std::bitset<4>* getVersion() const;
             unsigned short getPort() const;
             std::string getName() const;
+            std::vector<shadapp::fs::Device*> getDevices() const;
             std::vector<shadapp::fs::Folder> getFolders() const;
             std::map<std::string, std::string> getOptions() const;
 

@@ -15,17 +15,18 @@ namespace shadapp {
         ConfigReader::ConfigReader()
         : folder(nullptr), device(nullptr), inPort(false),
         inName(false), inDevice(false), inAddress(false), inFolder(false) {
+            peerConfig = new PeerConfig();
         }
 
         ConfigReader::ConfigReader(const ConfigReader& other) : QXmlDefaultHandler() {
             operator=(other);
         }
 
-        PeerConfig ConfigReader::getPeerConfig() const {
+        PeerConfig* ConfigReader::getPeerConfig() const {
             return peerConfig;
         }
 
-        PeerConfig ConfigReader::parse(std::string fileName, std::string XsdFile) {
+        PeerConfig* ConfigReader::parse(std::string fileName, std::string XsdFile) {
             // Check if the file exists
             QFile file(QString(fileName.c_str()));
             if (!file.exists()) {
@@ -66,7 +67,7 @@ namespace shadapp {
             DISABLE_UNUSED_WARN(namespaceURI);
             DISABLE_UNUSED_WARN(localName);
             if (qName.compare("shadapp") == 0) {
-                peerConfig.setVersion(att.value("version").toStdString());
+                peerConfig->setVersion(att.value("version").toStdString());
             } else if (qName.compare("port") == 0) {
                 inPort = true;
             } else if (qName.compare("name") == 0) {
@@ -86,8 +87,9 @@ namespace shadapp {
                     device->setIntroducer(introducer);
                     // TODO: get priority attribute
                 } else {
-                    for (shadapp::fs::Device* d : devices) {
+                    for (auto d : peerConfig->getDevices()) {
                         if (d->getId().compare(id) == 0) {
+                            // Add pointer to device in folder
                             folder->addDevice(d);
                             return true;
                         }
@@ -98,7 +100,7 @@ namespace shadapp {
                 inFolder = true;
                 folder = new shadapp::fs::Folder(att.value("id").toStdString(), att.value("path").toStdString());
             } else if (qName.compare("option") == 0) {
-                peerConfig.addOption(att.value("name").toStdString(), att.value("value").toStdString());
+                peerConfig->addOption(att.value("name").toStdString(), att.value("value").toStdString());
             }
             return true;
         }
@@ -107,13 +109,13 @@ namespace shadapp {
             std::string s = str.toStdString();
             if (inPort) {
                 unsigned short port = std::atoi(s.c_str());
-                peerConfig.setPort(port);
+                peerConfig->setPort(port);
                 inPort = false;
             } else if (inName) {
                 if (inDevice) {
                     device->setName(s);
                 } else {
-                    peerConfig.setName(s);
+                    peerConfig->setName(s);
                 }
                 inName = false;
             } else if (inAddress) {
@@ -132,12 +134,14 @@ namespace shadapp {
             DISABLE_UNUSED_WARN(namespaceURI);
             DISABLE_UNUSED_WARN(localName);
             if (qName.compare("folder") == 0) {
-                peerConfig.addFolder(*folder);
+                peerConfig->addFolder(*folder);
                 delete folder;
                 inFolder = false;
             } else if (qName.compare("device") == 0) {
-                devices.push_back(device);
-                inDevice = false;
+                if (!inFolder) {
+                    peerConfig->addDevice(device);
+                    inDevice = false;
+                }
             }
             return true;
         }
@@ -154,7 +158,6 @@ namespace shadapp {
                 peerConfig = other.peerConfig;
                 folder = other.folder;
                 device = other.device;
-                devices = other.devices;
                 inPort = other.inPort;
                 inName = other.inName;
                 inDevice = other.inDevice;

@@ -8,7 +8,7 @@ namespace shadapp {
         : AbstractMessage(ping.getId(), version, Type::PONG, false) {
         }
 
-        PongMessage::PongMessage(unsigned char* bytes)
+        PongMessage::PongMessage(std::vector<uint8_t>* bytes)
         : AbstractMessage(bytes) {
         }
     }

@@ -18,6 +18,4 @@
 
 #define MAX_PEER_CONNECTIONS 128
 
-#define MAX_MESSAGE_SIZE 262144
-
 #endif	// CORE_H 

@@ -31,9 +31,10 @@ namespace shadapp {
         public:
             explicit Device(std::string id, std::string name,
                     std::string address, unsigned short port,
-                    uint32_t flags, uint32_t maxLocalVersion);
-            explicit Device(std::string id, uint32_t flags, uint32_t maxLocalVersion);
+                    uint32_t flags, uint64_t maxLocalVersion);
+            explicit Device(std::string id, uint32_t flags, uint64_t maxLocalVersion);
             explicit Device(std::string id);
+            explicit Device(std::vector<uint8_t>* bytes);
             virtual ~Device();
 
             std::string getId() const;
@@ -55,9 +56,7 @@ namespace shadapp {
             void setIntroducer(bool introducer);
             
 
-            unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
-
-            static Device* getFromBytes(unsigned char* bytes, unsigned int* size);
+            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
         };
     }
 }

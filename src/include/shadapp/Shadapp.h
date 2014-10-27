@@ -12,7 +12,7 @@ namespace shadapp {
      */
     class Shadapp {
     private:
-        shadapp::config::PeerConfig config;
+        shadapp::config::PeerConfig* config;
 
     public:
         Shadapp(std::string configFilePath);

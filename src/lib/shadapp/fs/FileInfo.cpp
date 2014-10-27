@@ -25,6 +25,19 @@ namespace shadapp {
         blocks(blocks) {
         }
 
+        FileInfo::FileInfo(std::vector<uint8_t>* bytes) {
+            uint32_t nameLength = shadapp::data::Serializer::deserializeInt32(bytes);
+            name = shadapp::data::Serializer::deserializeString(bytes, nameLength);
+            flags = shadapp::data::Serializer::deserializeInt32(bytes);
+            modified = shadapp::data::Serializer::deserializeInt64(bytes);
+            version = shadapp::data::Serializer::deserializeInt64(bytes);
+            localVersion = shadapp::data::Serializer::deserializeInt64(bytes);
+            uint32_t nbBlocks = shadapp::data::Serializer::deserializeInt32(bytes);
+            for (uint32_t i = 0; i < nbBlocks; i++) {
+                blocks.push_back(shadapp::fs::BlockInfo(bytes));
+            }
+        }
+
         std::string FileInfo::getName() const {
             return name;
         }
@@ -33,34 +46,18 @@ namespace shadapp {
             return blocks;
         }
 
-        unsigned char* FileInfo::serialize(unsigned char* dest, unsigned int* size) const {
-            shadapp::data::Serializer::serializeInt32(dest, *size, name.length(), size);
-            shadapp::data::Serializer::serializeString(dest, *size, name, size);
-            shadapp::data::Serializer::serializeInt32(dest, *size, flags, size);
-            shadapp::data::Serializer::serializeInt64(dest, *size, modified, size);
-            shadapp::data::Serializer::serializeInt64(dest, *size, version, size);
-            shadapp::data::Serializer::serializeInt64(dest, *size, localVersion, size);
-            shadapp::data::Serializer::serializeInt32(dest, *size, blocks.size(), size);
+        std::vector<uint8_t>* FileInfo::serialize(std::vector<uint8_t>* bytes) const {
+            shadapp::data::Serializer::serializeInt32(bytes, name.length());
+            shadapp::data::Serializer::serializeString(bytes, name);
+            shadapp::data::Serializer::serializeInt32(bytes, flags);
+            shadapp::data::Serializer::serializeInt64(bytes, modified);
+            shadapp::data::Serializer::serializeInt64(bytes, version);
+            shadapp::data::Serializer::serializeInt64(bytes, localVersion);
+            shadapp::data::Serializer::serializeInt32(bytes, blocks.size());
             for (auto b : blocks) {
-                b.serialize(dest, size);
+                b.serialize(bytes);
             }
-            return dest;
-        }
-
-        FileInfo FileInfo::getFromBytes(unsigned char* bytes, unsigned int* size) {
-            uint32_t nameLen;
-            nameLen = shadapp::data::Serializer::deserializeInt32(bytes, size);
-            std::string name = shadapp::data::Serializer::deserializeString(bytes, size, nameLen);
-            uint32_t flags = shadapp::data::Serializer::deserializeInt32(bytes, size);
-            uint64_t modified = shadapp::data::Serializer::deserializeInt64(bytes, size);
-            uint64_t version = shadapp::data::Serializer::deserializeInt64(bytes, size);
-            uint64_t localVersion = shadapp::data::Serializer::deserializeInt64(bytes, size);
-            uint32_t nbBlocks = shadapp::data::Serializer::deserializeInt32(bytes, size);
-            std::vector<shadapp::fs::BlockInfo> blocks;
-            for (uint32_t i = 0; i < nbBlocks; i++) {
-                blocks.push_back(shadapp::fs::BlockInfo::getFromBytes(bytes, size));
-            }
-            return FileInfo(name, flags, modified, version, localVersion, blocks);
+            return bytes;
         }
     }
 }

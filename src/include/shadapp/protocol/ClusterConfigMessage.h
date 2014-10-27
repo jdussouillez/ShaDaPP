@@ -27,14 +27,14 @@ namespace shadapp {
                     std::vector<shadapp::fs::Folder> folders,
                     std::map<std::string,
                     std::string> options);
-            explicit ClusterConfigMessage(unsigned char* bytes);
+            explicit ClusterConfigMessage(std::vector<uint8_t>* bytes);
 
             std::string getClientName() const;
             std::string getClientVersion() const;
             std::vector<shadapp::fs::Folder> getFolders() const;
             std::map<std::string, std::string> getOptions() const;
 
-            unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
+            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
         };
     }
 }
