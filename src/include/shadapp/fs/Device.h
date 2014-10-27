@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <string>
 
+#include <QtNetwork/QTcpSocket>
+
 #include <shadapp/data/Serializable.h>
 
 namespace shadapp {
@@ -24,6 +26,7 @@ namespace shadapp {
             unsigned short port;
             uint32_t flags;
             uint64_t maxLocalVersion;
+            QTcpSocket* socket;
 
         public:
             explicit Device(std::string id, std::string name,
@@ -38,6 +41,7 @@ namespace shadapp {
             std::string getAddress() const;
             unsigned short getPort() const;
             uint64_t getMaxLocalVersion() const;
+            QTcpSocket* getSocket()const;
             bool isTrusted() const;
             bool isReadOnly() const;
             bool isIntroducer() const;
@@ -45,9 +49,11 @@ namespace shadapp {
             void setName(std::string name);
             void setAddress(std::string address);
             void setPort(unsigned short port);
+            void setSocket(QTcpSocket* socket);
             void setTrusted(bool trust);
             void setReadOnly(bool readOnly);
             void setIntroducer(bool introducer);
+            
 
             unsigned char* serialize(unsigned char* dest, unsigned int* size) const override;
 

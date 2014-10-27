@@ -26,6 +26,7 @@ namespace shadapp {
         }
 
         Device::~Device() {
+            delete socket;
         }
 
         /*
@@ -51,6 +52,10 @@ namespace shadapp {
 
         uint64_t Device::getMaxLocalVersion() const {
             return maxLocalVersion;
+        }
+        
+        QTcpSocket* Device::getSocket() const{
+            return socket;
         }
 
         bool Device::isTrusted() const {
@@ -80,6 +85,10 @@ namespace shadapp {
 
         void Device::setPort(unsigned short port) {
             this->port = port;
+        }
+        
+        void Device::setSocket(QTcpSocket* socket){
+            this->socket = socket;
         }
 
         void Device::setTrusted(bool trust) {

@@ -3,26 +3,27 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 #include <QtNetwork/QTcpSocket>
 
-#include <shadapp/config/PeerConfig.h>
+#include <shadapp/fs/Folder.h>
 #include <shadapp/protocol/AbstractMessage.h>
 
 namespace shadapp {
 
     class Peer {
     private:
-        shadapp::config::PeerConfig config;
-        std::map<std::string, QTcpSocket*> sockets;
+        std::vector<shadapp::fs::Folder*> folders;
+        QTcpSocket socket;
+        shadapp::fs::Device* peerDevice;
+        
 
     public:
-        bool connexionToPeer(std::string name,
-                std::string id,
-                unsigned int port);
-        int send(std::string id, shadapp::protocol::AbstractMessage msg);
-        int receive(std::string id, char* data);
-
+        explicit Peer(shadapp::fs::Device* device);
+        bool connect();
+        int ping(std::bitset<4>* version);
+        
     };
 
 }
