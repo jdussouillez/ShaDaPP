@@ -4,6 +4,7 @@
 #include <string>
 
 #include <QtCore/QObject>
+#include <QtCore/QMetaType>
 
 namespace shadapp {
 

@@ -6,14 +6,11 @@ namespace shadapp {
 
         FileWatcherWorker::FileWatcherWorker(std::string folder)
         : QObject(), folder(folder) {
+            qRegisterMetaType<std::string>("std::string");
         }
 
         void FileWatcherWorker::process() {
-            for (;;) {
-                emit newFile("foo");
-                emit modifiedFile("bar");
-                emit deletedFile("baz");
-            }
+            // TODO: scan folder and emit signals if a new/deleted/modified file is detected
         }
     }
 }

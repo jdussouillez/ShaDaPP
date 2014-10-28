@@ -22,6 +22,8 @@ namespace shadapp {
         public:
             explicit FileWatcher(std::string folder);
             virtual ~FileWatcher();
+            
+            void run() override;
 
         public slots:
             void newFile(std::string file);

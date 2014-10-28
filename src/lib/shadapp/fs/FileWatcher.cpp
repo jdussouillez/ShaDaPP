@@ -12,11 +12,17 @@ namespace shadapp {
             QObject::connect(worker, SIGNAL(newFile(std::string)), this, SLOT(newFile(std::string)));
             QObject::connect(worker, SIGNAL(deletedFile(std::string)), this, SLOT(deletedFile(std::string)));
             QObject::connect(worker, SIGNAL(modifiedFile(std::string)), this, SLOT(modifiedFile(std::string)));
-            QObject::connect(this, SIGNAL(started()), worker, SLOT(process()));
         }
 
         FileWatcher::~FileWatcher() {
             delete worker;
+        }
+
+        void FileWatcher::run() {
+            for (;;) {
+                worker->process();
+                QThread::sleep(10);
+            }
         }
 
         void FileWatcher::newFile(std::string file) {
