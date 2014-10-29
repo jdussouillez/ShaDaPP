@@ -6,9 +6,9 @@ namespace shadapp {
 
     namespace fs {
 
-        FileWatcher::FileWatcher(std::string folder)
-        : QThread(), folder(folder) {
-            worker = new FileWatcherWorker(folder);
+        FileWatcher::FileWatcher(std::string dirPath)
+        : dirPath(dirPath) {
+            worker = new FileWatcherWorker(dirPath);
             QObject::connect(worker, SIGNAL(newFile(std::string)), this, SLOT(newFile(std::string)));
             QObject::connect(worker, SIGNAL(deletedFile(std::string)), this, SLOT(deletedFile(std::string)));
             QObject::connect(worker, SIGNAL(modifiedFile(std::string)), this, SLOT(modifiedFile(std::string)));
@@ -21,20 +21,20 @@ namespace shadapp {
         void FileWatcher::run() {
             for (;;) {
                 worker->process();
-                QThread::sleep(10);
+                QThread::sleep(30);
             }
         }
 
-        void FileWatcher::newFile(std::string file) {
-            std::cout << "Created new file \"" << file << "\"" << std::endl;
+        void FileWatcher::newFile(std::string filePath) {
+            std::cout << "Created new file \"" << filePath << "\"!\n";
         }
 
-        void FileWatcher::deletedFile(std::string file) {
-            std::cout << "Deleted file \"" << file << "\"" << std::endl;
+        void FileWatcher::deletedFile(std::string filePath) {
+            std::cout << "Deleted file \"" << filePath << "\"!\n";
         }
 
-        void FileWatcher::modifiedFile(std::string file) {
-            std::cout << "Modified file \"" << file << "\"" << std::endl;
+        void FileWatcher::modifiedFile(std::string filePath) {
+            std::cout << "Modified file \"" << filePath << "\"!\n";
         }
     }
 }

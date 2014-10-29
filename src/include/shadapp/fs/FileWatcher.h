@@ -16,19 +16,19 @@ namespace shadapp {
         class FileWatcher : public QThread {
             Q_OBJECT
         private:
-            std::string folder;
+            std::string dirPath;
             FileWatcherWorker* worker;
 
         public:
             explicit FileWatcher(std::string folder);
             virtual ~FileWatcher();
-            
+
             void run() override;
 
         public slots:
-            void newFile(std::string file);
-            void deletedFile(std::string file);
-            void modifiedFile(std::string file);
+            void newFile(std::string filePath);
+            void deletedFile(std::string filePath);
+            void modifiedFile(std::string filePath);
         };
     }
 }

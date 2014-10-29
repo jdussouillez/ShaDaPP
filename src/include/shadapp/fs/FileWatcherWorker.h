@@ -1,10 +1,13 @@
 #ifndef FILEWATCHERWORKER_H
 #define FILEWATCHERWORKER_H
 
+#include <set>
 #include <string>
 
-#include <QtCore/QObject>
+#include <QtCore/QDateTime>
+#include <QtCore/QDir>
 #include <QtCore/QMetaType>
+#include <QtCore/QObject>
 
 namespace shadapp {
 
@@ -13,15 +16,18 @@ namespace shadapp {
         class FileWatcherWorker : public QObject {
             Q_OBJECT
         private:
-            std::string folder;
+            QDir* dir;
+            QDateTime lastScan;
+            std::set<std::string> previousFiles;
 
         public:
-            explicit FileWatcherWorker(std::string folder);
+            explicit FileWatcherWorker(std::string dirPath);
+            virtual ~FileWatcherWorker();
 
         signals:
-            void newFile(std::string file);
-            void deletedFile(std::string file);
-            void modifiedFile(std::string file);
+            void newFile(std::string filePath);
+            void deletedFile(std::string filePath);
+            void modifiedFile(std::string filePath);
 
         public slots:
             void process();

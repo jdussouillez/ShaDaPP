@@ -226,8 +226,12 @@ int main(int argc, char **argv) {
     std::cout << "\n\n";
 
     // TODO: remove this
-    shadapp::fs::FileWatcher* watcher = new shadapp::fs::FileWatcher("myfolder");
-    watcher->start();
+    try {
+        shadapp::fs::FileWatcher* watcher = new shadapp::fs::FileWatcher("test/Sync");
+        watcher->start();
+    } catch (std::exception& ex) {
+        std::cerr << "Error: " << ex.what() << std::endl;
+    }
 
     delete config;
     return app.exec();
