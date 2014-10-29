@@ -1,6 +1,10 @@
 #include <algorithm>
 #include <iostream>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <shadapp/fs/FileWatcherWorker.h>
 
 namespace shadapp {
@@ -18,10 +22,9 @@ namespace shadapp {
                     | QDir::NoSymLinks
                     | QDir::Readable
                     | QDir::CaseSensitive);
-            // Put the filenames in a set
             QFileInfoList files = dir->entryInfoList();
             for (auto file : files) {
-                previousFiles.insert(file.fileName().toStdString());
+                previousFiles[file.fileName().toStdString()] = getInode(file.absoluteFilePath().toStdString());
             }
             lastScan = QDateTime::currentDateTime();
         }
@@ -33,29 +36,31 @@ namespace shadapp {
         void FileWatcherWorker::process() {
             dir->refresh();
             QFileInfoList fileInfos = dir->entryInfoList();
-            //std::cout << lastScan.toString("dd/MM/yyyy hh:mm:ss:zzz").toStdString() << std::endl;
-            std::set<std::string> files;
+            std::map<std::string, long> files;
             for (auto fileInfo : fileInfos) {
                 std::string filename = fileInfo.fileName().toStdString();
-                files.insert(filename);
-                if (previousFiles.find(filename) != previousFiles.end()) {
-                    if (lastScan < fileInfo.lastModified()) {
-                        emit modifiedFile(filename);
-                    }
-                } else {
-                    previousFiles.insert(filename);
+                files[filename] = getInode(fileInfo.absoluteFilePath().toStdString());
+                if (previousFiles.find(filename) == previousFiles.end()) {
                     emit newFile(filename);
+                } else if (lastScan < fileInfo.lastModified() || previousFiles[filename] != files[filename]) {
+                    emit modifiedFile(filename);
                 }
             }
             for (auto f : previousFiles) {
-                if (files.find(f) == files.end()) {
-                    // f is in previous files but not in files -> it has been deleted
-                    emit deletedFile(f);
+                if (files.find(f.first) == files.end()) {
+                    emit deletedFile(f.first);
                 }
             }
             previousFiles = files;
             lastScan = QDateTime::currentDateTime().addMSecs(1); // Force the incrementation
-            //std::cout << "NEW LAST SCAN " << lastScan.toString("dd/MM/yyyy hh:mm:ss:zzz").toStdString() << std::endl << std::endl;
+        }
+
+        long FileWatcherWorker::getInode(std::string filePath) {
+            struct stat sb;
+            if (stat(filePath.c_str(), &sb) == -1) {
+                throw std::runtime_error("Could not get inode of file \"" + filePath + "\"");
+            }
+            return static_cast<long> (sb.st_ino);
         }
     }
 }

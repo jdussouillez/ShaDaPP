@@ -2,6 +2,7 @@
 #define FILEWATCHERWORKER_H
 
 #include <set>
+#include <map>
 #include <string>
 
 #include <QtCore/QDateTime>
@@ -18,7 +19,9 @@ namespace shadapp {
         private:
             QDir* dir;
             QDateTime lastScan;
-            std::set<std::string> previousFiles;
+            std::map<std::string, long> previousFiles; // filename, inode
+            
+            static long getInode(std::string filename);
 
         public:
             explicit FileWatcherWorker(std::string dirPath);
