@@ -6,8 +6,8 @@ namespace shadapp {
 
     namespace fs {
 
-        FileWatcher::FileWatcher(std::string dirPath)
-        : dirPath(dirPath) {
+        FileWatcher::FileWatcher(std::string dirPath, unsigned int scanPeriod)
+        : scanPeriod(scanPeriod) {
             worker = new FileWatcherWorker(dirPath);
             QObject::connect(worker, SIGNAL(newFile(std::string)), this, SLOT(newFile(std::string)));
             QObject::connect(worker, SIGNAL(deletedFile(std::string)), this, SLOT(deletedFile(std::string)));
@@ -21,7 +21,7 @@ namespace shadapp {
         void FileWatcher::run() {
             for (;;) {
                 worker->process();
-                QThread::sleep(30);
+                QThread::sleep(scanPeriod);
             }
         }
 

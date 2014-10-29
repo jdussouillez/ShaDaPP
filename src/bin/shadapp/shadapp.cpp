@@ -227,7 +227,7 @@ int main(int argc, char **argv) {
 
     // TODO: remove this
     try {
-        shadapp::fs::FileWatcher* watcher = new shadapp::fs::FileWatcher("test/Sync");
+        shadapp::fs::FileWatcher* watcher = new shadapp::fs::FileWatcher("test/Sync", config->getScanPeriod());
         watcher->start();
     } catch (std::exception& ex) {
         std::cerr << "Error: " << ex.what() << std::endl;

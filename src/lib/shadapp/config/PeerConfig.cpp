@@ -33,6 +33,10 @@ namespace shadapp {
         void PeerConfig::setName(std::string name) {
             this->name = name;
         }
+        
+        void PeerConfig::setScanPeriod(unsigned int scanPeriod) {
+            this->scanPeriod = scanPeriod;
+        }
 
         void PeerConfig::addDevice(shadapp::fs::Device* device) {
             devices.push_back(device);
@@ -56,6 +60,10 @@ namespace shadapp {
 
         std::string PeerConfig::getName() const {
             return name;
+        }
+        
+        unsigned int PeerConfig::getScanPeriod() const {
+            return scanPeriod;
         }
 
         std::vector<shadapp::fs::Device*> PeerConfig::getDevices() const {

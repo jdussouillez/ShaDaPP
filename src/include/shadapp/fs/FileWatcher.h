@@ -16,11 +16,11 @@ namespace shadapp {
         class FileWatcher : public QThread {
             Q_OBJECT
         private:
-            std::string dirPath;
             FileWatcherWorker* worker;
+            unsigned int scanPeriod;
 
         public:
-            explicit FileWatcher(std::string folder);
+            explicit FileWatcher(std::string folder, unsigned int scanPeriod);
             virtual ~FileWatcher();
 
             void run() override;
