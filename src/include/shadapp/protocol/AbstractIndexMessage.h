@@ -6,7 +6,7 @@
 #include <vector>
 
 #include <shadapp/fs/FileInfo.h>
-#include <shadapp/protocol/AbstractMessage.h>
+#include <shadapp/protocol/Message.h>
 
 namespace shadapp {
 
@@ -18,7 +18,7 @@ namespace shadapp {
             DELETED = 0x1000 // bit 19
         };
 
-        class AbstractIndexMessage : public AbstractMessage {
+        class AbstractIndexMessage : public Message {
         private:
             std::string folder;
             std::vector<shadapp::fs::FileInfo> files;

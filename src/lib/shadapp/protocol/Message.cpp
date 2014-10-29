@@ -1,43 +1,45 @@
-#include <shadapp/protocol/AbstractMessage.h>
+#include <shadapp/protocol/Message.h>
 
 namespace shadapp {
 
     namespace protocol {
 
-        AbstractMessage::AbstractMessage(std::bitset<4> version, Type type, bool compressed)
+        Message::Message(std::bitset<4> version, Type type, bool compressed)
         : version(version), type(type), compressed(compressed) {
         }
 
-        AbstractMessage::AbstractMessage(std::bitset<12> id, std::bitset<4> version, Type type, bool compressed)
-        : AbstractMessage(version, type, compressed) {
+        Message::Message(std::bitset<12> id, std::bitset<4> version, Type type, bool compressed)
+        : Message(version, type, compressed) {
             this->id = id;
         }
 
-        AbstractMessage::AbstractMessage(std::vector<uint8_t>* bytes)
+        Message::Message(std::vector<uint8_t>* bytes, bool erase)
         : version(0 | (bytes->at(0) >> 4)),
         id(0 | ((bytes->at(0) & 0xF) << 8) | bytes->at(1)),
         type((Type) bytes->at(2)),
         compressed(bytes->at(3) & 0x1) {
-            bytes->erase(bytes->begin(), bytes->begin() + 4); // Remove bytes 0 to 3
+            if (erase) {
+                bytes->erase(bytes->begin(), bytes->begin() + 4); // Remove bytes 0 to 3
+            }
         }
 
-        std::bitset<4> AbstractMessage::getVersion() const {
+        std::bitset<4> Message::getVersion() const {
             return version;
         }
 
-        std::bitset<12> AbstractMessage::getId() const {
+        std::bitset<12> Message::getId() const {
             return id;
         }
 
-        Type AbstractMessage::getType() const {
+        Type Message::getType() const {
             return type;
         }
 
-        bool AbstractMessage::isCompressed() const {
+        bool Message::isCompressed() const {
             return compressed;
         }
 
-        std::vector<uint8_t>* AbstractMessage::serialize(std::vector<uint8_t>* bytes) const {
+        std::vector<uint8_t>* Message::serialize(std::vector<uint8_t>* bytes) const {
             if (bytes == nullptr) {
                 return nullptr;
             }

@@ -5,13 +5,13 @@
 #include <stdint.h>
 #include <string>
 
-#include <shadapp/protocol/AbstractMessage.h>
+#include <shadapp/protocol/Message.h>
 
 namespace shadapp {
 
     namespace protocol {
 
-        class RequestMessage : public AbstractMessage {
+        class RequestMessage : public Message {
         private:
             std::string folder;
             std::string name;

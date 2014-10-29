@@ -2,13 +2,13 @@
 #define	RESPONSEMESSAGE_H
 
 #include <shadapp/Core.h>
-#include <shadapp/protocol/AbstractMessage.h>
+#include <shadapp/protocol/Message.h>
 
 namespace shadapp {
 
     namespace protocol {
 
-        class ResponseMessage : public AbstractMessage {
+        class ResponseMessage : public Message {
         private:
             std::string data;
 

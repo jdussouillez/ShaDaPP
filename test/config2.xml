@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shadapp version="0">
+	<id>4568976546554</id>
     <port>20002</port>
     <name>Dev_2</name>
     <devices>
@@ -7,7 +8,7 @@
             <name>Dev_1</name>
             <address>127.0.0.1:20001</address>
         </device>
-        <device id="4568976546554" read-only="true" priority="high">
+        <device id="3141592265" read-only="true" priority="high">
             <name>Dev_4</name>
             <address>127.0.0.1:6543</address>
         </device>
@@ -18,7 +19,7 @@
     </devices>
     <folders>
         <folder id="f126456786" path="/home/junior/test/shadapp3">
-            <device id="" />
+            <device id="3141592265" />
         </folder>
     </folders>
     <options>

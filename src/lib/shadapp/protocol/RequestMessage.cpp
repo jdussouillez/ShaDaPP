@@ -12,7 +12,7 @@ namespace shadapp {
                 std::string name,
                 uint64_t offset,
                 uint32_t size)
-        : AbstractMessage(version, Type::REQUEST, false),
+        : Message(version, Type::REQUEST, false),
         folder(folder.substr(0, MAX_FOLDERNAME_SIZE)),
         name(name.substr(0, MAX_FILENAME_SIZE)),
         offset(offset),
@@ -20,7 +20,7 @@ namespace shadapp {
         }
 
         RequestMessage::RequestMessage(std::vector<uint8_t>* bytes)
-        : AbstractMessage(bytes) {
+        : Message(bytes) {
             uint32_t length;
             length = shadapp::data::Serializer::deserializeInt32(bytes);
             folder = shadapp::data::Serializer::deserializeString(bytes, length);
@@ -47,7 +47,7 @@ namespace shadapp {
         }
 
         std::vector<uint8_t>* RequestMessage::serialize(std::vector<uint8_t>* bytes) const {
-            if (AbstractMessage::serialize(bytes) == nullptr) {
+            if (Message::serialize(bytes) == nullptr) {
                 return nullptr;
             }
             shadapp::data::Serializer::serializeInt32(bytes, folder.length());

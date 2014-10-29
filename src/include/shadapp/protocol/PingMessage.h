@@ -3,13 +3,13 @@
 
 #include <bitset>
 
-#include <shadapp/protocol/AbstractMessage.h>
+#include <shadapp/protocol/Message.h>
 
 namespace shadapp {
 
     namespace protocol {
 
-        class PingMessage : public AbstractMessage {
+        class PingMessage : public Message {
         public:
             explicit PingMessage(std::bitset<4> version);
             explicit PingMessage(std::vector<uint8_t>* bytes);

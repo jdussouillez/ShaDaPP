@@ -5,13 +5,13 @@
 #include <string>
 
 #include <shadapp/Core.h>
-#include <shadapp/protocol/AbstractMessage.h>
+#include <shadapp/protocol/Message.h>
 
 namespace shadapp {
 
     namespace protocol {
 
-        class CloseMessage : public AbstractMessage {
+        class CloseMessage : public Message {
         private:
             std::string reason;
 

@@ -8,7 +8,7 @@
 #include <QtNetwork/QTcpSocket>
 
 #include <shadapp/fs/Folder.h>
-#include <shadapp/protocol/AbstractMessage.h>
+#include <shadapp/protocol/Message.h>
 
 namespace shadapp {
 

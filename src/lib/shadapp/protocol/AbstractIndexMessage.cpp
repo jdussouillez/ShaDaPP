@@ -10,13 +10,13 @@ namespace shadapp {
                 std::bitset<4> version,
                 std::string folder,
                 std::vector<shadapp::fs::FileInfo> files)
-        : AbstractMessage(version, type, false),
+        : Message(version, type, false),
         folder(folder),
         files(files) {
         }
 
         AbstractIndexMessage::AbstractIndexMessage(std::vector<uint8_t>* bytes)
-        : AbstractMessage(bytes) {
+        : Message(bytes) {
             uint32_t size = shadapp::data::Serializer::deserializeInt32(bytes);
             folder = shadapp::data::Serializer::deserializeString(bytes, size);
             size = shadapp::data::Serializer::deserializeInt32(bytes);
@@ -38,7 +38,7 @@ namespace shadapp {
         }
 
         std::vector<uint8_t>* AbstractIndexMessage::serialize(std::vector<uint8_t>* bytes) const {
-            if (AbstractMessage::serialize(bytes) == nullptr) {
+            if (Message::serialize(bytes) == nullptr) {
                 return nullptr;
             }
             shadapp::data::Serializer::serializeInt32(bytes, folder.length());

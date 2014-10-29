@@ -12,7 +12,7 @@ namespace shadapp {
                 std::string clientVersion,
                 std::vector<shadapp::fs::Folder> folders,
                 std::map<std::string, std::string> options)
-        : AbstractMessage(version, Type::CLUSTER_CONFIG, false),
+        : Message(version, Type::CLUSTER_CONFIG, false),
         clientName(clientName.substr(0, MAX_STR_LENGTH)),
         clientVersion(clientVersion.substr(0, MAX_STR_LENGTH)),
         folders(folders),
@@ -20,7 +20,7 @@ namespace shadapp {
         }
 
         ClusterConfigMessage::ClusterConfigMessage(std::vector<uint8_t>* bytes)
-        : AbstractMessage(bytes) {
+        : Message(bytes) {
             uint32_t size;
             size = shadapp::data::Serializer::deserializeInt32(bytes);
             clientName = shadapp::data::Serializer::deserializeString(bytes, size);
@@ -57,7 +57,7 @@ namespace shadapp {
         }
 
         std::vector<uint8_t>* ClusterConfigMessage::serialize(std::vector<uint8_t>* bytes) const {
-            if (AbstractMessage::serialize(bytes) == nullptr) {
+            if (Message::serialize(bytes) == nullptr) {
                 return nullptr;
             }
             shadapp::data::Serializer::serializeInt32(bytes, clientName.length());

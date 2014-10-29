@@ -6,12 +6,12 @@ namespace shadapp {
     namespace protocol {
 
         CloseMessage::CloseMessage(std::bitset<4> version, std::string reason)
-        : AbstractMessage(version, Type::CLOSE, false),
+        : Message(version, Type::CLOSE, false),
         reason(reason.substr(0, MAX_STR_LENGTH)) {
         }
 
         CloseMessage::CloseMessage(std::vector<uint8_t>* bytes)
-        : AbstractMessage(bytes) {
+        : Message(bytes) {
             uint32_t length = shadapp::data::Serializer::deserializeInt32(bytes);
             reason = shadapp::data::Serializer::deserializeString(bytes, length);
         }
@@ -21,7 +21,7 @@ namespace shadapp {
         }
 
         std::vector<uint8_t>* CloseMessage::serialize(std::vector<uint8_t>* bytes) const {
-            if (AbstractMessage::serialize(bytes) == nullptr) {
+            if (Message::serialize(bytes) == nullptr) {
                 return nullptr;
             }
             shadapp::data::Serializer::serializeInt32(bytes, reason.length());

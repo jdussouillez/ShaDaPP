@@ -21,7 +21,7 @@ namespace shadapp {
             CLOSE
         };
 
-        class AbstractMessage : public shadapp::data::Serializable {
+        class Message : public shadapp::data::Serializable {
         private:
             std::bitset<4> version;
             std::bitset<12> id; // 1,5 byte
@@ -29,11 +29,12 @@ namespace shadapp {
             bool compressed;
 
         protected:
-            explicit AbstractMessage(std::bitset<4> version, Type type, bool compressed);
-            explicit AbstractMessage(std::bitset<12> id, std::bitset<4> version, Type type, bool compressed);
-            explicit AbstractMessage(std::vector<uint8_t>* bytes);
+            explicit Message(std::bitset<4> version, Type type, bool compressed);
+            explicit Message(std::bitset<12> id, std::bitset<4> version, Type type, bool compressed);
 
         public:
+            explicit Message(std::vector<uint8_t>* bytes, bool erase = true);
+
             std::bitset<4> getVersion() const;
             std::bitset<12> getId() const;
             Type getType() const;

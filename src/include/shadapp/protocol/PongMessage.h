@@ -9,7 +9,7 @@ namespace shadapp {
 
     namespace protocol {
 
-        class PongMessage : public AbstractMessage {
+        class PongMessage : public Message {
         public:
             explicit PongMessage(std::bitset<4> version, const PingMessage& ping);
             explicit PongMessage(std::vector<uint8_t>* bytes);

@@ -6,13 +6,13 @@
 #include <vector>
 
 #include <shadapp/fs/Folder.h>
-#include <shadapp/protocol/AbstractMessage.h>
+#include <shadapp/protocol/Message.h>
 
 namespace shadapp {
 
     namespace protocol {
 
-        class ClusterConfigMessage : public AbstractMessage {
+        class ClusterConfigMessage : public Message {
         private:
             std::string clientName;
             std::string clientVersion;
