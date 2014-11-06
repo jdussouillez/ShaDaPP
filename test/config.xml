@@ -2,7 +2,7 @@
 <shadapp version="0">
     <port>6543</port>
     <name>MY_NAME</name>
-    <scan-period>30</scan-period>
+    <scan-period>20</scan-period>
     <devices>
         <device id="1234567890ABC" trusted="true" introducer="true">
             <name>Dev_1</name>

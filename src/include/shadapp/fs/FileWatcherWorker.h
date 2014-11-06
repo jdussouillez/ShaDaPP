@@ -7,6 +7,7 @@
 
 #include <QtCore/QDateTime>
 #include <QtCore/QDir>
+#include <QtCore/QDirIterator>
 #include <QtCore/QMetaType>
 #include <QtCore/QObject>
 
@@ -17,10 +18,12 @@ namespace shadapp {
         class FileWatcherWorker : public QObject {
             Q_OBJECT
         private:
-            QDir* dir;
+            QDir dir;
             QDateTime lastScan;
             std::map<std::string, long> previousFiles; // filename, inode
             
+            // Returns all the files info contained in the folder "base" and its subfolders.
+            static QFileInfoList getFiles(const QDir& base);
             static long getInode(std::string filename);
 
         public:
