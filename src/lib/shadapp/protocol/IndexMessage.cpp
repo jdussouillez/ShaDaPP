@@ -1,4 +1,5 @@
 #include "shadapp/protocol/IndexMessage.h"
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -13,6 +14,10 @@ namespace shadapp {
 
         IndexMessage::IndexMessage(std::vector<uint8_t>* bytes)
         : AbstractIndexMessage(bytes) {
+        }
+        
+        void IndexMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
+            //AbstractIndexMessage::executeAction()
         }
     }
 }

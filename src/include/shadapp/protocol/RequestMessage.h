@@ -6,6 +6,7 @@
 #include <string>
 
 #include <shadapp/protocol/Message.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -32,7 +33,8 @@ namespace shadapp {
             uint64_t getOffset() const;
             uint32_t getSize() const;
 
-            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+            virtual std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+            virtual void executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const override;
         };
     }
 }

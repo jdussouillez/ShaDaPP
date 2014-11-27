@@ -1,5 +1,6 @@
 #include <shadapp/data/Serializer.h>
 #include <shadapp/protocol/AbstractIndexMessage.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -48,6 +49,10 @@ namespace shadapp {
                 f.serialize(bytes);
             }
             return bytes;
+        }
+
+        void AbstractIndexMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
+
         }
     }
 }

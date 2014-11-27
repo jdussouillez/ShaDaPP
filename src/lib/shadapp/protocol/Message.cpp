@@ -1,4 +1,5 @@
 #include <shadapp/protocol/Message.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -12,15 +13,13 @@ namespace shadapp {
         : Message(version, type, compressed) {
             this->id = id;
         }
-
-        Message::Message(std::vector<uint8_t>* bytes, bool erase)
+        
+        Message::Message(std::vector<uint8_t>* bytes)
         : version(0 | (bytes->at(0) >> 4)),
         id(0 | ((bytes->at(0) & 0xF) << 8) | bytes->at(1)),
         type((Type) bytes->at(2)),
         compressed(bytes->at(3) & 0x1) {
-            if (erase) {
-                bytes->erase(bytes->begin(), bytes->begin() + 4); // Remove bytes 0 to 3
-            }
+            bytes->erase(bytes->begin(), bytes->begin() + 4); // Remove bytes 0 to 3
         }
 
         std::bitset<4> Message::getVersion() const {
@@ -50,6 +49,10 @@ namespace shadapp {
             bytes->push_back(type);
             bytes->push_back(compressed ? 0x1 : 0x0);
             return bytes;
+        }
+        
+        Type Message::getType(const std::vector<uint8_t>& bytes) {
+            return static_cast<Type>(bytes[2]);
         }
     }
 }

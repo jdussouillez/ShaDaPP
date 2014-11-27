@@ -1,5 +1,6 @@
 #include <shadapp/protocol/ResponseMessage.h>
 #include <shadapp/data/Serializer.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -27,6 +28,10 @@ namespace shadapp {
             shadapp::data::Serializer::serializeInt32(bytes, data.length());
             shadapp::data::Serializer::serializeString(bytes, data);
             return bytes;
+        }
+        
+        void ResponseMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
+
         }
     }
 }

@@ -1,6 +1,9 @@
+#include <iostream>
+
 #include <shadapp/Core.h>
 #include <shadapp/data/Serializer.h>
 #include <shadapp/protocol/ClusterConfigMessage.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -30,6 +33,8 @@ namespace shadapp {
             for (uint32_t i = 0; i < size; i++) {
                 folders.push_back(shadapp::fs::Folder(bytes));
             }
+            std::cout << folders.size() << std::endl;
+            std::cout << folders[0].getDevices().size() << std::endl;
             uint32_t nbOptions = shadapp::data::Serializer::deserializeInt32(bytes);
             for (uint32_t i = 0; i < nbOptions; i++) {
                 size = shadapp::data::Serializer::deserializeInt32(bytes);
@@ -76,6 +81,10 @@ namespace shadapp {
                 shadapp::data::Serializer::serializeString(bytes, o.second);
             }
             return bytes;
+        }
+        
+        void ClusterConfigMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
+            std::cout << "DEBUG CCM" << std::endl;
         }
     }
 }
