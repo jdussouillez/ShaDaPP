@@ -10,7 +10,7 @@ namespace shadapp {
         data(data.substr(0, MAX_BLOCK_SIZE)) {
         }
 
-        ResponseMessage::ResponseMessage(std::vector<uint8_t>* bytes)
+        ResponseMessage::ResponseMessage(std::vector<uint8_t>& bytes)
         : AbstractMessage(bytes) {
             uint32_t length = shadapp::data::Serializer::deserializeInt32(bytes);
             data = shadapp::data::Serializer::deserializeString(bytes, length);
@@ -20,10 +20,8 @@ namespace shadapp {
             return data;
         }
 
-        std::vector<uint8_t>* ResponseMessage::serialize(std::vector<uint8_t>* bytes) const {
-            if (AbstractMessage::serialize(bytes) == nullptr) {
-                return nullptr;
-            }
+        std::vector<uint8_t> ResponseMessage::serialize() const {
+            std::vector<uint8_t> bytes = AbstractMessage::serialize();
             shadapp::data::Serializer::serializeInt32(bytes, data.length());
             shadapp::data::Serializer::serializeString(bytes, data);
             return bytes;

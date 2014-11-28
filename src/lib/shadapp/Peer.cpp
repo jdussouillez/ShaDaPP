@@ -20,10 +20,7 @@ namespace shadapp {
 
     int Peer::send(std::string id, shadapp::protocol::AbstractMessage msg) {
         QTcpSocket* socket = sockets[id];
-        std::vector<uint8_t> bytes;
-        if (msg.serialize(&bytes) == nullptr) {
-            // TODO: error
-        }
+        std::vector<uint8_t> bytes = msg.serialize();
         unsigned int sizeSend = socket->write((const char*) &bytes.at(0), bytes.size());
         if (sizeSend != bytes.size()) {
             return 0;

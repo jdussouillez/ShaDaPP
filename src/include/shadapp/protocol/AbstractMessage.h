@@ -5,6 +5,7 @@
 #include <string>
 
 #include <shadapp/data/Serializable.h>
+#include <shadapp/data/Serializer.h>
 
 namespace shadapp {
 
@@ -31,7 +32,7 @@ namespace shadapp {
         protected:
             explicit AbstractMessage(std::bitset<4> version, Type type, bool compressed);
             explicit AbstractMessage(std::bitset<12> id, std::bitset<4> version, Type type, bool compressed);
-            explicit AbstractMessage(std::vector<uint8_t>* bytes);
+            explicit AbstractMessage(std::vector<uint8_t>& bytes);
 
         public:
             std::bitset<4> getVersion() const;
@@ -39,7 +40,7 @@ namespace shadapp {
             Type getType() const;
             bool isCompressed() const;
 
-            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+            std::vector<uint8_t> serialize() const override;
         };
     }
 }

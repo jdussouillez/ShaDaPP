@@ -25,7 +25,7 @@ namespace shadapp {
         blocks(blocks) {
         }
 
-        FileInfo::FileInfo(std::vector<uint8_t>* bytes) {
+        FileInfo::FileInfo(std::vector<uint8_t>& bytes) {
             uint32_t nameLength = shadapp::data::Serializer::deserializeInt32(bytes);
             name = shadapp::data::Serializer::deserializeString(bytes, nameLength);
             flags = shadapp::data::Serializer::deserializeInt32(bytes);
@@ -46,7 +46,8 @@ namespace shadapp {
             return blocks;
         }
 
-        std::vector<uint8_t>* FileInfo::serialize(std::vector<uint8_t>* bytes) const {
+        std::vector<uint8_t> FileInfo::serialize() const {
+            std::vector<uint8_t> bytes;
             shadapp::data::Serializer::serializeInt32(bytes, name.length());
             shadapp::data::Serializer::serializeString(bytes, name);
             shadapp::data::Serializer::serializeInt32(bytes, flags);
@@ -55,7 +56,8 @@ namespace shadapp {
             shadapp::data::Serializer::serializeInt64(bytes, localVersion);
             shadapp::data::Serializer::serializeInt32(bytes, blocks.size());
             for (auto b : blocks) {
-                b.serialize(bytes);
+                std::vector<uint8_t> blockBytes = b.serialize();
+                bytes.insert(bytes.end(), blockBytes.begin(), blockBytes.end());
             }
             return bytes;
         }

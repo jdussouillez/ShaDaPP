@@ -13,7 +13,7 @@ namespace shadapp {
                     std::bitset<4> version,
                     std::string folder,
                     std::vector<shadapp::fs::FileInfo> files);
-            explicit IndexMessage(std::vector<uint8_t>* bytes);
+            explicit IndexMessage(std::vector<uint8_t>& bytes);
         };
     }
 }

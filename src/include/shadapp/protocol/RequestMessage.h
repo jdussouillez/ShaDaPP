@@ -25,14 +25,14 @@ namespace shadapp {
                     std::string name,
                     uint64_t offset,
                     uint32_t size);
-            explicit RequestMessage(std::vector<uint8_t>* bytes);
+            explicit RequestMessage(std::vector<uint8_t>& bytes);
 
             std::string getFolder() const;
             std::string getName() const;
             uint64_t getOffset() const;
             uint32_t getSize() const;
 
-            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+            std::vector<uint8_t> serialize() const override;
         };
     }
 }
