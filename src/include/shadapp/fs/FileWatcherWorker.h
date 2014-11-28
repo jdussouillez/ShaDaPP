@@ -1,15 +1,23 @@
 #ifndef FILEWATCHERWORKER_H
 #define FILEWATCHERWORKER_H
 
-#include <set>
+#include <glob.h>
 #include <map>
+#include <set>
 #include <string>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+#include <shadapp/Core.h>
 
 #include <QtCore/QDateTime>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
+#include <QtCore/QFile>
 #include <QtCore/QMetaType>
 #include <QtCore/QObject>
+#include <QtCore/QTextStream>
 
 namespace shadapp {
 
@@ -20,10 +28,30 @@ namespace shadapp {
         private:
             QDir dir;
             QDateTime lastScan;
-            std::map<std::string, long> previousFiles; // filename, inode
-            
-            // Returns all the files info contained in the folder "base" and its subfolders.
-            static QFileInfoList getFiles(const QDir& base);
+            QDateTime lastIgnoreFileModif;
+            std::set<QString> patternsToIgnore;
+            std::set<QString> foldersToIgnore;
+            std::map<std::string, long> previousFiles; // filepath, inode
+            QDir::Filters folderFilter;
+            QDir::Filters fileFilter;
+
+            QFileInfoList getFiles();
+            std::set<QString> getFolders();
+            void refreshPatternsToIgnore();
+
+            /*
+             * Difference between 2 paths : 
+             * baseDir = /home/user/Sync
+             * currentDir = /home/user/Sync/folder1
+             * filename = file.txt
+             * 
+             * string returned : folder1/file.txt
+             */
+            bool mustBeIgnored(const QDirIterator& it, const QDir& currentDir);
+            bool isSubFolderOfIgnoredFolders(const QString& folder);
+            QString subPath(const QDir& currentDir, const QDir& baseDir, const QString& filename);
+            inline bool isDirectory(const QString& name);
+
             static long getInode(std::string filename);
 
         public:

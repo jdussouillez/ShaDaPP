@@ -3,6 +3,8 @@
 
 #define APPNAME "shadapp"
 
+#define IGNOREFILE ".shadappignore"
+
 /*
  * Limits
  */
