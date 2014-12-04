@@ -1,4 +1,6 @@
 #include <shadapp/protocol/PongMessage.h>
+#include <shadapp/LocalPeer.h>
+#include <iostream>
 
 namespace shadapp {
 
@@ -10,6 +12,10 @@ namespace shadapp {
 
         PongMessage::PongMessage(std::vector<uint8_t>& bytes)
         : AbstractMessage(bytes) {
+        }
+
+        void PongMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
+            std::cout << "PONG" << std::endl;
         }
     }
 }

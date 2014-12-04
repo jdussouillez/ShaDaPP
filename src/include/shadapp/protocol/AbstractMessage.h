@@ -6,6 +6,8 @@
 
 #include <shadapp/data/Serializable.h>
 #include <shadapp/data/Serializer.h>
+#include <shadapp/fs/Device.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -40,7 +42,10 @@ namespace shadapp {
             Type getType() const;
             bool isCompressed() const;
 
-            std::vector<uint8_t> serialize() const override;
+            virtual std::vector<uint8_t> serialize() const override;
+            virtual void executeAction(shadapp::fs::Device &device, shadapp::LocalPeer &lp) const = 0;
+
+            static Type getType(const std::vector<uint8_t>& bytes);
         };
     }
 }

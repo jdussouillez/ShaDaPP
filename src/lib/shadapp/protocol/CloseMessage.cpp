@@ -1,5 +1,6 @@
 #include <shadapp/protocol/CloseMessage.h>
 #include <shadapp/data/Serializer.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -27,6 +28,9 @@ namespace shadapp {
             // Set the message's length
             shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
             return bytes;
+        }
+
+        void CloseMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
         }
     }
 }

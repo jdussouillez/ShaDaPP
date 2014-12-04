@@ -1,6 +1,9 @@
 #include <shadapp/data/Serializer.h>
 #include <shadapp/fs/Device.h>
 
+#include <iostream>
+#include <qt4/QtNetwork/qtcpsocket.h>
+
 namespace shadapp {
 
     namespace fs {
@@ -15,6 +18,8 @@ namespace shadapp {
                 uint32_t flags, uint64_t maxLocalVersion)
         : id(id), name(name), address(address), port(port),
         flags(flags), maxLocalVersion(maxLocalVersion) {
+            socket = new QTcpSocket(0);
+           
         }
 
         Device::Device(std::string id, uint32_t flags, uint64_t maxLocalVersion)
@@ -33,6 +38,8 @@ namespace shadapp {
         }
 
         Device::~Device() {
+            //TODO: memory fix
+            delete socket;
         }
 
         /*
@@ -58,6 +65,10 @@ namespace shadapp {
 
         uint64_t Device::getMaxLocalVersion() const {
             return maxLocalVersion;
+        }
+
+        QTcpSocket* Device::getSocket() {
+            return socket;
         }
 
         bool Device::isTrusted() const {
@@ -87,6 +98,10 @@ namespace shadapp {
 
         void Device::setPort(unsigned short port) {
             this->port = port;
+        }        
+        
+        void Device::setSocket(QTcpSocket* sock){
+            socket = sock;
         }
 
         void Device::setTrusted(bool trust) {
@@ -120,5 +135,15 @@ namespace shadapp {
             shadapp::data::Serializer::serializeInt64(bytes, maxLocalVersion);
             return bytes;
         }
+        
+        void Device::slotDeviceConnected(){
+            std::cout<<"conencted from device"<<std::endl;
+            emit signalConnected(this);
+        }
+        
+        void Device::slotReceive(){
+            emit signalReceive(this);
+        }
+
     }
 }

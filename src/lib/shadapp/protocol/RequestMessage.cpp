@@ -1,6 +1,7 @@
 #include <shadapp/Core.h>
 #include <shadapp/data/Serializer.h>
 #include <shadapp/protocol/RequestMessage.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -57,6 +58,10 @@ namespace shadapp {
             // Set the message's length
             shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
             return bytes;
+        }
+
+        void RequestMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
+
         }
     }
 }
