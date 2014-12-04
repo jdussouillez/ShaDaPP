@@ -22,6 +22,8 @@ namespace shadapp {
             explicit Folder(std::string id);
             explicit Folder(std::vector<uint8_t>* bytes);
             virtual ~Folder();
+            
+            bool operator==(const Folder &f1);
 
             void addDevice(Device* device);
 

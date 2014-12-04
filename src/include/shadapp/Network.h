@@ -37,6 +37,8 @@ namespace shadapp {
         int send(QTcpSocket *peer, const shadapp::protocol::Message& msg);
         std::vector<uint8_t>* receive(QTcpSocket* socket);
         
+        LocalPeer* getLocalPeer();
+        
     public slots:
         void slotAcceptConnection();
         void slotSocketConnected(shadapp::fs::Device *connectedDevice);

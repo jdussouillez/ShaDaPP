@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 
 #include <shadapp/Core.h>
@@ -34,7 +35,7 @@ namespace shadapp {
                 folders.push_back(shadapp::fs::Folder(bytes));
             }
             std::cout << folders.size() << std::endl;
-            std::cout << folders[0].getDevices().size() << std::endl;
+         //   std::cout << folders[0].getDevices().size() << std::endl;
             uint32_t nbOptions = shadapp::data::Serializer::deserializeInt32(bytes);
             for (uint32_t i = 0; i < nbOptions; i++) {
                 size = shadapp::data::Serializer::deserializeInt32(bytes);
@@ -82,9 +83,38 @@ namespace shadapp {
             }
             return bytes;
         }
-        
+
         void ClusterConfigMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
-            std::cout << "DEBUG CCM" << std::endl;
+            //update de config
+            for (auto &folder : this->folders) {
+                std::cout << "recherche " << folder.getId() << " in config vectors" << std::endl;
+                //auto it = std::find(lp.getConfig()->getFolders().begin(), lp.getConfig()->getFolders().end(), folder);
+                //                if (it != lp.getConfig()->getFolders().end()){
+                //                    std::cout << "Element found : " << (*it).getId() << std::endl;
+                //                }else{
+                //                    std::cout << "Element not found"<< std::endl;
+                //                }         
+                bool exist = false;
+                for (auto &configFolder : lp.getConfig()->getFolders()) {
+                    if (folder.getId().compare(configFolder.getId()) == 0) {
+                        exist = true;
+                    }
+                }
+                if (!exist) { // if the folder don't exist in the config, add it
+                    std::cout << "add folder with id : " << folder.getId() << std::endl;
+                }
+            }
+            //send an indexMessage for each shared folders
+            std::vector<shadapp::fs::Folder> imFolders;
+            for (auto &folder : lp.getConfig()->getFolders()) {
+                for (auto &deviceFor : folder.getDevices()) {
+                    if (deviceFor->getId().compare(device.getId()) == 0) {
+                        imFolders.push_back(folder);
+                    }
+                }
+            }
+            lp.sendAllIndexMessage(&device, imFolders);
+
         }
     }
 }

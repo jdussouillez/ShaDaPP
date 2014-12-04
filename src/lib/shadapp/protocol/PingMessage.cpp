@@ -1,5 +1,7 @@
 #include <shadapp/protocol/PingMessage.h>
+#include <shadapp/protocol/PongMessage.h>
 #include <shadapp/LocalPeer.h>
+#include <shadapp/Network.h>
 
 namespace shadapp {
 
@@ -14,9 +16,8 @@ namespace shadapp {
         }
 
         void PingMessage::executeAction(shadapp::fs::Device &device, shadapp::LocalPeer &lp) const {
-//        std::cout << "receive ping" << std::endl;
-//        shadapp::protocol::PongMessage pong(ping.getVersion(), ping);
-//        this->send(sock, pong);
+            shadapp::protocol::PongMessage pong(this->getVersion(), *this);
+            lp.getNetwork()->send(device.getSocket(), pong);
         }
     }
 }

@@ -18,7 +18,7 @@
 #include <shadapp/protocol/RequestMessage.h>
 #include <shadapp/protocol/ResponseMessage.h>
 
-#include <shadapp/Shadapp.h>
+#include <shadapp/Network.h>
 
 #include "config.h"
 
@@ -217,10 +217,16 @@ int main(int argc, char **argv) {
         std::cerr << e.what() << std::endl;
     }
     //tests Maxime
-    shadapp::Shadapp localPeer(0, std::string(configFile));
+    shadapp::LocalPeer localPeer(0, std::string(configFile));
+    //shadapp::Network localPeer(0, std::string(configFile));
     localPeer.start();
     //fin test Maxime
-    app.exec();
+    try{
+        app.exec();
+    }catch (std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
+   
     delete config;
     //app.exit(0);
     return 0;

@@ -29,6 +29,11 @@ namespace shadapp {
             devices.clear();
         }
 
+        bool Folder::operator==(const Folder& f1) {
+            std::cout<<"id this : " << this->getId() << "id :" << f1.getId() <<std::endl;
+            return this->getId().compare(f1.getId()) == 0;
+        }
+
         void Folder::addDevice(Device* device) {
             devices.push_back(device);
         }
