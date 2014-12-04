@@ -6,7 +6,7 @@
 #include <vector>
 
 #include <shadapp/fs/FileInfo.h>
-#include <shadapp/protocol/Message.h>
+#include <shadapp/protocol/AbstractMessage.h>
 #include <shadapp/LocalPeer.h>
 
 namespace shadapp {
@@ -19,7 +19,7 @@ namespace shadapp {
             DELETED = 0x1000 // bit 19
         };
 
-        class AbstractIndexMessage : public Message {
+        class AbstractIndexMessage : public AbstractMessage {
         private:
             std::string folder;
             std::vector<shadapp::fs::FileInfo> files;
@@ -30,7 +30,7 @@ namespace shadapp {
                     std::bitset<4> version,
                     std::string folder,
                     std::vector<shadapp::fs::FileInfo> files);
-            explicit AbstractIndexMessage(std::vector<uint8_t>* bytes);
+            explicit AbstractIndexMessage(std::vector<uint8_t>& bytes);
 
         public:
             void addFile(shadapp::fs::FileInfo file);
@@ -38,7 +38,7 @@ namespace shadapp {
             std::string getFolder() const;
             std::vector<shadapp::fs::FileInfo> getFiles() const;
 
-            virtual std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+            virtual std::vector<uint8_t> serialize() const override;
             virtual void executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const override;
         };
     }

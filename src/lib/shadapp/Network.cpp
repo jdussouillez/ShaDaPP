@@ -79,11 +79,8 @@ namespace shadapp {
         return 0;
     }
 
-    int Network::send(QTcpSocket *peer, const shadapp::protocol::Message& msg) {
-        std::vector<uint8_t> bytes;
-        if (msg.serialize(&bytes) == nullptr) {
-            // TODO: error
-        }
+    int Network::send(QTcpSocket *peer, const shadapp::protocol::AbstractMessage& msg) {
+        std::vector<uint8_t> bytes = msg.serialize();
         unsigned int sizeSend = peer->write((const char*) &bytes.at(0), bytes.size());
         if (sizeSend != bytes.size()) {
             return 0;
@@ -136,55 +133,55 @@ namespace shadapp {
     void Network::slotReceive(shadapp::fs::Device *device) {
         std::vector<uint8_t>* data = receive(device->getSocket());
         std::cout << "MESSAGE" << std::endl;
-        switch (shadapp::protocol::Message::getType(*data)) {
+        switch (shadapp::protocol::AbstractMessage::getType(*data)) {
             case shadapp::protocol::Type::CLUSTER_CONFIG:
             {
                 std::cout << "CASE : CCM" << std::endl;
-                shadapp::protocol::ClusterConfigMessage msg(data);
+                shadapp::protocol::ClusterConfigMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::INDEX:
             {
                 std::cout << "CASE : INDEX size : " << std::endl;
-//                shadapp::protocol::IndexMessage msg(data);
-//                msg.executeAction(*device, *lp);
-//                std::cout << "CASE : INDEX END" << std::endl;
+                //                shadapp::protocol::IndexMessage msg(data);
+                //                msg.executeAction(*device, *lp);
+                //                std::cout << "CASE : INDEX END" << std::endl;
             }
                 break;
             case shadapp::protocol::Type::REQUEST:
             {
-                shadapp::protocol::RequestMessage msg(data);
+                shadapp::protocol::RequestMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::RESPONSE:
             {
-                shadapp::protocol::ResponseMessage msg(data);
+                shadapp::protocol::ResponseMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::PING:
             {
-                shadapp::protocol::PingMessage msg(data);
+                shadapp::protocol::PingMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::PONG:
             {
-                shadapp::protocol::PongMessage msg(data);
+                shadapp::protocol::PongMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::INDEX_UPDATE:
             {
-                shadapp::protocol::IndexUpdateMessage msg(data);
+                shadapp::protocol::IndexUpdateMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::CLOSE:
             {
-                shadapp::protocol::CloseMessage msg(data);
+                shadapp::protocol::CloseMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
@@ -198,7 +195,7 @@ namespace shadapp {
         //disconnect(socket, SIGNAL(readyRead()), this, SLOT(slotReceiveCCMfromNewPeer()));
         std::cout << "enter in ccm slot" << std::endl;
         std::vector<uint8_t>* data = receive(socket);
-        shadapp::protocol::ClusterConfigMessage ccm(data);
+        shadapp::protocol::ClusterConfigMessage ccm(*data);
         shadapp::fs::Device* device;
         //link socket to device
         for (auto &device_temp : lp->getConfig()->getDevices()) {
@@ -209,12 +206,12 @@ namespace shadapp {
         device->setSocket(socket);
         ////EN TEST
         initQtSignals(device);
-//        connect(device->getSocket(), SIGNAL(readyRead()),
-//                device, SLOT(slotReceive()), connectType);
-//        //connect(device->getSocket(), SIGNAL(readyRead()),
-//          //      device, SLOT(slotReceive()), connectType);
-//        connect(device, SIGNAL(signalReceive(shadapp::fs::Device*)),
-//                this, SLOT(slotReceive(shadapp::fs::Device*)), connectType);
+        //        connect(device->getSocket(), SIGNAL(readyRead()),
+        //                device, SLOT(slotReceive()), connectType);
+        //        //connect(device->getSocket(), SIGNAL(readyRead()),
+        //          //      device, SLOT(slotReceive()), connectType);
+        //        connect(device, SIGNAL(signalReceive(shadapp::fs::Device*)),
+        //                this, SLOT(slotReceive(shadapp::fs::Device*)), connectType);
         ////////////////////////
 
         std::cout << "Receive CCM from " << device->getId() << std::endl;

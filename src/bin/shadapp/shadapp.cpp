@@ -65,47 +65,6 @@ int main(int argc, char **argv) {
     // Otherwise, there is an error "QEventLoop: Cannot be used without QApplication".
     QCoreApplication app(argc, argv);
 
-    // TODO: remove this !
-    //    std::bitset<4> v;
-    //    v.set(0);
-    //    shadapp::protocol::PingMessage ping(v);
-    //    shadapp::protocol::PongMessage pong(v, ping);
-    //    unsigned char out[4] = {0};
-    //    unsigned int size = 0;
-    //    pong.serialize(out, &size);
-    //    shadapp::protocol::PongMessage pong2(out);
-    //    std::cout << pong2.getVersion() << " - " << pong2.getVersion().to_ulong() << std::endl;
-    //    std::cout << pong2.getId() << " - " << pong2.getId().to_ullong() << std::endl;
-    //    std::cout << pong2.getType() << std::endl;
-    //    std::cout << pong2.isCompressed() << std::endl;
-
-    //    std::bitset<4> v;
-    //    v.set(0);
-    //    shadapp::protocol::ResponseMessage cl(v, "RAW DATA HERE");
-    //    unsigned char out[128] = {0};
-    //    unsigned int size = 0;
-    //    cl.serialize(out, &size);
-    //    shadapp::protocol::ResponseMessage cl2(out);
-    //    std::cout << cl.getData() << " - " << cl2.getData() << std::endl;
-
-
-    //    std::bitset<4> v;
-    //    v.set(0);
-    //    shadapp::protocol::RequestMessage req(v, "folderA", "filenameB", 123456, 20);
-    //    unsigned char out[2048];
-    //    unsigned int size;
-    //    req.serialize(out, &size);
-    //    shadapp::protocol::RequestMessage req2(out);
-    //    std::cout << req.getId() << " - " << req2.getId() << std::endl;
-    //    std::cout << req.getFolder() << " - " << req2.getFolder() << std::endl;
-    //    std::cout << req.getName() << " - " << req2.getName() << std::endl;
-    //    std::cout << req.getOffset() << " - " << req2.getOffset() << std::endl;
-    //    std::cout << req.getSize() << " - " << req2.getSize() << std::endl;
-    //    std::cout << req.getType() << " - " << req2.getType() << std::endl;
-    //    std::cout << req.getVersion() << " - " << req2.getVersion() << std::endl;
-    // TODO: end "remove this"
-
-
     // Parse arguments
     bool usage = false, version = false;
     char* configFile = NULL;
@@ -149,12 +108,8 @@ int main(int argc, char **argv) {
                 "blabla",
                 config->getFolders(),
                 config->getOptions());
-        std::vector<uint8_t> bytes;
-        if (conf.serialize(&bytes) == nullptr) {
-            std::cout << "SERIALIZER ERROR" << std::endl;
-            return 10;
-        }
-        shadapp::protocol::ClusterConfigMessage conf2(&bytes);
+        std::vector<uint8_t> bytes = conf.serialize();
+        shadapp::protocol::ClusterConfigMessage conf2(bytes);
         std::cout << "OK FINAL" << std::endl;
         std::cout << conf.getVersion() << " - " << conf2.getVersion() << std::endl;
         std::cout << conf.getType() << " - " << conf2.getType() << std::endl;
@@ -192,12 +147,8 @@ int main(int argc, char **argv) {
         std::vector<shadapp::fs::FileInfo> files;
         files.push_back(shadapp::fs::FileInfo("name1", 42, blocks));
         shadapp::protocol::IndexMessage idx1(v, "my_folder", files);
-        std::vector<uint8_t> bytes2;
-        if (idx1.serialize(&bytes2) == nullptr) {
-            std::cout << "SERIALIZER ERROR #2" << std::endl;
-            return 20;
-        }
-        shadapp::protocol::IndexMessage idx2(&bytes2);
+        std::vector<uint8_t> bytes2 = idx1.serialize();
+        shadapp::protocol::IndexMessage idx2(bytes2);
         std::cout << "\n\n";
         std::cout << idx1.getType() << " = " << idx2.getType() << std::endl;
         std::cout << idx1.getFolder() << " = " << idx2.getFolder() << std::endl;
@@ -221,12 +172,12 @@ int main(int argc, char **argv) {
     //shadapp::Network localPeer(0, std::string(configFile));
     localPeer.start();
     //fin test Maxime
-    try{
+    try {
         app.exec();
-    }catch (std::exception& e) {
+    } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
-   
+
     delete config;
     //app.exit(0);
     return 0;

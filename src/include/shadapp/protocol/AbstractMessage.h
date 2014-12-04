@@ -5,6 +5,7 @@
 #include <string>
 
 #include <shadapp/data/Serializable.h>
+#include <shadapp/data/Serializer.h>
 #include <shadapp/fs/Device.h>
 #include <shadapp/LocalPeer.h>
 
@@ -23,7 +24,7 @@ namespace shadapp {
             CLOSE
         };
 
-        class Message : public shadapp::data::Serializable {
+        class AbstractMessage : public shadapp::data::Serializable {
         private:
             std::bitset<4> version;
             std::bitset<12> id; // 1,5 byte
@@ -31,22 +32,20 @@ namespace shadapp {
             bool compressed;
 
         protected:
-            explicit Message(std::bitset<4> version, Type type, bool compressed);
-            explicit Message(std::bitset<12> id, std::bitset<4> version, Type type, bool compressed);
-            explicit Message(std::vector<uint8_t>* bytes);
-            
+            explicit AbstractMessage(std::bitset<4> version, Type type, bool compressed);
+            explicit AbstractMessage(std::bitset<12> id, std::bitset<4> version, Type type, bool compressed);
+            explicit AbstractMessage(std::vector<uint8_t>& bytes);
 
         public:
             std::bitset<4> getVersion() const;
             std::bitset<12> getId() const;
             Type getType() const;
             bool isCompressed() const;
-            
-            virtual std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+
+            virtual std::vector<uint8_t> serialize() const override;
             virtual void executeAction(shadapp::fs::Device &device, shadapp::LocalPeer &lp) const = 0;
-            
+
             static Type getType(const std::vector<uint8_t>& bytes);
-            
         };
     }
 }

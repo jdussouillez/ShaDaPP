@@ -19,7 +19,7 @@ namespace shadapp {
         };
 
         class Device : public QObject, public shadapp::data::Serializable {
-           Q_OBJECT
+            Q_OBJECT
         private:
             std::string id;
             std::string name;
@@ -35,7 +35,7 @@ namespace shadapp {
                     uint32_t flags, uint64_t maxLocalVersion);
             explicit Device(std::string id, uint32_t flags, uint64_t maxLocalVersion);
             explicit Device(std::string id);
-            explicit Device(std::vector<uint8_t>* bytes);
+            explicit Device(std::vector<uint8_t>& bytes);
             virtual ~Device();
 
             std::string getId() const;
@@ -55,10 +55,9 @@ namespace shadapp {
             void setTrusted(bool trust);
             void setReadOnly(bool readOnly);
             void setIntroducer(bool introducer);
-            
 
-            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
-            
+            std::vector<uint8_t> serialize() const override;
+
         signals:
             void signalConnected(shadapp::fs::Device *device);
             void signalReceive(shadapp::fs::Device *device);

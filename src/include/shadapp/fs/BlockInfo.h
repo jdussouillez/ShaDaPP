@@ -17,12 +17,12 @@ namespace shadapp {
 
         public:
             explicit BlockInfo(std::string data, uint32_t size);
-            explicit BlockInfo(std::vector<uint8_t>* bytes);
+            explicit BlockInfo(std::vector<uint8_t>& bytes);
 
             uint32_t getSize() const;
             std::string getHash() const;
 
-            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+            std::vector<uint8_t> serialize() const override;
         };
     }
 }

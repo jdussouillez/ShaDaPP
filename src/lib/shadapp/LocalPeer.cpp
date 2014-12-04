@@ -31,7 +31,7 @@ namespace shadapp {
     }
 
     void LocalPeer::sendAllIndexMessage(shadapp::fs::Device *device, std::vector<shadapp::fs::Folder> folders) {
-        for(auto &folder : folders){
+        for (auto &folder : folders) {
             sendIndexMessage(device, folder);
         }
     }
@@ -49,18 +49,18 @@ namespace shadapp {
         shadapp::fs::BlockInfo bi(data, size);
         blocks.push_back(bi);
         shadapp::fs::FileInfo fileInf(
-                    "file1",
-                     flag,
-                    modified,
-                    version,
-                    localVersion,
-                    blocks);        
+                "file1",
+                flag,
+                modified,
+                version,
+                localVersion,
+                blocks);
         //
-        
+
         files.push_back(fileInf);
         shadapp::protocol::IndexMessage msg(*config->getVersion(), folder.getId(), files);
         std::cout << "send IM" << folder.getId() << " to : " << device->getId() << std::endl;
-        std::cout << "send IM" << sizeof(msg) << std::endl;
+        std::cout << "send IM" << sizeof (msg) << std::endl;
         network->send(device->getSocket(), msg);
     }
 

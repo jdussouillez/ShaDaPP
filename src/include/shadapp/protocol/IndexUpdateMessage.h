@@ -14,7 +14,7 @@ namespace shadapp {
                     std::bitset<4> version,
                     std::string folder,
                     std::vector<shadapp::fs::FileInfo> files);
-            explicit IndexUpdateMessage(std::vector<uint8_t>* bytes);
+            explicit IndexUpdateMessage(std::vector<uint8_t>& bytes);
             
             virtual void executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const override;
         };

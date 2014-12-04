@@ -7,7 +7,7 @@
 
 #include <shadapp/protocol/ClusterConfigMessage.h>
 #include <shadapp/fs/Device.h>
-#include <shadapp/protocol/Message.h>
+#include <shadapp/protocol/AbstractMessage.h>
 #include <shadapp/config/PeerConfig.h>
 #include <shadapp/protocol/PingMessage.h>
 #include <shadapp/fs/Folder.h>
@@ -34,7 +34,7 @@ namespace shadapp {
         Network(QObject *parent, shadapp::LocalPeer* lp);
         ~Network();
         int start();
-        int send(QTcpSocket *peer, const shadapp::protocol::Message& msg);
+        int send(QTcpSocket *peer, const shadapp::protocol::AbstractMessage& msg);
         std::vector<uint8_t>* receive(QTcpSocket* socket);
         
         LocalPeer* getLocalPeer();
