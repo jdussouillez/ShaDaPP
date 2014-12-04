@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <string>
 
+#include <QtNetwork/QTcpSocket>
+
 #include <shadapp/data/Serializable.h>
 
 namespace shadapp {
@@ -16,7 +18,8 @@ namespace shadapp {
             INTRODUCER = 0x0004
         };
 
-        class Device : public shadapp::data::Serializable {
+        class Device : public QObject, public shadapp::data::Serializable {
+            Q_OBJECT
         private:
             std::string id;
             std::string name;
@@ -24,6 +27,7 @@ namespace shadapp {
             unsigned short port;
             uint32_t flags;
             uint64_t maxLocalVersion;
+            QTcpSocket *socket;
 
         public:
             explicit Device(std::string id, std::string name,
@@ -31,7 +35,7 @@ namespace shadapp {
                     uint32_t flags, uint64_t maxLocalVersion);
             explicit Device(std::string id, uint32_t flags, uint64_t maxLocalVersion);
             explicit Device(std::string id);
-            explicit Device(std::vector<uint8_t>* bytes);
+            explicit Device(std::vector<uint8_t>& bytes);
             virtual ~Device();
 
             std::string getId() const;
@@ -39,6 +43,7 @@ namespace shadapp {
             std::string getAddress() const;
             unsigned short getPort() const;
             uint64_t getMaxLocalVersion() const;
+            QTcpSocket* getSocket();
             bool isTrusted() const;
             bool isReadOnly() const;
             bool isIntroducer() const;
@@ -46,11 +51,19 @@ namespace shadapp {
             void setName(std::string name);
             void setAddress(std::string address);
             void setPort(unsigned short port);
+            void setSocket(QTcpSocket* sock);
             void setTrusted(bool trust);
             void setReadOnly(bool readOnly);
             void setIntroducer(bool introducer);
 
-            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+            std::vector<uint8_t> serialize() const override;
+
+        signals:
+            void signalConnected(shadapp::fs::Device *device);
+            void signalReceive(shadapp::fs::Device *device);
+        public slots:
+            void slotDeviceConnected();
+            void slotReceive();
         };
     }
 }

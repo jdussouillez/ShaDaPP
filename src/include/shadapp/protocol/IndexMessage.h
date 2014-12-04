@@ -2,6 +2,7 @@
 #define	INDEXMESSAGE_H
 
 #include <shadapp/protocol/AbstractIndexMessage.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -13,9 +14,10 @@ namespace shadapp {
                     std::bitset<4> version,
                     std::string folder,
                     std::vector<shadapp::fs::FileInfo> files);
-            explicit IndexMessage(std::vector<uint8_t>* bytes);
+            explicit IndexMessage(std::vector<uint8_t>& bytes);
+
+            virtual void executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const override;
         };
     }
 }
-
 #endif	// INDEXMESSAGE_H

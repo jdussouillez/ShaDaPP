@@ -3,6 +3,7 @@
 
 #include <shadapp/Core.h>
 #include <shadapp/protocol/AbstractMessage.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -14,11 +15,12 @@ namespace shadapp {
 
         public:
             explicit ResponseMessage(std::bitset<4> version, std::string data);
-            explicit ResponseMessage(std::vector<uint8_t>* bytes);
+            explicit ResponseMessage(std::vector<uint8_t>& bytes);
 
             std::string getData() const;
 
-            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+            virtual std::vector<uint8_t> serialize() const override;
+            virtual void executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const override;
         };
     }
 }

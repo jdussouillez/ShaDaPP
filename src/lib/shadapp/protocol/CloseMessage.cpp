@@ -1,5 +1,6 @@
 #include <shadapp/protocol/CloseMessage.h>
 #include <shadapp/data/Serializer.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -10,7 +11,7 @@ namespace shadapp {
         reason(reason.substr(0, MAX_STR_LENGTH)) {
         }
 
-        CloseMessage::CloseMessage(std::vector<uint8_t>* bytes)
+        CloseMessage::CloseMessage(std::vector<uint8_t>& bytes)
         : AbstractMessage(bytes) {
             uint32_t length = shadapp::data::Serializer::deserializeInt32(bytes);
             reason = shadapp::data::Serializer::deserializeString(bytes, length);
@@ -20,13 +21,16 @@ namespace shadapp {
             return reason;
         }
 
-        std::vector<uint8_t>* CloseMessage::serialize(std::vector<uint8_t>* bytes) const {
-            if (AbstractMessage::serialize(bytes) == nullptr) {
-                return nullptr;
-            }
+        std::vector<uint8_t> CloseMessage::serialize() const {
+            std::vector<uint8_t> bytes = AbstractMessage::serialize();
             shadapp::data::Serializer::serializeInt32(bytes, reason.length());
             shadapp::data::Serializer::serializeString(bytes, reason);
+            // Set the message's length
+            shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
             return bytes;
+        }
+
+        void CloseMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
         }
     }
 }
