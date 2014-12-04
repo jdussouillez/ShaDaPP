@@ -24,6 +24,8 @@ namespace shadapp {
             std::vector<uint8_t> bytes = AbstractMessage::serialize();
             shadapp::data::Serializer::serializeInt32(bytes, data.length());
             shadapp::data::Serializer::serializeString(bytes, data);
+            // Set the message's length
+            shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
             return bytes;
         }
     }

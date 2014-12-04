@@ -54,6 +54,8 @@ namespace shadapp {
             shadapp::data::Serializer::serializeString(bytes, name);
             shadapp::data::Serializer::serializeInt64(bytes, offset);
             shadapp::data::Serializer::serializeInt32(bytes, size);
+            // Set the message's length
+            shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
             return bytes;
         }
     }

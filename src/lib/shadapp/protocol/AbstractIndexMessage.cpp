@@ -46,6 +46,8 @@ namespace shadapp {
                 std::vector<uint8_t> fileBytes = f.serialize();
                 bytes.insert(bytes.end(), fileBytes.begin(), fileBytes.end());
             }
+            // Set the message's length
+            shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
             return bytes;
         }
     }

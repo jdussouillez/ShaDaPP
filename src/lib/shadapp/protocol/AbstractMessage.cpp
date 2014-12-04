@@ -19,16 +19,10 @@ namespace shadapp {
             id = 0 | ((firstByte & 0xF) << 8) | shadapp::data::Serializer::deserializeInt8(bytes);
             type = static_cast<Type>(shadapp::data::Serializer::deserializeInt8(bytes));
             compressed = static_cast<bool>(shadapp::data::Serializer::deserializeInt8(bytes) & 0x1);
+            // Message's length. Used to read the socket's content. Not used here
+            shadapp::data::Serializer::deserializeInt32(bytes);
         }
-
-        //        AbstractMessage::AbstractMessage(std::vector<uint8_t>& bytes)
-        //        : version(0 | (bytes->at(0) >> 4)),
-        //        id(0 | ((bytes->at(0) & 0xF) << 8) | bytes->at(1)),
-        //        type((Type) bytes->at(2)),
-        //        compressed(bytes->at(3) & 0x1) {
-        //            bytes->erase(bytes->begin(), bytes->begin() + 4); // Remove bytes 0 to 3
-        //        }
-
+        
         std::bitset<4> AbstractMessage::getVersion() const {
             return version;
         }
@@ -52,6 +46,7 @@ namespace shadapp {
             shadapp::data::Serializer::serializeInt8(bytes, static_cast<uint8_t>(longId & 0xFF));
             shadapp::data::Serializer::serializeInt8(bytes, static_cast<uint8_t>(type));
             shadapp::data::Serializer::serializeInt8(bytes, static_cast<uint8_t>(compressed ? 0x1 : 0x0F));
+            shadapp::data::Serializer::serializeInt32(bytes, 8); // Message's length
             return bytes;
         }
     }
