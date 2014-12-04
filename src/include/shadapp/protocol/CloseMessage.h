@@ -17,11 +17,11 @@ namespace shadapp {
 
         public:
             explicit CloseMessage(std::bitset<4> version, std::string reason);
-            explicit CloseMessage(std::vector<uint8_t>* bytes);
+            explicit CloseMessage(std::vector<uint8_t>& bytes);
 
             std::string getReason() const;
 
-            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+            std::vector<uint8_t> serialize() const override;
         };
     }
 }

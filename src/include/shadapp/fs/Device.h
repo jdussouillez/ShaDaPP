@@ -31,7 +31,7 @@ namespace shadapp {
                     uint32_t flags, uint64_t maxLocalVersion);
             explicit Device(std::string id, uint32_t flags, uint64_t maxLocalVersion);
             explicit Device(std::string id);
-            explicit Device(std::vector<uint8_t>* bytes);
+            explicit Device(std::vector<uint8_t>& bytes);
             virtual ~Device();
 
             std::string getId() const;
@@ -50,7 +50,7 @@ namespace shadapp {
             void setReadOnly(bool readOnly);
             void setIntroducer(bool introducer);
 
-            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+            std::vector<uint8_t> serialize() const override;
         };
     }
 }

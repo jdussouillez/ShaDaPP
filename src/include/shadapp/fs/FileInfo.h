@@ -31,12 +31,12 @@ namespace shadapp {
                     uint64_t version,
                     uint64_t localVersion,
                     std::vector<BlockInfo> blocks);
-            explicit FileInfo(std::vector<uint8_t>* bytes);
+            explicit FileInfo(std::vector<uint8_t>& bytes);
 
             std::string getName() const;
             std::vector<BlockInfo> getBlocks() const;
 
-            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+            std::vector<uint8_t> serialize() const override;
         };
     }
 }

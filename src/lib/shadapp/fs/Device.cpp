@@ -25,7 +25,7 @@ namespace shadapp {
         : Device(id, 0, 0) {
         }
 
-        Device::Device(std::vector<uint8_t>* bytes) {
+        Device::Device(std::vector<uint8_t>& bytes) {
             uint32_t idLength = shadapp::data::Serializer::deserializeInt32(bytes);
             id = shadapp::data::Serializer::deserializeString(bytes, idLength);
             flags = shadapp::data::Serializer::deserializeInt32(bytes);
@@ -112,7 +112,8 @@ namespace shadapp {
          * Others
          * 
          */
-        std::vector<uint8_t>* Device::serialize(std::vector<uint8_t>* bytes) const {
+        std::vector<uint8_t> Device::serialize() const {
+            std::vector<uint8_t> bytes;
             shadapp::data::Serializer::serializeInt32(bytes, id.length());
             shadapp::data::Serializer::serializeString(bytes, id);
             shadapp::data::Serializer::serializeInt32(bytes, flags);

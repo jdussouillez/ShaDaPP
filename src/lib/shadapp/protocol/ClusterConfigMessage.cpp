@@ -19,7 +19,7 @@ namespace shadapp {
         options(options) {
         }
 
-        ClusterConfigMessage::ClusterConfigMessage(std::vector<uint8_t>* bytes)
+        ClusterConfigMessage::ClusterConfigMessage(std::vector<uint8_t>& bytes)
         : AbstractMessage(bytes) {
             uint32_t size;
             size = shadapp::data::Serializer::deserializeInt32(bytes);
@@ -56,17 +56,16 @@ namespace shadapp {
             return options;
         }
 
-        std::vector<uint8_t>* ClusterConfigMessage::serialize(std::vector<uint8_t>* bytes) const {
-            if (AbstractMessage::serialize(bytes) == nullptr) {
-                return nullptr;
-            }
+        std::vector<uint8_t> ClusterConfigMessage::serialize() const {
+            std::vector<uint8_t> bytes = AbstractMessage::serialize();
             shadapp::data::Serializer::serializeInt32(bytes, clientName.length());
             shadapp::data::Serializer::serializeString(bytes, clientName);
             shadapp::data::Serializer::serializeInt32(bytes, clientVersion.length());
             shadapp::data::Serializer::serializeString(bytes, clientVersion);
             shadapp::data::Serializer::serializeInt32(bytes, folders.size());
             for (auto f : folders) {
-                f.serialize(bytes);
+                std::vector<uint8_t> folderBytes = f.serialize();
+                bytes.insert(bytes.end(), folderBytes.begin(), folderBytes.end());
             }
             shadapp::data::Serializer::serializeInt32(bytes, options.size());
             for (auto o : options) {
@@ -75,6 +74,8 @@ namespace shadapp {
                 shadapp::data::Serializer::serializeInt32(bytes, o.second.length());
                 shadapp::data::Serializer::serializeString(bytes, o.second);
             }
+            // Set the message's length
+            shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
             return bytes;
         }
     }

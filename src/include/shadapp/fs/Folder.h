@@ -20,7 +20,7 @@ namespace shadapp {
         public:
             explicit Folder(std::string id, std::string path);
             explicit Folder(std::string id);
-            explicit Folder(std::vector<uint8_t>* bytes);
+            explicit Folder(std::vector<uint8_t>& bytes);
             virtual ~Folder();
 
             void addDevice(Device* device);
@@ -29,7 +29,7 @@ namespace shadapp {
             std::string getPath() const;
             std::vector<Device*> getDevices() const;
 
-            std::vector<uint8_t>* serialize(std::vector<uint8_t>* bytes) const override;
+            std::vector<uint8_t> serialize() const override;
         };
     }
 }
