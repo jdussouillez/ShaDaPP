@@ -7,6 +7,7 @@
 #include <QCoreApplication>
 #include <QtCore/QDir>
 
+#include <shadapp/Logger.h>
 #include <shadapp/config/PeerConfig.h>
 #include <shadapp/config/ConfigReader.h>
 #include <shadapp/protocol/ClusterConfigMessage.h>
@@ -167,6 +168,18 @@ int main(int argc, char **argv) {
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
+
+    // TODO: remove this
+    shadapp::Logger::setLevel(shadapp::Logger::Level::ALL);
+    shadapp::Logger::enableColors(true);
+    //    shadapp::Logger::debug("foo");
+    //    shadapp::Logger::info("bar");
+    //    shadapp::Logger::success("Successfully sent !");
+    //    shadapp::Logger::warn("baz");
+    //    std::logic_error ex("err msg");
+    //    shadapp::Logger::error("qux", &ex);
+    //shadapp::Logger::fatal("norf");
+
     //tests Maxime
     shadapp::LocalPeer localPeer(0, std::string(configFile));
     //shadapp::Network localPeer(0, std::string(configFile));
@@ -177,7 +190,6 @@ int main(int argc, char **argv) {
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
-
     delete config;
     //app.exit(0);
     return 0;
