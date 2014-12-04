@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shadapp version="0">
+    <id>3141592265</id>
     <port>6543</port>
     <name>MY_NAME</name>
     <devices>

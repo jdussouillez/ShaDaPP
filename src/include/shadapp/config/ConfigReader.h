@@ -20,6 +20,7 @@ namespace shadapp {
             PeerConfig* peerConfig;
             shadapp::fs::Folder* folder;
             shadapp::fs::Device* device;
+            bool inID;
             bool inPort;
             bool inName;
             bool inDevice;
