@@ -1,5 +1,6 @@
 #include <shadapp/data/Serializer.h>
 #include <shadapp/protocol/AbstractIndexMessage.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -15,7 +16,7 @@ namespace shadapp {
         files(files) {
         }
 
-        AbstractIndexMessage::AbstractIndexMessage(std::vector<uint8_t>* bytes)
+        AbstractIndexMessage::AbstractIndexMessage(std::vector<uint8_t>& bytes)
         : AbstractMessage(bytes) {
             uint32_t size = shadapp::data::Serializer::deserializeInt32(bytes);
             folder = shadapp::data::Serializer::deserializeString(bytes, size);
@@ -37,17 +38,21 @@ namespace shadapp {
             return files;
         }
 
-        std::vector<uint8_t>* AbstractIndexMessage::serialize(std::vector<uint8_t>* bytes) const {
-            if (AbstractMessage::serialize(bytes) == nullptr) {
-                return nullptr;
-            }
+        std::vector<uint8_t> AbstractIndexMessage::serialize() const {
+            std::vector<uint8_t> bytes = AbstractMessage::serialize();
             shadapp::data::Serializer::serializeInt32(bytes, folder.length());
             shadapp::data::Serializer::serializeString(bytes, folder);
             shadapp::data::Serializer::serializeInt32(bytes, files.size());
             for (auto f : files) {
-                f.serialize(bytes);
+                std::vector<uint8_t> fileBytes = f.serialize();
+                bytes.insert(bytes.end(), fileBytes.begin(), fileBytes.end());
             }
+            // Set the message's length
+            shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
             return bytes;
+        }
+
+        void AbstractIndexMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
         }
     }
 }

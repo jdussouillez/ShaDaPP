@@ -8,6 +8,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QThread>
 
+#include <shadapp/Logger.h>
 #include <shadapp/config/PeerConfig.h>
 #include <shadapp/config/ConfigReader.h>
 #include <shadapp/fs/FileSplitter.h>
@@ -20,6 +21,8 @@
 #include <shadapp/protocol/PongMessage.h>
 #include <shadapp/protocol/RequestMessage.h>
 #include <shadapp/protocol/ResponseMessage.h>
+
+#include <shadapp/Network.h>
 
 #include "config.h"
 
@@ -66,47 +69,6 @@ int main(int argc, char **argv) {
     // Otherwise, there is an error "QEventLoop: Cannot be used without QApplication".
     QCoreApplication app(argc, argv);
 
-    // TODO: remove this !
-    //    std::bitset<4> v;
-    //    v.set(0);
-    //    shadapp::protocol::PingMessage ping(v);
-    //    shadapp::protocol::PongMessage pong(v, ping);
-    //    unsigned char out[4] = {0};
-    //    unsigned int size = 0;
-    //    pong.serialize(out, &size);
-    //    shadapp::protocol::PongMessage pong2(out);
-    //    std::cout << pong2.getVersion() << " - " << pong2.getVersion().to_ulong() << std::endl;
-    //    std::cout << pong2.getId() << " - " << pong2.getId().to_ullong() << std::endl;
-    //    std::cout << pong2.getType() << std::endl;
-    //    std::cout << pong2.isCompressed() << std::endl;
-
-    //    std::bitset<4> v;
-    //    v.set(0);
-    //    shadapp::protocol::ResponseMessage cl(v, "RAW DATA HERE");
-    //    unsigned char out[128] = {0};
-    //    unsigned int size = 0;
-    //    cl.serialize(out, &size);
-    //    shadapp::protocol::ResponseMessage cl2(out);
-    //    std::cout << cl.getData() << " - " << cl2.getData() << std::endl;
-
-
-    //    std::bitset<4> v;
-    //    v.set(0);
-    //    shadapp::protocol::RequestMessage req(v, "folderA", "filenameB", 123456, 20);
-    //    unsigned char out[2048];
-    //    unsigned int size;
-    //    req.serialize(out, &size);
-    //    shadapp::protocol::RequestMessage req2(out);
-    //    std::cout << req.getId() << " - " << req2.getId() << std::endl;
-    //    std::cout << req.getFolder() << " - " << req2.getFolder() << std::endl;
-    //    std::cout << req.getName() << " - " << req2.getName() << std::endl;
-    //    std::cout << req.getOffset() << " - " << req2.getOffset() << std::endl;
-    //    std::cout << req.getSize() << " - " << req2.getSize() << std::endl;
-    //    std::cout << req.getType() << " - " << req2.getType() << std::endl;
-    //    std::cout << req.getVersion() << " - " << req2.getVersion() << std::endl;
-    // TODO: end "remove this"
-
-
     // Parse arguments
     bool usage = false, version = false;
     char* configFile = NULL;
@@ -130,6 +92,7 @@ int main(int argc, char **argv) {
     try {
         config = shadapp::config::ConfigReader::parse(std::string(configFile), "src/resources/shadapp/configSchema.xsd");
         std::cout << "Version = " << config->getVersion()->to_string() << std::endl;
+        std::cout << "Id = " << config->getID() << std::endl;
         std::cout << "Port = " << config->getPort() << std::endl;
         std::cout << "Folders :" << std::endl;
         for (auto f : config->getFolders()) {
@@ -211,19 +174,41 @@ int main(int argc, char **argv) {
         //                std::cout << idx1.getFiles().at(i2).getBlocks().at(i3).getHash() << " = " << idx2.getFiles().at(i2).getBlocks().at(i3).getHash() << std::endl;
         //            }
         //        }
-        // TODO: end remove "this"
+
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
 
     // TODO: remove this
-    shadapp::fs::FileSplitter splitter("test/config.xml");
-    std::cout << "Blocks = " << splitter.getNbBlocks() << std::endl;
-    std::vector<char> block = splitter.getBlock(0, 100);
-    for (std::vector<char>::size_type i = 0; i != block.size(); i++) {
-        std::cout << block.at(i);
+    shadapp::Logger::setLevel(shadapp::Logger::Level::ALL);
+    shadapp::Logger::enableColors(true);
+    //    shadapp::Logger::debug("foo");
+    //    shadapp::Logger::info("bar");
+    //    shadapp::Logger::success("Successfully sent !");
+    //    shadapp::Logger::warn("baz");
+    //    std::logic_error ex("err msg");
+    //    shadapp::Logger::error("qux", &ex);
+    //shadapp::Logger::fatal("norf");
+
+    //tests Maxime
+    shadapp::LocalPeer localPeer(0, std::string(configFile));
+    //shadapp::Network localPeer(0, std::string(configFile));
+    localPeer.start();
+    //fin test Maxime
+    try {
+        app.exec();
+    } catch (std::exception& e) {
+        std::cerr << e.what() << std::endl;
     }
-    std::cout << "\n\n";
+
+    // TODO: remove this
+//    shadapp::fs::FileSplitter splitter("test/config.xml");
+//    std::cout << "Blocks = " << splitter.getNbBlocks() << std::endl;
+//    std::vector<char> block = splitter.getBlock(0, 100);
+//    for (std::vector<char>::size_type i = 0; i != block.size(); i++) {
+//        std::cout << block.at(i);
+//    }
+//    std::cout << "\n\n";
 
     // TODO: remove this
     try {
@@ -234,5 +219,5 @@ int main(int argc, char **argv) {
     }
 
     delete config;
-    return app.exec();
+    return 0;
 }

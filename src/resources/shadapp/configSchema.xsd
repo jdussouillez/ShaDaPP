@@ -4,6 +4,7 @@
     <xsd:element name="shadapp">
         <xsd:complexType>
             <xsd:sequence>
+                <xsd:element name="id" type="type_nonemptystring"/>
                 <xsd:element name="port" type="type_integer"/>
                 <xsd:element name="name" type="type_nonemptystring"/>
                 <xsd:element name="scan-period" type="type_integer"/>

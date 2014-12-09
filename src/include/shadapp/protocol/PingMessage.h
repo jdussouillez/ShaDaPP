@@ -4,6 +4,7 @@
 #include <bitset>
 
 #include <shadapp/protocol/AbstractMessage.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -12,7 +13,9 @@ namespace shadapp {
         class PingMessage : public AbstractMessage {
         public:
             explicit PingMessage(std::bitset<4> version);
-            explicit PingMessage(std::vector<uint8_t>* bytes);
+            explicit PingMessage(std::vector<uint8_t>& bytes);
+            
+            virtual void executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const override;
         };
     }
 }

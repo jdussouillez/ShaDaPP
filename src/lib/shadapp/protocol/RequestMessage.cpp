@@ -1,6 +1,12 @@
 #include <shadapp/Core.h>
 #include <shadapp/data/Serializer.h>
 #include <shadapp/protocol/RequestMessage.h>
+#include <shadapp/protocol/ResponseMessage.h>
+#include <shadapp/LocalPeer.h>
+
+#include <iostream>
+
+#include "shadapp/Network.h"
 
 namespace shadapp {
 
@@ -19,7 +25,7 @@ namespace shadapp {
         size(size) {
         }
 
-        RequestMessage::RequestMessage(std::vector<uint8_t>* bytes)
+        RequestMessage::RequestMessage(std::vector<uint8_t>& bytes)
         : AbstractMessage(bytes) {
             uint32_t length;
             length = shadapp::data::Serializer::deserializeInt32(bytes);
@@ -46,17 +52,25 @@ namespace shadapp {
             return size;
         }
 
-        std::vector<uint8_t>* RequestMessage::serialize(std::vector<uint8_t>* bytes) const {
-            if (AbstractMessage::serialize(bytes) == nullptr) {
-                return nullptr;
-            }
+        std::vector<uint8_t> RequestMessage::serialize() const {
+            std::vector<uint8_t> bytes = AbstractMessage::serialize();
             shadapp::data::Serializer::serializeInt32(bytes, folder.length());
             shadapp::data::Serializer::serializeString(bytes, folder);
             shadapp::data::Serializer::serializeInt32(bytes, name.length());
             shadapp::data::Serializer::serializeString(bytes, name);
             shadapp::data::Serializer::serializeInt64(bytes, offset);
             shadapp::data::Serializer::serializeInt32(bytes, size);
+            // Set the message's length
+            shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
             return bytes;
+        }
+
+        void RequestMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
+            shadapp::protocol::ResponseMessage responseMsg(*(lp.getConfig()->getVersion()), "coucou");
+            lp.getNetwork()->send(device.getSocket(), responseMsg);
+            std::cout << "Name : " << name << std::endl;
+            std::cout << "offset : " << offset << std::endl;
+            std::cout << "size : " << size << std::endl;
         }
     }
 }

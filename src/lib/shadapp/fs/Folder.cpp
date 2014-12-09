@@ -14,7 +14,7 @@ namespace shadapp {
         Folder::Folder(std::string id) : Folder(id, "") {
         }
 
-        Folder::Folder(std::vector<uint8_t>* bytes) {
+        Folder::Folder(std::vector<uint8_t>& bytes) {
             uint32_t idLength = shadapp::data::Serializer::deserializeInt32(bytes);
             id = shadapp::data::Serializer::deserializeString(bytes, idLength);
             uint32_t nbDevices = shadapp::data::Serializer::deserializeInt32(bytes);
@@ -27,6 +27,11 @@ namespace shadapp {
 
         Folder::~Folder() {
             devices.clear();
+        }
+
+        bool Folder::operator==(const Folder& f1) {
+            std::cout<<"id this : " << this->getId() << "id :" << f1.getId() <<std::endl;
+            return this->getId().compare(f1.getId()) == 0;
         }
 
         void Folder::addDevice(Device* device) {
@@ -45,12 +50,14 @@ namespace shadapp {
             return devices;
         }
 
-        std::vector<uint8_t>* Folder::serialize(std::vector<uint8_t>* bytes) const {
+        std::vector<uint8_t> Folder::serialize() const {
+            std::vector<uint8_t> bytes;
             shadapp::data::Serializer::serializeInt32(bytes, id.length());
             shadapp::data::Serializer::serializeString(bytes, id);
             shadapp::data::Serializer::serializeInt32(bytes, devices.size());
             for (auto d : devices) {
-                d->serialize(bytes);
+                std::vector<uint8_t> deviceBytes = d->serialize();
+                bytes.insert(bytes.end(), deviceBytes.begin(), deviceBytes.end());
             }
             return bytes;
         }

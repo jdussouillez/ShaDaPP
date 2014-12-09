@@ -1,4 +1,5 @@
 #include <shadapp/protocol/IndexUpdateMessage.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -11,8 +12,12 @@ namespace shadapp {
         : AbstractIndexMessage(Type::INDEX_UPDATE, version, folder, files) {
         }
 
-        IndexUpdateMessage::IndexUpdateMessage(std::vector<uint8_t>* bytes)
+        IndexUpdateMessage::IndexUpdateMessage(std::vector<uint8_t>& bytes)
         : AbstractIndexMessage(bytes) {
+        }
+
+        void IndexUpdateMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
+
         }
     }
 }

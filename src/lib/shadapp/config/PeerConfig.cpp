@@ -25,6 +25,10 @@ namespace shadapp {
             int versionInteger = std::atoi(version.c_str());
             this->version = new std::bitset<4>(versionInteger);
         }
+        
+        void PeerConfig::setID(std::string id) {
+            this->id = id;
+        }
 
         void PeerConfig::setPort(unsigned short port) {
             this->port = port;
@@ -52,6 +56,10 @@ namespace shadapp {
 
         std::bitset<4>* PeerConfig::getVersion() const {
             return version;
+        }
+        
+        std::string PeerConfig::getID() const {
+            return id;
         }
 
         unsigned short PeerConfig::getPort() const {
