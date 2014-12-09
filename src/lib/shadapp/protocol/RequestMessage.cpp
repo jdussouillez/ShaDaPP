@@ -1,7 +1,12 @@
 #include <shadapp/Core.h>
 #include <shadapp/data/Serializer.h>
 #include <shadapp/protocol/RequestMessage.h>
+#include <shadapp/protocol/ResponseMessage.h>
 #include <shadapp/LocalPeer.h>
+
+#include <iostream>
+
+#include "shadapp/Network.h"
 
 namespace shadapp {
 
@@ -61,7 +66,11 @@ namespace shadapp {
         }
 
         void RequestMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
-
+            shadapp::protocol::ResponseMessage responseMsg(*(lp.getConfig()->getVersion()), "coucou");
+            lp.getNetwork()->send(device.getSocket(), responseMsg);
+            std::cout << "Name : " << name << std::endl;
+            std::cout << "offset : " << offset << std::endl;
+            std::cout << "size : " << size << std::endl;
         }
     }
 }

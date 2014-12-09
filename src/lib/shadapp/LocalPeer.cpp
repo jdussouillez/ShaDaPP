@@ -60,9 +60,15 @@ namespace shadapp {
         files.push_back(fileInf);
         shadapp::protocol::IndexMessage msg(*config->getVersion(), folder.getId(), files);
         std::cout << "send IM" << folder.getId() << " to : " << device->getId() << std::endl;
-        std::cout << "send IM" << sizeof (msg) << std::endl;
+        //std::cout << " TEST IM DEBUG : " << device->getSocket()->error() << std::endl;
         network->send(device->getSocket(), msg);
     }
+
+    void LocalPeer::sendPingMessage(shadapp::fs::Device* device) {
+        shadapp::protocol::PingMessage ping(*config->getVersion());
+        network->send(device->getSocket(), ping);
+    }
+
 
 
 }

@@ -5,6 +5,7 @@
 
 #include <shadapp/Core.h>
 #include <shadapp/data/Serializable.h>
+#include <shadapp/fs/Device.h>
 
 namespace shadapp {
 
@@ -14,6 +15,7 @@ namespace shadapp {
         private:
             uint32_t size;
             std::string hash;
+            shadapp::fs::Device* downloadPeer;
 
         public:
             explicit BlockInfo(std::string data, uint32_t size);
