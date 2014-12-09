@@ -20,10 +20,10 @@
     <folders>
         <folder id="f123456789" path="/home/junior/test/shadapp1">
             <device id="1234567890ABC" />
+			<device id="4568976546554" />
         </folder>
         <folder id="f8983848138" path="/home/junior/test/shadapp2">
             <device id="1234567890ABC" />
-            <device id="4568976546554" />
             <device id="9876535485666" />
         </folder>
     </folders>
