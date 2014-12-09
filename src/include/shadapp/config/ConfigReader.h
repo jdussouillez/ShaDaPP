@@ -23,6 +23,7 @@ namespace shadapp {
             bool inID;
             bool inPort;
             bool inName;
+            bool inScanPeriod;
             bool inDevice;
             bool inAddress;
             bool inFolder;
