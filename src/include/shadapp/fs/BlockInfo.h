@@ -18,7 +18,7 @@ namespace shadapp {
             shadapp::fs::Device* downloadPeer;
 
         public:
-            explicit BlockInfo(std::string data, uint32_t size);
+            explicit BlockInfo(std::string hash, uint32_t size);
             explicit BlockInfo(std::vector<uint8_t>& bytes);
 
             uint32_t getSize() const;

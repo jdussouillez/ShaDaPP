@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shadapp version="0">
-	<id>4568976546554</id>
+    <id>4568976546554</id>
     <port>20002</port>
     <name>Dev_2</name>
+    <scan-period>20</scan-period>
     <devices>
         <device id="1234567890ABC" trusted="true" introducer="true">
             <name>Dev_1</name>

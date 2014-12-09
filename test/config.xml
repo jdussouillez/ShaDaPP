@@ -3,6 +3,7 @@
     <id>3141592265</id>
     <port>6543</port>
     <name>MY_NAME</name>
+    <scan-period>20</scan-period>
     <devices>
         <device id="1234567890ABC" trusted="true" introducer="true">
             <name>Dev_1</name>
