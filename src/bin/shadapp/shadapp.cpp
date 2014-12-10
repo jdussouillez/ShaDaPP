@@ -188,14 +188,10 @@ int main(int argc, char **argv) {
     //fin test Maxime
 
     // TODO: remove this test (HASH)
-    uint8_t hash[32];
-    uint8_t input[] = {""};
-    shadapp::data::Hash256::hash(input, 0, hash);
-    std::cout << "Hash : 0x";
-    for (int i = 0; i < 32; i++) {
-        std::cout << std::hex << (uint32_t) hash[i];
-    }
-    std::cout << std::endl;
+    std::string hash;
+    uint8_t input[] = {"abc"};
+    shadapp::data::Hash256::hash(input, 3, hash);
+    std::cout << hash << std::endl;
 
     try {
         app.exec();

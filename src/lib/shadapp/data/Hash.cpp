@@ -18,6 +18,20 @@ namespace shadapp {
             h.getHash(output);
             return true;
         }
+        
+        bool Hash256::hash(const uint8_t* input, uint32_t size, std::string& hexStr) {
+            uint8_t hash[32];
+            if (!Hash256::hash(input, size, hash)) {
+                return false;
+            }
+            std::ostringstream oss;
+            oss << "0x" << std::hex;
+            for (int i = 0; i < 32; i++) {
+                oss << static_cast<uint16_t>(hash[i]);
+            }
+            hexStr = oss.str();
+            return true;
+        }
 
         static const uint32_t k[64] = {
             0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
@@ -127,15 +141,11 @@ namespace shadapp {
             m_data[56] = m_bitLength >> 56;
             hash();
 
-            for (i = 0; i < 4; ++i) {
-                bytes[i] = (m_h[0] >> (24 - i * 8)) & 0x000000ff;
-                bytes[i + 4] = (m_h[1] >> (24 - i * 8)) & 0x000000ff;
-                bytes[i + 8] = (m_h[2] >> (24 - i * 8)) & 0x000000ff;
-                bytes[i + 12] = (m_h[3] >> (24 - i * 8)) & 0x000000ff;
-                bytes[i + 16] = (m_h[4] >> (24 - i * 8)) & 0x000000ff;
-                bytes[i + 20] = (m_h[5] >> (24 - i * 8)) & 0x000000ff;
-                bytes[i + 24] = (m_h[6] >> (24 - i * 8)) & 0x000000ff;
-                bytes[i + 28] = (m_h[7] >> (24 - i * 8)) & 0x000000ff;
+            for (i = 0; i < 8; i++) {
+                bytes[4 * i] = (m_h[i] >> 24) & 0x000000ff;
+                bytes[4 * i + 1] = (m_h[i] >> 16) & 0x000000ff;
+                bytes[4 * i + 2] = (m_h[i] >> 8) & 0x000000ff;
+                bytes[4 * i + 3] = m_h[i] >> 0 & 0x000000ff;
             }
         }
 

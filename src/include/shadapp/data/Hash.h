@@ -11,6 +11,7 @@ namespace shadapp {
         class Hash256 {
         public:
             static bool hash(const uint8_t* input, uint32_t size, uint8_t output[32]);
+            static bool hash(const uint8_t* input, uint32_t size, std::string& hexStr);
 
         private:
             uint32_t m_h[8];
