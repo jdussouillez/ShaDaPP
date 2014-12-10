@@ -7,6 +7,7 @@
 
 #include <shadapp/fs/Folder.h>
 #include <shadapp/protocol/AbstractMessage.h>
+#include <shadapp/LocalPeer.h>
 
 namespace shadapp {
 
@@ -34,7 +35,8 @@ namespace shadapp {
             std::vector<shadapp::fs::Folder> getFolders() const;
             std::map<std::string, std::string> getOptions() const;
 
-            std::vector<uint8_t> serialize() const override;
+            virtual std::vector<uint8_t> serialize() const override;
+            virtual void executeAction(shadapp::fs::Device &device, shadapp::LocalPeer &lp) const override;
         };
     }
 }
