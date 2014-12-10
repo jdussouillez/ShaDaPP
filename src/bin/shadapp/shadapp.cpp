@@ -6,11 +6,14 @@
 
 #include <QCoreApplication>
 #include <QtCore/QDir>
+#include <QtCore/QThread>
 
 #include <shadapp/Logger.h>
 #include <shadapp/config/PeerConfig.h>
 #include <shadapp/config/ConfigReader.h>
 #include <shadapp/data/Hash.h>
+#include <shadapp/fs/FileSplitter.h>
+#include <shadapp/fs/FileWatcher.h>
 #include <shadapp/protocol/ClusterConfigMessage.h>
 #include <shadapp/protocol/CloseMessage.h>
 #include <shadapp/protocol/IndexMessage.h>
@@ -164,41 +167,45 @@ int main(int argc, char **argv) {
         //                std::cout << idx1.getFiles().at(i2).getBlocks().at(i3).getHash() << " = " << idx2.getFiles().at(i2).getBlocks().at(i3).getHash() << std::endl;
         //            }
         //        }
-        //        // TODO: end remove "this"
-        //
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
 
-        // TODO: remove this
-        shadapp::Logger::setLevel(shadapp::Logger::Level::ALL);
-        shadapp::Logger::enableColors(true);
-        //    shadapp::Logger::debug("foo");
-        //    shadapp::Logger::info("bar");
-        //    shadapp::Logger::success("Successfully sent !");
-        //    shadapp::Logger::warn("baz");
-        //    std::logic_error ex("err msg");
-        //    shadapp::Logger::error("qux", &ex);
-        //shadapp::Logger::fatal("norf");
+    // TODO: remove this
+    shadapp::Logger::setLevel(shadapp::Logger::Level::ALL);
+    shadapp::Logger::enableColors(true);
+    //    shadapp::Logger::debug("foo");
+    //    shadapp::Logger::info("bar");
+    //    shadapp::Logger::success("Successfully sent !");
+    //    shadapp::Logger::warn("baz");
+    //    std::logic_error ex("err msg");
+    //    shadapp::Logger::error("qux", &ex);
+    //shadapp::Logger::fatal("norf");
 
-        //tests Maxime
-        //shadapp::LocalPeer localPeer(0, std::string(configFile));
-        //shadapp::Network localPeer(0, std::string(configFile));
-        //localPeer.start();
-        //fin test Maxime
+    //tests Maxime
+    //shadapp::LocalPeer localPeer(0, std::string(configFile));
+    //shadapp::Network localPeer(0, std::string(configFile));
+    //localPeer.start();
+    //fin test Maxime
 
-        // TODO: remove this test (HASH)
-        std::string hash;
-        uint8_t input[] = {"abc"};
-        shadapp::data::Hash256::hash(input, 3, hash);
-        std::cout << hash << std::endl;
+    //delete config;
+    // TODO: remove this
+    //    shadapp::fs::FileSplitter splitter("test/config.xml");
+    //    std::cout << "Blocks = " << splitter.getNbBlocks() << std::endl;
+    //    std::vector<char> block = splitter.getBlock(0, 100);
+    //    for (std::vector<char>::size_type i = 0; i != block.size(); i++) {
+    //        std::cout << block.at(i);
+    //    }
 
-        try {
-            app.exec();
-        } catch (std::exception& e) {
-            std::cerr << e.what() << std::endl;
-        }
-        //delete config;
-        //app.exit(0);
-        return 0;
+    // TODO: remove this test (HASH)
+    std::string hash;
+    uint8_t input[] = {"abc"};
+    shadapp::data::Hash256::hash(input, 3, hash);
+    std::cout << hash << std::endl;
+
+    try {
+        app.exec();
+    } catch (std::exception& e) {
+        std::cerr << e.what() << std::endl;
     }
+}

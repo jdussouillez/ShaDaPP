@@ -3,6 +3,7 @@
     <id>3141592265</id>
     <port>6543</port>
     <name>MY_NAME</name>
+    <scan-period>20</scan-period>
     <devices>
         <device id="1234567890ABC" trusted="true" introducer="true">
             <name>Dev_1</name>
@@ -20,10 +21,10 @@
     <folders>
         <folder id="f123456789" path="/home/junior/test/shadapp1">
             <device id="1234567890ABC" />
+			<device id="4568976546554" />
         </folder>
         <folder id="f8983848138" path="/home/junior/test/shadapp2">
             <device id="1234567890ABC" />
-            <device id="4568976546554" />
             <device id="9876535485666" />
         </folder>
     </folders>

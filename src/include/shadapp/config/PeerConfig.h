@@ -18,6 +18,7 @@ namespace shadapp {
             std::string id;
             unsigned short port;
             std::string name;
+            unsigned int scanPeriod;
             std::vector<shadapp::fs::Device*> devices;
             std::vector<shadapp::fs::Folder> folders;
             std::map<std::string, std::string> options;
@@ -31,6 +32,7 @@ namespace shadapp {
             void setID(std::string id);
             void setPort(unsigned short port);
             void setName(std::string name);
+            void setScanPeriod(unsigned int scanPeriod);
             void addDevice(shadapp::fs::Device* device);
             void addFolder(shadapp::fs::Folder folder);
             void addOption(std::string name, std::string value);
@@ -39,6 +41,7 @@ namespace shadapp {
             std::string getID() const;
             unsigned short getPort() const;
             std::string getName() const;
+            unsigned int getScanPeriod() const;
             std::vector<shadapp::fs::Device*> getDevices() const;
             std::vector<shadapp::fs::Folder> getFolders() const;
             std::map<std::string, std::string> getOptions() const;

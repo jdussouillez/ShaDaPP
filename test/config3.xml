@@ -19,12 +19,6 @@
         </device>
     </devices>
     <folders>
-        <folder id="f446456444" path="/home/junior/test/shadapp3">
-            <device id="3141592265" />
-        </folder>
-		<folder id="f123456789" path="/home/junior/test/shadapp4">
-            <device id="3141592265" />
-        </folder>
     </folders>
     <options>
         <option name="test" value="10"/>

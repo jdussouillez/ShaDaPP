@@ -4,6 +4,7 @@
 #include <chrono>
 #include <thread>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <shadapp/config/ConfigReader.h>
 #include <shadapp/Core.h>
@@ -21,7 +22,9 @@
 
 //AutoConnection
 //UniqueConnection
-#define connectType Qt::AutoConnection
+//BlockingQueuedConnection
+//QueuedConnection
+#define connectType Qt::QueuedConnection
 
 
 namespace shadapp {
@@ -81,25 +84,28 @@ namespace shadapp {
 
     int Network::send(QTcpSocket *peer, const shadapp::protocol::AbstractMessage& msg) {
         std::vector<uint8_t> bytes = msg.serialize();
+        shadapp::Logger::debug("SEND");
+        std::cout << "size : " << bytes.size() << std::endl;
         unsigned int sizeSend = peer->write((const char*) &bytes.at(0), bytes.size());
         if (sizeSend != bytes.size()) {
             return 0;
         }
         return sizeSend;
     }
-
+    
     std::vector<uint8_t>* Network::receive(QTcpSocket* socket) {
-        int sizeRead = socket->bytesAvailable();
-        std::cout << "size read : " << sizeRead << std::endl;
-        //socket->peek
-        std::vector<uint8_t> *data = new std::vector<uint8_t>(sizeRead);
-        socket->read((char*) &data->at(0), sizeRead);
-        //socket->flush();
+        QByteArray thirdByte = socket->peek(8);
+        std::vector<uint8_t> lengthBytes(thirdByte.begin()+4,thirdByte.end());
+        int length = shadapp::data::Serializer::deserializeInt32(lengthBytes);
+        shadapp::Logger::debug("RECEIVE");
+        std::cout << "size : " << length << std::endl;
+        std::vector<uint8_t> *data = new std::vector<uint8_t>(length);
+        socket->read((char*) &data->at(0), length);
         return data;
     }
 
     void Network::slotAcceptConnection() {
-        std::cout << "nouveau peer" << std::endl;
+        shadapp::Logger::debug("NOUVEAU PEER CONNECTE");
         QTcpSocket *socket = tcpServer->nextPendingConnection();
         connect(socket, SIGNAL(readyRead()), this, SLOT(slotReceiveCCMfromNewPeer()));
     }
@@ -121,7 +127,6 @@ namespace shadapp {
                 "V",
                 messageFolders,
                 options);
-        std::cout << "CCM envoye a " << connectedDevice->getId() << "sizeOf : " << sizeof (ccm) << std::endl;
         send(connectedDevice->getSocket(), ccm);
 
     }
@@ -132,25 +137,26 @@ namespace shadapp {
 
     void Network::slotReceive(shadapp::fs::Device *device) {
         std::vector<uint8_t>* data = receive(device->getSocket());
-        std::cout << "MESSAGE" << std::endl;
+        shadapp::Logger::debug("SWITCH MESSAGE");
         switch (shadapp::protocol::AbstractMessage::getType(*data)) {
             case shadapp::protocol::Type::CLUSTER_CONFIG:
             {
-                std::cout << "CASE : CCM" << std::endl;
+                shadapp::Logger::debug("CASE : CCM");
                 shadapp::protocol::ClusterConfigMessage msg(*data);
                 msg.executeAction(*device, *lp);
+                shadapp::Logger::debug("CASE : CCM SORTIE");
             }
                 break;
             case shadapp::protocol::Type::INDEX:
             {
-                std::cout << "CASE : INDEX size : " << std::endl;
-                //                shadapp::protocol::IndexMessage msg(data);
-                //                msg.executeAction(*device, *lp);
-                //                std::cout << "CASE : INDEX END" << std::endl;
+                shadapp::Logger::debug("CASE : INDEX");
+                shadapp::protocol::IndexMessage msg(*data);
+                msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::REQUEST:
             {
+                shadapp::Logger::debug("CASE : REQUEST");
                 shadapp::protocol::RequestMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
@@ -163,12 +169,14 @@ namespace shadapp {
                 break;
             case shadapp::protocol::Type::PING:
             {
+                shadapp::Logger::debug("CASE : PING");
                 shadapp::protocol::PingMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::PONG:
             {
+                shadapp::Logger::debug("CASE : PONG");
                 shadapp::protocol::PongMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
@@ -187,13 +195,17 @@ namespace shadapp {
                 break;
         }
         delete data;
+        std::cout << "socket buffer : " << device->getSocket()->bytesAvailable() << std::endl;
+        if(device->getSocket()->bytesAvailable() > 0){
+            slotReceive(device);
+        }       
+        shadapp::Logger::debug("FIN SWITCH");
     }
 
     void Network::slotReceiveCCMfromNewPeer() {
         QTcpSocket* socket = dynamic_cast<QTcpSocket*> (sender());
         disconnect(socket, 0, 0, 0);
-        //disconnect(socket, SIGNAL(readyRead()), this, SLOT(slotReceiveCCMfromNewPeer()));
-        std::cout << "enter in ccm slot" << std::endl;
+        shadapp::Logger::debug("MESSAGE CCMSLOT");
         std::vector<uint8_t>* data = receive(socket);
         shadapp::protocol::ClusterConfigMessage ccm(*data);
         shadapp::fs::Device* device;
@@ -204,18 +216,7 @@ namespace shadapp {
             }
         }
         device->setSocket(socket);
-        ////EN TEST
         initQtSignals(device);
-        //        connect(device->getSocket(), SIGNAL(readyRead()),
-        //                device, SLOT(slotReceive()), connectType);
-        //        //connect(device->getSocket(), SIGNAL(readyRead()),
-        //          //      device, SLOT(slotReceive()), connectType);
-        //        connect(device, SIGNAL(signalReceive(shadapp::fs::Device*)),
-        //                this, SLOT(slotReceive(shadapp::fs::Device*)), connectType);
-        ////////////////////////
-
-        std::cout << "Receive CCM from " << device->getId() << std::endl;
-
 
         //create CCM
         std::vector<shadapp::fs::Folder> messageFolders;
@@ -233,13 +234,8 @@ namespace shadapp {
                 "V",
                 messageFolders,
                 options);
-        std::cout << "CCM envoye a " << device->getId() << "sizeOf : " << sizeof (message) << std::endl;
         send(device->getSocket(), message);
-
-        //update config
         ccm.executeAction(*device, *lp);
-        //TODO: enlever
-        //lp->sendAllIndexMessage(device, message.getFolders());
     }
 
 }

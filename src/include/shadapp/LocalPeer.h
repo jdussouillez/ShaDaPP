@@ -31,6 +31,8 @@ namespace shadapp {
         
         void start();
         
+        void sendPingMessage(shadapp::fs::Device *device);
+        
         void sendAllIndexMessage(shadapp::fs::Device *device, std::vector<shadapp::fs::Folder> folders);
         void sendIndexMessage(shadapp::fs::Device *device, shadapp::fs::Folder folders);
     };
