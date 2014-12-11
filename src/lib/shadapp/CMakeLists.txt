@@ -25,6 +25,7 @@ add_library(shadapp0 SHARED
 
 target_link_libraries(shadapp0
   ${QT_LIBRARIES}
+  lz4
 )
 
 set_target_properties(shadapp0

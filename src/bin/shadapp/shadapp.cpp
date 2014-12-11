@@ -11,6 +11,7 @@
 #include <shadapp/Logger.h>
 #include <shadapp/config/PeerConfig.h>
 #include <shadapp/config/ConfigReader.h>
+#include <shadapp/data/Compression.h>
 #include <shadapp/data/Hash.h>
 #include <shadapp/fs/FileSplitter.h>
 #include <shadapp/fs/FileWatcher.h>
@@ -198,10 +199,24 @@ int main(int argc, char **argv) {
     //    }
 
     // TODO: remove this test (HASH)
-    std::string hash;
-    uint8_t input[] = {"abc"};
-    shadapp::data::Hash256::hash(input, 3, hash);
-    std::cout << hash << std::endl;
+    //    std::string hash;
+    //    uint8_t input[] = {"abc"};
+    //    shadapp::data::Hash256::hash(input, 3, hash);
+    //    std::cout << hash << std::endl;
+
+    // TODO/ remove this test (compression)
+    shadapp::protocol::ClusterConfigMessage conf(
+            *config->getVersion(),
+            config->getName(),
+            "blabla",
+            config->getFolders(),
+            config->getOptions());
+    std::vector<uint8_t> bytes = conf.serialize();
+    std::cout << "Size before = " << bytes.size() << std::endl;
+    shadapp::data::MsgCompresser::compress(bytes);
+    std::cout << "Size after = " << bytes.size() << std::endl;
+    shadapp::data::MsgCompresser::decompress(bytes);
+    std::cout << "Size after decomp = " << bytes.size() << std::endl;
 
     try {
         app.exec();

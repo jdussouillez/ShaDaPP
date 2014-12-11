@@ -8,6 +8,9 @@ include(GNUInstallDirs)
 find_package(Qt4 REQUIRED COMPONENTS QtCore QtNetwork QtXml QtXmlPatterns)
 include(${QT_USE_FILE})
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LIBLZ4 REQUIRED liblz4)
+
 add_definitions(-Wall -Wextra -g -O0)
 add_definitions(-std=c++11)
 
