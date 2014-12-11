@@ -1,10 +1,15 @@
 ShaDaPP
 =======
 
-Required libraries
-------------------
+Share Data by Peer to Peer
 
-- Qt4, modules : QtCore and QtNetwork (http://qt-project.org/)
+Required tools
+--------------
+
+- A C++11 compiler, like [GCC](http://gcc.gnu.org/) or [Clang](http://clang.llvm.org/)
+- [CMake](http://www.cmake.org/) (version >= 2.8.8)
+- [Qt](http://qt-project.org/) (version >= 4, modules : QtCore, QtNetwork, QtXml, QtXmlPatterns)
+- [LZ4](https://code.google.com/p/lz4/) (version >= r124)
 
 Build & run
 -----------
@@ -21,7 +26,7 @@ cmake ../src
 make
 
 # Run ShaDaPP
-./bin/client/gzzzt
+./bin/shadapp/shadapp [ARGS]
 ```
 
 Using the Bash script :
