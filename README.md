@@ -38,6 +38,6 @@ cd ShaDaPP
 ./auto.sh b
 
 # Run ShaDaPP
-./auto.sh r
+./auto.sh r [ARGS]
 ```
 Note: Use the option "help" for more information
