@@ -86,15 +86,9 @@ namespace shadapp {
         }
 
         void ClusterConfigMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
+            //lp.getNetwork()->
             //update de config
             for (auto &folder : this->folders) {
-                std::cout << "recherche " << folder.getId() << " in config vectors" << std::endl;
-                //auto it = std::find(lp.getConfig()->getFolders().begin(), lp.getConfig()->getFolders().end(), folder);
-                //                if (it != lp.getConfig()->getFolders().end()){
-                //                    std::cout << "Element found : " << (*it).getId() << std::endl;
-                //                }else{
-                //                    std::cout << "Element not found"<< std::endl;
-                //                }         
                 bool exist = false;
                 for (auto &configFolder : lp.getConfig()->getFolders()) {
                     if (folder.getId().compare(configFolder.getId()) == 0) {
@@ -114,8 +108,10 @@ namespace shadapp {
                     }
                 }
             }
+            //lp.sendPingMessage(&device);
             lp.sendAllIndexMessage(&device, imFolders);
-
+            //lp.sendPingMessage(&device);
+             
         }
     }
 }

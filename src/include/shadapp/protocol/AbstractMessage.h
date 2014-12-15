@@ -9,6 +9,8 @@
 #include <shadapp/fs/Device.h>
 #include <shadapp/LocalPeer.h>
 
+#include <shadapp/Logger.h>
+
 namespace shadapp {
 
     namespace protocol {

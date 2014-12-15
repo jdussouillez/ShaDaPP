@@ -1,7 +1,10 @@
-#include "shadapp/protocol/IndexMessage.h"
+#include <shadapp/protocol/IndexMessage.h>
 #include <shadapp/LocalPeer.h>
+#include <shadapp/protocol/RequestMessage.h>
 
 #include <iostream>
+
+#include "shadapp/Network.h"
 
 namespace shadapp {
 
@@ -27,8 +30,26 @@ namespace shadapp {
                     std::cout << "block size : " << block.getHash().size() << std::endl;
                 }
             }
-            std::cout << "debug IM" << this->getFolder() << std::endl;
-            std::cout << "test" << sizeof (*this) << std::endl;
+            
+            //TODO: remove test
+            for (auto &file : this->getFiles()) {
+                uint64_t offset = 0;
+                for (auto &block : file.getBlocks()) {
+                    shadapp::protocol::RequestMessage request(*(lp.getConfig()->getVersion()),
+                    this->getFolder(),
+                    file.getName(),
+                    offset,
+                    block.getSize());
+                    offset+=block.getSize();
+                    //lp.sendPingMessage(&device);
+                    lp.getNetwork()->send(device.getSocket(), request);
+                    lp.getNetwork()->send(device.getSocket(), request);
+                    lp.getNetwork()->send(device.getSocket(), request);
+                    lp.getNetwork()->send(device.getSocket(), request);
+                    //lp.sendPingMessage(&device);
+                }
+            }
+            
         }
     }
 }

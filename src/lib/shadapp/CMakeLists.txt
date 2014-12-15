@@ -1,10 +1,11 @@
 include_directories(${QT_INCLUDE_DIRS})
 
 set(SHADAPP_MOC_FILES
+  "${CMAKE_SOURCE_DIR}/include/shadapp/fs/FileWatcherWorker.h"
+  "${CMAKE_SOURCE_DIR}/include/shadapp/fs/FileWatcher.h"
   "${CMAKE_SOURCE_DIR}/include/shadapp/Network.h"
   "${CMAKE_SOURCE_DIR}/include/shadapp/fs/Device.h"
 )
-
 qt4_wrap_cpp(LIBSHADAPP_MOC ${SHADAPP_MOC_FILES})
 
 file(GLOB LIBSHADAPP_SRC "*.cpp")
