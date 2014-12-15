@@ -172,24 +172,26 @@ int main(int argc, char **argv) {
     // TODO: remove this
     shadapp::Logger::setLevel(shadapp::Logger::Level::ALL);
     shadapp::Logger::enableColors(true);
-    //    shadapp::Logger::debug("foo");
-    //    shadapp::Logger::info("bar");
-    //    shadapp::Logger::success("Successfully sent !");
-    //    shadapp::Logger::warn("baz");
-    //    std::logic_error ex("err msg");
-    //    shadapp::Logger::error("qux", &ex);
+    shadapp::Logger::debug("foo");
+    shadapp::Logger::debug("test va_list : %d, 0x%x, %s", 10, 255, "abcd");
+    shadapp::Logger::info("bar");
+    shadapp::Logger::success("Successfully sent !");
+    shadapp::Logger::warn("baz");
+    
+    //std::logic_error ex("err msg");
+    //shadapp::Logger::error("qux", &ex);
     //shadapp::Logger::fatal("norf");
 
     //tests Maxime
-    shadapp::LocalPeer localPeer(0, std::string(configFile));
+    //shadapp::LocalPeer localPeer(0, std::string(configFile));
     //shadapp::Network localPeer(0, std::string(configFile));
-    localPeer.start();
+    //localPeer.start();
     //fin test Maxime
-    try {
-        app.exec();
-    } catch (std::exception& e) {
-        std::cerr << e.what() << std::endl;
-    }
+    //    try {
+    //        app.exec();
+    //    } catch (std::exception& e) {
+    //        std::cerr << e.what() << std::endl;
+    //    }
     delete config;
     //app.exit(0);
     return 0;
