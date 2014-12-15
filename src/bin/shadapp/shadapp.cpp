@@ -174,12 +174,14 @@ int main(int argc, char **argv) {
     // TODO: remove this
     shadapp::Logger::setLevel(shadapp::Logger::Level::ALL);
     shadapp::Logger::enableColors(true);
-    //    shadapp::Logger::debug("foo");
-    //    shadapp::Logger::info("bar");
-    //    shadapp::Logger::success("Successfully sent !");
-    //    shadapp::Logger::warn("baz");
-    //    std::logic_error ex("err msg");
-    //    shadapp::Logger::error("qux", &ex);
+    shadapp::Logger::debug("foo");
+    shadapp::Logger::debug("test va_list : %d, 0x%x, %s", 10, 255, "abcd");
+    shadapp::Logger::info("bar");
+    shadapp::Logger::success("Successfully sent !");
+    shadapp::Logger::warn("baz");
+
+    //std::logic_error ex("err msg");
+    //shadapp::Logger::error("qux", &ex);
     //shadapp::Logger::fatal("norf");
 
     //tests Maxime
@@ -187,7 +189,6 @@ int main(int argc, char **argv) {
     //shadapp::Network localPeer(0, std::string(configFile));
     //localPeer.start();
     //fin test Maxime
-
     //delete config;
     // TODO: remove this
     //    shadapp::fs::FileSplitter splitter("test/config.xml");
@@ -203,9 +204,9 @@ int main(int argc, char **argv) {
     shadapp::data::Hash256::hash(input, 3, hash);
     std::cout << hash << std::endl;
 
-    try {
-        app.exec();
-    } catch (std::exception& e) {
-        std::cerr << e.what() << std::endl;
-    }
+//    try {
+//        app.exec();
+//    } catch (std::exception& e) {
+//        std::cerr << e.what() << std::endl;
+//    }
 }
