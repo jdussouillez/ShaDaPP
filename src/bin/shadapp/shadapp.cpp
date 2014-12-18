@@ -25,6 +25,7 @@
 #include <shadapp/Network.h>
 
 #include "config.h"
+#include <shadapp/SafeApplication.h>
 
 static void printUsage(void) {
     std::cout << "Usage: " << APPNAME << " -c CONFIG_FILE" << std::endl;
@@ -64,10 +65,11 @@ static int parseArguments(int argc, char** argv, bool* usage, bool* version, cha
     return (*usage || *version || configFile != NULL) ? 0 : 1;
 }
 
+
 int main(int argc, char **argv) {
     // We have to start a QCoreApplication to use the XSD validation.
     // Otherwise, there is an error "QEventLoop: Cannot be used without QApplication".
-    QCoreApplication app(argc, argv);
+    shadapp::SafeApplication app(argc, argv);
 
     // Parse arguments
     bool usage = false, version = false;
@@ -96,9 +98,9 @@ int main(int argc, char **argv) {
         std::cout << "Port = " << config->getPort() << std::endl;
         std::cout << "Folders :" << std::endl;
         for (auto f : config->getFolders()) {
-            std::cout << "\tID = " << f.getId() << std::endl;
-            std::cout << "\tPath = " << f.getPath() << std::endl;
-            for (auto d : f.getDevices()) {
+            std::cout << "\tID = " << f->getId() << std::endl;
+            std::cout << "\tPath = " << f->getPath() << std::endl;
+            for (auto d : f->getDevices()) {
                 std::cout << "\t\tID = " << d->getId() << std::endl;
                 std::cout << "\t\tName = " << d->getName() << "  (mem addr: " << d << ")" << std::endl;
                 std::cout << std::endl;
@@ -197,6 +199,7 @@ int main(int argc, char **argv) {
     //fin test Maxime
     try {
         app.exec();
+        //SafeApplication::SafeApplication(int &argc, char *argv[]);
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
@@ -212,8 +215,8 @@ int main(int argc, char **argv) {
 
     // TODO: remove this
     try {
-        shadapp::fs::FileWatcher* watcher = new shadapp::fs::FileWatcher("test/Sync", config->getScanPeriod());
-        watcher->start();
+//        shadapp::fs::FileWatcher* watcher = new shadapp::fs::FileWatcher("test/Sync", config->getScanPeriod());
+//        watcher->start();
     } catch (std::exception& ex) {
         std::cerr << "Error: " << ex.what() << std::endl;
     }

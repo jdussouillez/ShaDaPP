@@ -45,7 +45,7 @@ namespace shadapp {
         std::vector<BlockInfo> FileInfo::getBlocks() const {
             return blocks;
         }
-
+        
         std::vector<uint8_t> FileInfo::serialize() const {
             std::vector<uint8_t> bytes;
             shadapp::data::Serializer::serializeInt32(bytes, name.length());

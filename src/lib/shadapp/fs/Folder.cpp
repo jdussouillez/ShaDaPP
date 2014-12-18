@@ -4,11 +4,14 @@
 #include <shadapp/fs/Folder.h>
 #include <algorithm>
 
+typedef std::map<std::string, std::string> TStrFileInfoMap;
+
 namespace shadapp {
 
     namespace fs {
 
         Folder::Folder(std::string id, std::string path) : id(id), path(path) {
+            fileWatcher = new shadapp::fs::FileWatcher("test/Sync", 20);
         }
 
         Folder::Folder(std::string id) : Folder(id, "") {
@@ -30,12 +33,16 @@ namespace shadapp {
         }
 
         bool Folder::operator==(const Folder& f1) {
-            std::cout<<"id this : " << this->getId() << "id :" << f1.getId() <<std::endl;
+            std::cout << "id this : " << this->getId() << "id :" << f1.getId() << std::endl;
             return this->getId().compare(f1.getId()) == 0;
         }
 
         void Folder::addDevice(Device* device) {
             devices.push_back(device);
+        }
+
+        void Folder::addFileInfo(FileInfo& fileInfo) {
+            fileInfos.push_back(fileInfo);
         }
 
         std::string Folder::getId() const {
@@ -48,6 +55,14 @@ namespace shadapp {
 
         std::vector<Device*> Folder::getDevices() const {
             return devices;
+        }
+
+        std::vector<shadapp::fs::FileInfo> Folder::getFileInfos() {
+            return fileInfos;
+        }
+
+        void Folder::setPath(std::string path) {
+            this->path = path;
         }
 
         std::vector<uint8_t> Folder::serialize() const {

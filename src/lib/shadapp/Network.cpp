@@ -101,6 +101,7 @@ namespace shadapp {
         std::cout << "size : " << length << std::endl;
         std::vector<uint8_t> *data = new std::vector<uint8_t>(length);
         socket->read((char*) &data->at(0), length);
+        std::cout << "socket error " << socket->state() << std::endl;
         return data;
     }
 
@@ -112,10 +113,10 @@ namespace shadapp {
 
     void Network::slotSocketConnected(shadapp::fs::Device *connectedDevice) {
         connectedPeers++;
-        std::vector<shadapp::fs::Folder> messageFolders;
+        std::vector<shadapp::fs::Folder*> messageFolders;
         std::map<std::string, std::string> options;
         for (auto &folder : lp->getConfig()->getFolders()) {
-            for (auto &device : folder.getDevices()) {
+            for (auto &device : folder->getDevices()) {
                 if (device->getId().compare(connectedDevice->getId()) == 0) {
                     messageFolders.push_back(folder);
                 }
@@ -163,6 +164,7 @@ namespace shadapp {
                 break;
             case shadapp::protocol::Type::RESPONSE:
             {
+                shadapp::Logger::debug("CASE : RESPONSE");
                 shadapp::protocol::ResponseMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
@@ -195,11 +197,11 @@ namespace shadapp {
                 break;
         }
         delete data;
-        std::cout << "socket buffer : " << device->getSocket()->bytesAvailable() << std::endl;
+        //std::cout << "SOCKET :: byte available : " << device->getSocket()->bytesAvailable() << std::endl;
         if(device->getSocket()->bytesAvailable() > 0){
             slotReceive(device);
-        }       
-        shadapp::Logger::debug("FIN SWITCH");
+        }
+        shadapp::Logger::debug("FIN SWITCH");        
     }
 
     void Network::slotReceiveCCMfromNewPeer() {
@@ -219,10 +221,10 @@ namespace shadapp {
         initQtSignals(device);
 
         //create CCM
-        std::vector<shadapp::fs::Folder> messageFolders;
+        std::vector<shadapp::fs::Folder*> messageFolders;
         std::map<std::string, std::string> options;
         for (auto &folder : lp->getConfig()->getFolders()) {
-            for (auto &device_temp : folder.getDevices()) {
+            for (auto &device_temp : folder->getDevices()) {
                 if (device_temp->getId().compare(ccm.getClientName()) == 0) {
                     messageFolders.push_back(folder);
                 }

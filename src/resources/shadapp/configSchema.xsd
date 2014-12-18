@@ -7,6 +7,7 @@
                 <xsd:element name="id" type="type_nonemptystring"/>
                 <xsd:element name="port" type="type_integer"/>
                 <xsd:element name="name" type="type_nonemptystring"/>
+				<xsd:element name="foldersPath" type="type_nonemptystring"/>
                 <xsd:element name="scan-period" type="type_integer"/>
                 <xsd:element name="devices" type="type_devices"/>
                 <xsd:element name="folders" type="type_folders"/>

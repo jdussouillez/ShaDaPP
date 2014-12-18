@@ -3,6 +3,7 @@
 #include <shadapp/protocol/RequestMessage.h>
 #include <shadapp/protocol/ResponseMessage.h>
 #include <shadapp/LocalPeer.h>
+#include <shadapp/fs/FileSplitter.h>
 
 #include <iostream>
 
@@ -65,12 +66,23 @@ namespace shadapp {
             return bytes;
         }
 
-        void RequestMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
-            shadapp::protocol::ResponseMessage responseMsg(*(lp.getConfig()->getVersion()), "coucou");
-            lp.getNetwork()->send(device.getSocket(), responseMsg);
-            std::cout << "Name : " << name << std::endl;
-            std::cout << "offset : " << offset << std::endl;
-            std::cout << "size : " << size << std::endl;
+        void RequestMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {            
+            //search folder
+            for(auto &forFolder : lp.getConfig()->getFolders()){
+                if(forFolder->getId().compare(folder) == 0){
+                    for(auto &fileInf : forFolder->getFileInfos()){
+                        if(getName().compare(fileInf.getName()) == 0){
+                            std::cout<< "debug request message" << std::endl;
+                            std::cout<< "get block from file " << lp.getConfig()->getFoldersPath() + forFolder->getPath() + fileInf.getName() << "offset /size " << offset << "/" << size << std::endl;
+                            shadapp::fs::FileSplitter splitter(lp.getConfig()->getFoldersPath() + forFolder->getPath() + fileInf.getName());
+                            std::string strData(splitter.getBlock(offset,size).data());
+                            shadapp::protocol::ResponseMessage responseMessage(*(lp.getConfig()->getVersion()),strData);
+                            lp.getNetwork()->send(device.getSocket(), responseMessage);
+                        }
+                    }
+                }
+            }
         }
+        
     }
 }

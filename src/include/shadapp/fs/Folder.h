@@ -6,6 +6,9 @@
 
 #include <shadapp/data/Serializable.h>
 #include <shadapp/fs/Device.h>
+#include <shadapp/fs/FileWatcher.h>
+
+#include <shadapp/fs/FileInfo.h>
 
 namespace shadapp {
 
@@ -16,6 +19,8 @@ namespace shadapp {
             std::string id;
             std::string path;
             std::vector<Device*> devices;
+            shadapp::fs::FileWatcher* fileWatcher;
+            std::vector<shadapp::fs::FileInfo> fileInfos;
 
         public:
             explicit Folder(std::string id, std::string path);
@@ -26,10 +31,14 @@ namespace shadapp {
             bool operator==(const Folder &f1);
 
             void addDevice(Device* device);
+            void addFileInfo(FileInfo& fileInfo);
 
             std::string getId() const;
             std::string getPath() const;
             std::vector<Device*> getDevices() const;
+            std::vector<shadapp::fs::FileInfo> getFileInfos();
+            
+            void setPath(std::string path);
 
             std::vector<uint8_t> serialize() const override;
         };

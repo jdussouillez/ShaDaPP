@@ -17,7 +17,7 @@ namespace shadapp {
         private:
             std::string clientName;
             std::string clientVersion;
-            std::vector<shadapp::fs::Folder> folders;
+            std::vector<shadapp::fs::Folder*> folders;
             std::map<std::string, std::string> options;
 
         public:
@@ -25,14 +25,14 @@ namespace shadapp {
                     std::bitset<4> version,
                     std::string clientName,
                     std::string clientVersion,
-                    std::vector<shadapp::fs::Folder> folders,
+                    std::vector<shadapp::fs::Folder*> folders,
                     std::map<std::string,
                     std::string> options);
             explicit ClusterConfigMessage(std::vector<uint8_t>& bytes);
 
             std::string getClientName() const;
             std::string getClientVersion() const;
-            std::vector<shadapp::fs::Folder> getFolders() const;
+            std::vector<shadapp::fs::Folder*> getFolders() const;
             std::map<std::string, std::string> getOptions() const;
 
             virtual std::vector<uint8_t> serialize() const override;

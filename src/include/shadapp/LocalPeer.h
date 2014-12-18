@@ -10,7 +10,7 @@
 #include <shadapp/fs/Folder.h>
 #include <shadapp/config/PeerConfig.h>
 
-#include "fs/FileInfo.h"
+#include <shadapp/fs/FileInfo.h>
 
 //#include <shadapp/Network.h>
 
@@ -22,6 +22,7 @@ namespace shadapp {
     private:
         shadapp::config::PeerConfig *config;
         shadapp::Network *network;
+        std::vector<shadapp::fs::FileInfo> fileToDownload;
         
     public:
         explicit LocalPeer(shadapp::fs::Device* device, std::string configFilePath);
@@ -33,8 +34,8 @@ namespace shadapp {
         
         void sendPingMessage(shadapp::fs::Device *device);
         
-        void sendAllIndexMessage(shadapp::fs::Device *device, std::vector<shadapp::fs::Folder> folders);
-        void sendIndexMessage(shadapp::fs::Device *device, shadapp::fs::Folder folders);
+        void sendAllIndexMessage(shadapp::fs::Device *device, std::vector<shadapp::fs::Folder*> folders);
+        void sendIndexMessage(shadapp::fs::Device *device, shadapp::fs::Folder* folders);
     };
 
 }

@@ -19,13 +19,17 @@ namespace shadapp {
                 delete d;
             }
             devices.clear();
+            for (auto &f : folders) {
+                delete f;
+            }
+            folders.clear();
         }
 
         void PeerConfig::setVersion(std::string version) {
             int versionInteger = std::atoi(version.c_str());
             this->version = new std::bitset<4>(versionInteger);
         }
-        
+
         void PeerConfig::setID(std::string id) {
             this->id = id;
         }
@@ -37,7 +41,11 @@ namespace shadapp {
         void PeerConfig::setName(std::string name) {
             this->name = name;
         }
-        
+
+        void PeerConfig::setFoldersPath(std::string path) {
+            this->foldersPath = path;
+        }
+
         void PeerConfig::setScanPeriod(unsigned int scanPeriod) {
             this->scanPeriod = scanPeriod;
         }
@@ -46,7 +54,7 @@ namespace shadapp {
             devices.push_back(device);
         }
 
-        void PeerConfig::addFolder(shadapp::fs::Folder folder) {
+        void PeerConfig::addFolder(shadapp::fs::Folder* folder) {
             folders.push_back(folder);
         }
 
@@ -57,7 +65,7 @@ namespace shadapp {
         std::bitset<4>* PeerConfig::getVersion() const {
             return version;
         }
-        
+
         std::string PeerConfig::getID() const {
             return id;
         }
@@ -69,6 +77,10 @@ namespace shadapp {
         std::string PeerConfig::getName() const {
             return name;
         }
+        std::string PeerConfig::getFoldersPath() const {
+            return foldersPath;
+        }
+
         
         unsigned int PeerConfig::getScanPeriod() const {
             return scanPeriod;
@@ -78,7 +90,7 @@ namespace shadapp {
             return devices;
         }
 
-        std::vector<shadapp::fs::Folder> PeerConfig::getFolders() const {
+        std::vector<shadapp::fs::Folder*> PeerConfig::getFolders() {
             return folders;
         }
 

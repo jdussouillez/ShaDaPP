@@ -39,6 +39,9 @@ namespace shadapp {
             std::set<QString> getFolders();
             void refreshPatternsToIgnore();
 
+            bool mustBeIgnored(const QDirIterator& it, const QDir& currentDir);
+            bool isSubFolderOfIgnoredFolders(const QString& folder);
+            
             /*
              * Difference between 2 paths : 
              * baseDir = /home/user/Sync
@@ -47,8 +50,6 @@ namespace shadapp {
              * 
              * string returned : folder1/file.txt
              */
-            bool mustBeIgnored(const QDirIterator& it, const QDir& currentDir);
-            bool isSubFolderOfIgnoredFolders(const QString& folder);
             QString subPath(const QDir& currentDir, const QDir& baseDir, const QString& filename);
             inline bool isDirectory(const QString& name);
 

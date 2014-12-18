@@ -1,5 +1,8 @@
 #include <shadapp/fs/FileSplitter.h>
 
+#include <stdexcept>
+#include <iostream>
+
 namespace shadapp {
 
     namespace fs {
@@ -11,6 +14,9 @@ namespace shadapp {
          */
         FileSplitter::FileSplitter(std::string filepath) : filepath(filepath) {
             stream.open(filepath.c_str());
+//            if(stream.fail()){
+//                throw std::runtime_error("Error: cannot open file \n");
+//            }
             stream.seekg(0, stream.end);
             fileSize = stream.tellg();
             stream.seekg(0, stream.beg);

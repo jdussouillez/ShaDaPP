@@ -18,9 +18,10 @@ namespace shadapp {
             std::string id;
             unsigned short port;
             std::string name;
+            std::string foldersPath;
             unsigned int scanPeriod;
             std::vector<shadapp::fs::Device*> devices;
-            std::vector<shadapp::fs::Folder> folders;
+            std::vector<shadapp::fs::Folder*> folders;
             std::map<std::string, std::string> options;
 
         public:
@@ -32,18 +33,20 @@ namespace shadapp {
             void setID(std::string id);
             void setPort(unsigned short port);
             void setName(std::string name);
+            void setFoldersPath(std::string path);
             void setScanPeriod(unsigned int scanPeriod);
             void addDevice(shadapp::fs::Device* device);
-            void addFolder(shadapp::fs::Folder folder);
+            void addFolder(shadapp::fs::Folder* folder);
             void addOption(std::string name, std::string value);
 
             std::bitset<4>* getVersion() const;
             std::string getID() const;
             unsigned short getPort() const;
             std::string getName() const;
+            std::string getFoldersPath() const;
             unsigned int getScanPeriod() const;
             std::vector<shadapp::fs::Device*> getDevices() const;
-            std::vector<shadapp::fs::Folder> getFolders() const;
+            std::vector<shadapp::fs::Folder*> getFolders();
             std::map<std::string, std::string> getOptions() const;
 
             PeerConfig& operator=(const PeerConfig& other);

@@ -2,6 +2,8 @@
 #include <shadapp/data/Serializer.h>
 #include <shadapp/LocalPeer.h>
 
+#include <iostream>
+
 namespace shadapp {
 
     namespace protocol {
@@ -31,7 +33,7 @@ namespace shadapp {
         }
 
         void ResponseMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
-
+            std::cout << "Block recu :" << getData() << std::endl;
         }
     }
 }
