@@ -11,6 +11,7 @@
 #include <shadapp/Logger.h>
 #include <shadapp/config/PeerConfig.h>
 #include <shadapp/config/ConfigReader.h>
+#include <shadapp/data/Hash.h>
 #include <shadapp/fs/FileSplitter.h>
 #include <shadapp/fs/FileWatcher.h>
 #include <shadapp/protocol/ClusterConfigMessage.h>
@@ -114,12 +115,8 @@ int main(int argc, char **argv) {
         //                "blabla",
         //                config->getFolders(),
         //                config->getOptions());
-        //        std::vector<uint8_t> bytes;
-        //        if (conf.serialize(&bytes) == nullptr) {
-        //            std::cout << "SERIALIZER ERROR" << std::endl;
-        //            return 10;
-        //        }
-        //        shadapp::protocol::ClusterConfigMessage conf2(&bytes);
+        //        std::vector<uint8_t> bytes = conf.serialize();
+        //        shadapp::protocol::ClusterConfigMessage conf2(bytes);
         //        std::cout << "OK FINAL" << std::endl;
         //        std::cout << conf.getVersion() << " - " << conf2.getVersion() << std::endl;
         //        std::cout << conf.getType() << " - " << conf2.getType() << std::endl;
@@ -157,12 +154,8 @@ int main(int argc, char **argv) {
         //        std::vector<shadapp::fs::FileInfo> files;
         //        files.push_back(shadapp::fs::FileInfo("name1", 42, blocks));
         //        shadapp::protocol::IndexMessage idx1(v, "my_folder", files);
-        //        std::vector<uint8_t> bytes2;
-        //        if (idx1.serialize(&bytes2) == nullptr) {
-        //             std::cout << "SERIALIZER ERROR #2" << std::endl;
-        //            return 20;
-        //        }
-        //        shadapp::protocol::IndexMessage idx2(&bytes2);
+        //        std::vector<uint8_t> bytes2 = idx1.serialize();
+        //        shadapp::protocol::IndexMessage idx2(bytes2);
         //        std::cout << "\n\n";
         //        std::cout << idx1.getType() << " = " << idx2.getType() << std::endl;
         //        std::cout << idx1.getFolder() << " = " << idx2.getFolder() << std::endl;
@@ -176,7 +169,6 @@ int main(int argc, char **argv) {
         //                std::cout << idx1.getFiles().at(i2).getBlocks().at(i3).getHash() << " = " << idx2.getFiles().at(i2).getBlocks().at(i3).getHash() << std::endl;
         //            }
         //        }
-
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
@@ -184,43 +176,53 @@ int main(int argc, char **argv) {
     // TODO: remove this
     shadapp::Logger::setLevel(shadapp::Logger::Level::ALL);
     shadapp::Logger::enableColors(true);
-    //    shadapp::Logger::debug("foo");
-    //    shadapp::Logger::info("bar");
-    //    shadapp::Logger::success("Successfully sent !");
-    //    shadapp::Logger::warn("baz");
-    //    std::logic_error ex("err msg");
-    //    shadapp::Logger::error("qux", &ex);
+    shadapp::Logger::debug("foo");
+    shadapp::Logger::debug("test va_list : %d, 0x%x, %s", 10, 255, "abcd");
+    shadapp::Logger::info("bar");
+    shadapp::Logger::success("Successfully sent !");
+    shadapp::Logger::warn("baz");
+
+    //std::logic_error ex("err msg");
+    //shadapp::Logger::error("qux", &ex);
     //shadapp::Logger::fatal("norf");
 
+   
+    
     //tests Maxime
     shadapp::LocalPeer localPeer(0, std::string(configFile));
     //shadapp::Network localPeer(0, std::string(configFile));
     localPeer.start();
     //fin test Maxime
-    try {
+
+     try {
         app.exec();
         //SafeApplication::SafeApplication(int &argc, char *argv[]);
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
 
+    //delete config;
+
     // TODO: remove this
-//    shadapp::fs::FileSplitter splitter("test/config.xml");
-//    std::cout << "Blocks = " << splitter.getNbBlocks() << std::endl;
-//    std::vector<char> block = splitter.getBlock(0, 100);
-//    for (std::vector<char>::size_type i = 0; i != block.size(); i++) {
-//        std::cout << block.at(i);
+    //    shadapp::fs::FileSplitter splitter("test/config.xml");
+    //    std::cout << "Blocks = " << splitter.getNbBlocks() << std::endl;
+    //    std::vector<char> block = splitter.getBlock(0, 100);
+    //    for (std::vector<char>::size_type i = 0; i != block.size(); i++) {
+    //        std::cout << block.at(i);
+    //    }
+
+    // TODO: remove this test (HASH)
+    std::string hash;
+    uint8_t input[] = {"abc"};
+    shadapp::data::Hash256::hash(input, 3, hash);
+    std::cout << hash << std::endl;
+
+//    try {
+//        app.exec();
+//    } catch (std::exception& e) {
+//        std::cerr << e.what() << std::endl;
 //    }
+
 //    std::cout << "\n\n";
 
-    // TODO: remove this
-    try {
-//        shadapp::fs::FileWatcher* watcher = new shadapp::fs::FileWatcher("test/Sync", config->getScanPeriod());
-//        watcher->start();
-    } catch (std::exception& ex) {
-        std::cerr << "Error: " << ex.what() << std::endl;
-    }
-
-    delete config;
-    return 0;
 }
