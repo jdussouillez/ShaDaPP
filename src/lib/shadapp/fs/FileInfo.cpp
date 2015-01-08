@@ -1,6 +1,8 @@
 #include <shadapp/data/Serializer.h>
 #include <shadapp/fs/FileInfo.h>
 
+#include <stdio.h>
+
 namespace shadapp {
 
     namespace fs {
@@ -45,7 +47,31 @@ namespace shadapp {
         std::vector<BlockInfo> FileInfo::getBlocks() const {
             return blocks;
         }
-        
+
+        uint64_t FileInfo::getLocalVersion() const {
+            return localVersion;
+        }
+
+        uint64_t FileInfo::getVersion() const {
+            return version;
+        }
+
+        uint64_t FileInfo::getModified() const {
+            return modified;
+        }
+
+        void FileInfo::setLocalVersion(uint64_t localVersion) {
+            this->localVersion = localVersion;
+        }
+
+        void FileInfo::setVersion(uint64_t version) {
+            this->version = version;
+        }
+
+        void FileInfo::setModified(uint64_t modified) {
+            this->modified = modified;
+        }
+
         std::vector<uint8_t> FileInfo::serialize() const {
             std::vector<uint8_t> bytes;
             shadapp::data::Serializer::serializeInt32(bytes, name.length());

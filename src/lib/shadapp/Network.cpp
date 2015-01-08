@@ -6,15 +6,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <shadapp/config/ConfigReader.h>
+#include <shadapp/Logger.h>
 #include <shadapp/Core.h>
+#include <shadapp/Network.h>
+#include <shadapp/config/ConfigReader.h>
 #include <shadapp/fs/Device.h>
 #include <shadapp/protocol/PingMessage.h>
-#include <shadapp/Network.h>
-
 #include <shadapp/protocol/PongMessage.h>
 #include <shadapp/protocol/ClusterConfigMessage.h>
-
 #include "shadapp/protocol/RequestMessage.h"
 #include "shadapp/protocol/ResponseMessage.h"
 #include "shadapp/protocol/IndexUpdateMessage.h"
@@ -48,7 +47,7 @@ namespace shadapp {
     }
 
     void Network::initQtSignals(shadapp::fs::Device *device) {
-        std::cout << "init socket" << std::endl;
+
         //La socket lance le slot de la device
         connect(device->getSocket(), SIGNAL(connected()),
                 device, SLOT(slotDeviceConnected()));
@@ -69,10 +68,9 @@ namespace shadapp {
 
         tcpServer->listen(QHostAddress::Any, quint16(lp->getConfig()->getPort()));
         if (!tcpServer->isListening()) {
-            std::cout << "Server does not listen...";
+            shadapp::Logger::warn("[NETWORK] Failed to launch listening socket, other peer can't connect");
         } else {
-            std::cout << "Listen socket is listening... On "
-                    << quint16(lp->getConfig()->getPort()) << std::endl;
+            shadapp::Logger::success("[NETWORK] Listening socket ON : port : %d", lp->getConfig()->getPort());
         }
         for (auto &device : lp->getConfig()->getDevices()) {
             initQtSignals(device);
@@ -84,29 +82,25 @@ namespace shadapp {
 
     int Network::send(QTcpSocket *peer, const shadapp::protocol::AbstractMessage& msg) {
         std::vector<uint8_t> bytes = msg.serialize();
-        shadapp::Logger::debug("SEND");
-        std::cout << "size : " << bytes.size() << std::endl;
+        shadapp::Logger::info("[NETWORK] SEND => size : %d", bytes.size());
         unsigned int sizeSend = peer->write((const char*) &bytes.at(0), bytes.size());
         if (sizeSend != bytes.size()) {
             return 0;
         }
         return sizeSend;
     }
-    
+
     std::vector<uint8_t>* Network::receive(QTcpSocket* socket) {
         QByteArray thirdByte = socket->peek(8);
-        std::vector<uint8_t> lengthBytes(thirdByte.begin()+4,thirdByte.end());
+        std::vector<uint8_t> lengthBytes(thirdByte.begin() + 4, thirdByte.end());
         int length = shadapp::data::Serializer::deserializeInt32(lengthBytes);
-        shadapp::Logger::debug("RECEIVE");
-        std::cout << "size : " << length << std::endl;
         std::vector<uint8_t> *data = new std::vector<uint8_t>(length);
         socket->read((char*) &data->at(0), length);
-        std::cout << "socket error " << socket->state() << std::endl;
         return data;
     }
 
     void Network::slotAcceptConnection() {
-        shadapp::Logger::debug("NOUVEAU PEER CONNECTE");
+        shadapp::Logger::info("[NETWORK] New Peer connected");
         QTcpSocket *socket = tcpServer->nextPendingConnection();
         connect(socket, SIGNAL(readyRead()), this, SLOT(slotReceiveCCMfromNewPeer()));
     }
@@ -138,76 +132,73 @@ namespace shadapp {
 
     void Network::slotReceive(shadapp::fs::Device *device) {
         std::vector<uint8_t>* data = receive(device->getSocket());
-        shadapp::Logger::debug("SWITCH MESSAGE");
         switch (shadapp::protocol::AbstractMessage::getType(*data)) {
             case shadapp::protocol::Type::CLUSTER_CONFIG:
             {
-                shadapp::Logger::debug("CASE : CCM");
+                shadapp::Logger::info("[NETWORK] RECEIVE : ClusterConfigMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::ClusterConfigMessage msg(*data);
                 msg.executeAction(*device, *lp);
-                shadapp::Logger::debug("CASE : CCM SORTIE");
             }
                 break;
             case shadapp::protocol::Type::INDEX:
             {
-                shadapp::Logger::debug("CASE : INDEX");
+                shadapp::Logger::info("[NETWORK] RECEIVE : IndexMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::IndexMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::REQUEST:
             {
-                shadapp::Logger::debug("CASE : REQUEST");
+                shadapp::Logger::info("[NETWORK] RECEIVE : RequestMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::RequestMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::RESPONSE:
             {
-                shadapp::Logger::debug("CASE : RESPONSE");
+                shadapp::Logger::info("[NETWORK] RECEIVE : ResponseMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::ResponseMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::PING:
             {
-                shadapp::Logger::debug("CASE : PING");
+                shadapp::Logger::info("[NETWORK] RECEIVE : PingMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::PingMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::PONG:
             {
-                shadapp::Logger::debug("CASE : PONG");
+                shadapp::Logger::info("[NETWORK] RECEIVE : PongMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::PongMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::INDEX_UPDATE:
             {
+                shadapp::Logger::info("[NETWORK] RECEIVE : IndexUpdateMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::IndexUpdateMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::CLOSE:
             {
+                shadapp::Logger::info("[NETWORK] RECEIVE : CloseMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::CloseMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
         }
         delete data;
-        //std::cout << "SOCKET :: byte available : " << device->getSocket()->bytesAvailable() << std::endl;
-        if(device->getSocket()->bytesAvailable() > 0){
+        if (device->getSocket()->bytesAvailable() > 0) {
             slotReceive(device);
         }
-        shadapp::Logger::debug("FIN SWITCH");        
     }
 
     void Network::slotReceiveCCMfromNewPeer() {
         QTcpSocket* socket = dynamic_cast<QTcpSocket*> (sender());
         disconnect(socket, 0, 0, 0);
-        shadapp::Logger::debug("MESSAGE CCMSLOT");
         std::vector<uint8_t>* data = receive(socket);
         shadapp::protocol::ClusterConfigMessage ccm(*data);
         shadapp::fs::Device* device;
@@ -219,7 +210,7 @@ namespace shadapp {
         }
         device->setSocket(socket);
         initQtSignals(device);
-
+        shadapp::Logger::info("[NETWORK] Receive : ClusterConfigMessage from %s (%d) : ", device->getName().c_str(), data->size());
         //create CCM
         std::vector<shadapp::fs::Folder*> messageFolders;
         std::map<std::string, std::string> options;

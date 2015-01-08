@@ -5,9 +5,11 @@
 #include <shadapp/LocalPeer.h>
 #include <shadapp/fs/FileSplitter.h>
 
+#include <cstring>
 #include <iostream>
+#include <vector>
 
-#include "shadapp/Network.h"
+#include <shadapp/Network.h>
 
 namespace shadapp {
 
@@ -15,11 +17,12 @@ namespace shadapp {
 
         RequestMessage::RequestMessage(
                 std::bitset<4> version,
+                std::bitset<12> id,
                 std::string folder,
                 std::string name,
                 uint64_t offset,
                 uint32_t size)
-        : AbstractMessage(version, Type::REQUEST, false),
+        : AbstractMessage(id, version, Type::REQUEST, false),
         folder(folder.substr(0, MAX_FOLDERNAME_SIZE)),
         name(name.substr(0, MAX_FILENAME_SIZE)),
         offset(offset),
@@ -72,11 +75,10 @@ namespace shadapp {
                 if(forFolder->getId().compare(folder) == 0){
                     for(auto &fileInf : forFolder->getFileInfos()){
                         if(getName().compare(fileInf.getName()) == 0){
-                            std::cout<< "debug request message" << std::endl;
-                            std::cout<< "get block from file " << lp.getConfig()->getFoldersPath() + forFolder->getPath() + fileInf.getName() << "offset /size " << offset << "/" << size << std::endl;
                             shadapp::fs::FileSplitter splitter(lp.getConfig()->getFoldersPath() + forFolder->getPath() + fileInf.getName());
                             std::string strData(splitter.getBlock(offset,size).data());
-                            shadapp::protocol::ResponseMessage responseMessage(*(lp.getConfig()->getVersion()),strData);
+                            strData = strData.substr(0, size);
+                            shadapp::protocol::ResponseMessage responseMessage(*(lp.getConfig()->getVersion()), getId(), strData);
                             lp.getNetwork()->send(device.getSocket(), responseMessage);
                         }
                     }

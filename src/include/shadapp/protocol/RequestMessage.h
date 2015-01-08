@@ -13,6 +13,7 @@ namespace shadapp {
     namespace protocol {
 
         class RequestMessage : public AbstractMessage {
+            
         private:
             std::string folder;
             std::string name;
@@ -22,6 +23,7 @@ namespace shadapp {
         public:
             explicit RequestMessage(
                     std::bitset<4> version,
+                    std::bitset<12> id,
                     std::string folder,
                     std::string name,
                     uint64_t offset,

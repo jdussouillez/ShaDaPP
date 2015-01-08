@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 
+#include <shadapp/Logger.h>
 #include <shadapp/Core.h>
 #include <shadapp/data/Serializer.h>
 #include <shadapp/protocol/ClusterConfigMessage.h>
@@ -34,8 +35,6 @@ namespace shadapp {
             for (uint32_t i = 0; i < size; i++) {
                 folders.push_back(new shadapp::fs::Folder(bytes));
             }
-            std::cout << folders.size() << std::endl;
-            //   std::cout << folders[0].getDevices().size() << std::endl;
             uint32_t nbOptions = shadapp::data::Serializer::deserializeInt32(bytes);
             for (uint32_t i = 0; i < nbOptions; i++) {
                 size = shadapp::data::Serializer::deserializeInt32(bytes);
@@ -88,6 +87,7 @@ namespace shadapp {
         void ClusterConfigMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
             //update de config
             for (auto &folder : this->folders) {
+                shadapp::Logger::info("[FOLDER] %d", folder->getId().c_str());
                 bool exist = false;
                 for (auto &configFolder : lp.getConfig()->getFolders()) {
                     if (folder->getId().compare(configFolder->getId()) == 0) {
@@ -95,7 +95,7 @@ namespace shadapp {
                     }
                 }
                 if (!exist) { // if the folder don't exist in the config, add it
-                    std::cout << "add folder with id : " << folder->getId() << std::endl;
+                    shadapp::Logger::info("[ClusterConfigMessage : Add new folder : %s]", folder->getId().c_str());
                     lp.getConfig()->addFolder(folder);
                 }
             }

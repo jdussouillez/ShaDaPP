@@ -8,7 +8,7 @@
 /*
  * Limits
  */
-#define MAX_BLOCK_SIZE 131072 // 128 KB = 131072 B
+#define MAX_BLOCK_SIZE 8 // 128 KB = 131072 B
 
 #define MAX_HASH_SIZE 64
 

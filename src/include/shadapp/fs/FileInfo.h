@@ -35,6 +35,15 @@ namespace shadapp {
 
             std::string getName() const;
             std::vector<BlockInfo> getBlocks() const;
+            uint64_t getVersion() const;
+            uint64_t getLocalVersion() const;
+            uint64_t getModified() const;
+            
+            bool isInvalid();
+            
+            void setVersion(uint64_t version);
+            void setLocalVersion(uint64_t localVersion);
+            void setModified(uint64_t modified);
 
             std::vector<uint8_t> serialize() const override;
         };
