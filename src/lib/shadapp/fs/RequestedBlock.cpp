@@ -64,7 +64,6 @@ namespace shadapp {
 
         long unsigned int RequestedBlock::decreaseDownloadBlockRemaning() {
             (*downloadBlockRemaining)--;
-            Logger::debug("decrease : %d", *downloadBlockRemaining);
             return *downloadBlockRemaining;
         }
 

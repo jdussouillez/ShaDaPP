@@ -48,9 +48,7 @@ namespace shadapp {
                     outfile.seekp(rqBlock->getOffset());
                     outfile.write(getData().c_str(), rqBlock->getSize());
                     outfile.close();
-                    long unsigned int nb = rqBlock->decreaseDownloadBlockRemaning();
-                    Logger::debug("nb restant : %d", nb);
-                    if (nb == 0) {                        
+                    if (rqBlock->decreaseDownloadBlockRemaning() == 0) {                        
                         rqBlock->getFileInfo()->setLocalVersion(rqBlock->getFileInfo()->getVersion());
                         Logger::info("File fully download at version : %d", rqBlock->getFileInfo()->getLocalVersion());
                     }

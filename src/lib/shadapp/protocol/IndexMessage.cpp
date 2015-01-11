@@ -85,7 +85,6 @@ namespace shadapp {
             //TODO: fix memory
             long unsigned int* totalBlocks = new long unsigned int;
             *totalBlocks = fileInfo->getBlocks().size();
-            Logger::debug("indexmessage : %d ", totalBlocks);
             for (auto &block : fileInfo->getBlocks()) {
                 std::bitset<12> id = lp.generateMessageId();
                 shadapp::fs::RequestedBlock* reqBlock = new shadapp::fs::RequestedBlock(id,
@@ -101,7 +100,8 @@ namespace shadapp {
         }
 
         void IndexMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
-
+            Logger::info("[INDEXMESSAGE] { ");
+            Logger::info("                  Folder : %s", getFolder().c_str());
             //identify the folder
             shadapp::fs::Folder* indexFolder;
             for (auto &folder : lp.getConfig()->getFolders()) {
@@ -116,6 +116,7 @@ namespace shadapp {
             if (dir.mkdir(path)) { //false if dir already exists, return true if dir was created with success                
                 //create files & add fileInfos to local folder
                 for (auto fileInfo : getFiles()) {
+                    Logger::info("                  => %s", fileInfo.getName().c_str());
                     //TODO: Set flag invalid
                     //TODO: fix memory
                     shadapp::fs::FileInfo* fi = new shadapp::fs::FileInfo(
@@ -129,7 +130,8 @@ namespace shadapp {
                     indexFolder->addFileInfo(*fi);
                     createEmptyFile(lp, indexFolder, *fi);
                     createRequestedBlock(lp, *indexFolder, fi);
-                }  
+                }
+                Logger::info("}");
             } else {
                 for (auto &messageFileInfo : getFiles()) {
                     QString path(indexFolder->getPath().c_str());
@@ -191,7 +193,7 @@ namespace shadapp {
             for (auto &reqBlock : lp.getRequestedBlocks()) {
                 shadapp::fs::RequestedBlock* rb = reqBlock.second;
                 downloadFile(lp, device, reqBlock.second);
-            }
+            }            
         }
     }
 }

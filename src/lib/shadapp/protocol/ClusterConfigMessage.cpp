@@ -86,19 +86,21 @@ namespace shadapp {
 
         void ClusterConfigMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
             //update de config
+            Logger::info("[CLUSTERCONFIGMESSAGE] {");
             for (auto &folder : this->folders) {
-                shadapp::Logger::info("[FOLDER] %d", folder->getId().c_str());
                 bool exist = false;
                 for (auto &configFolder : lp.getConfig()->getFolders()) {
                     if (folder->getId().compare(configFolder->getId()) == 0) {
                         exist = true;
+                        shadapp::Logger::info("                         => %s : Already Exist", folder->getId().c_str());
                     }
                 }
                 if (!exist) { // if the folder don't exist in the config, add it
-                    shadapp::Logger::info("[ClusterConfigMessage : Add new folder : %s]", folder->getId().c_str());
+                    shadapp::Logger::info("                         => %s : Added", folder->getId().c_str());
                     lp.getConfig()->addFolder(folder);
                 }
             }
+            Logger::info("}");
 //            //send an indexMessage for each shared folders
             std::vector<shadapp::fs::Folder*> imFolders;
             for (auto &folder : lp.getConfig()->getFolders()) {
