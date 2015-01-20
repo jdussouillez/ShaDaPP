@@ -1,7 +1,14 @@
 #include <shadapp/data/Serializer.h>
 #include <shadapp/fs/FileInfo.h>
+#include <shadapp/fs/FileSplitter.h>
+#include <shadapp/Core.h>
+#include <shadapp/data/Hash.h>
 
+#include <bitset>
 #include <stdio.h>
+
+#include "shadapp/fs/FileSplitter.h"
+#include "shadapp/Logger.h"
 
 namespace shadapp {
 
@@ -40,6 +47,12 @@ namespace shadapp {
             }
         }
 
+        bool FileInfo::operator==(const FileInfo& f1) {
+            Logger::debug("string this : %s", this->getName().c_str());
+            Logger::debug("string f1 : %s", f1.getName().c_str());
+            return (name.compare(f1.getName()) == 0);
+        }
+
         std::string FileInfo::getName() const {
             return name;
         }
@@ -64,12 +77,73 @@ namespace shadapp {
             this->localVersion = localVersion;
         }
 
+        void FileInfo::increaseVersion(std::string absPath) {
+            version++;
+            localVersion = version;
+            std::bitset<32>newFlags(flags);
+            newFlags[18] = 0;
+            flags = newFlags.to_ullong();
+            shadapp::fs::FileSplitter splitter(absPath);
+            uint64_t offset = 0;
+            blocks.clear();
+            for (unsigned int i = 0; i < splitter.getNbBlocks(); i++) {
+                std::vector<char> block = splitter.getBlock(offset, MAX_BLOCK_SIZE);
+                std::string hash;
+                shadapp::data::Hash256::hash(reinterpret_cast<uint8_t*> (&block[0]), block.size(), hash);
+                shadapp::fs::BlockInfo blockInfo(hash, block.size());
+                blocks.push_back(blockInfo);
+                offset += MAX_BLOCK_SIZE;
+            }
+        }
+
         void FileInfo::setVersion(uint64_t version) {
             this->version = version;
         }
 
         void FileInfo::setModified(uint64_t modified) {
             this->modified = modified;
+        }
+
+        bool FileInfo::isDeleted() {
+            return std::bitset<32>(flags)[19];
+        }
+
+        bool FileInfo::isExistingTargetForSymbolicLink() {
+            return std::bitset<32>(flags)[15];
+        }
+
+        bool FileInfo::isInvalid() {
+            return std::bitset<32>(flags)[18];
+        }
+
+        bool FileInfo::isPermited() {
+            return std::bitset<32>(flags)[17];
+        }
+
+        bool FileInfo::isSymbolicLink() {
+            return std::bitset<32>(flags)[16];
+        }
+
+        void FileInfo::setDeleted(bool b) {
+            std::bitset<32> flagsTemp(flags);
+            flagsTemp[19] = b;
+            flags = flagsTemp.to_ullong();
+        }
+
+        void FileInfo::setExistingTargetForSymbolicLink(bool b) {
+            Logger::debug("NOT IMPLEMENTED YET");
+        }
+
+        void FileInfo::setPermit(bool b) {
+            Logger::debug("NOT IMPLEMENTED YET");
+        }
+
+        void FileInfo::setSymbolicLink(bool b) {
+            Logger::debug("NOT IMPLEMENTED YET");
+        }
+
+        void FileInfo::setValid(bool b) {
+            Logger::debug("NOT IMPLEMENTED YET");
         }
 
         std::vector<uint8_t> FileInfo::serialize() const {

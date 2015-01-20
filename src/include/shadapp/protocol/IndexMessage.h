@@ -9,10 +9,7 @@ namespace shadapp {
     namespace protocol {
 
         class IndexMessage : public AbstractIndexMessage {
-        private:
-            void createEmptyFile(shadapp::LocalPeer& lp, shadapp::fs::Folder* folder, shadapp::fs::FileInfo& fileInfo) const;
-            void downloadFile(shadapp::LocalPeer& lp, shadapp::fs::Device& device, shadapp::fs::RequestedBlock* reqBlock) const;
-            void createRequestedBlock(shadapp::LocalPeer& lp, shadapp::fs::Folder& folder, shadapp::fs::FileInfo* fileInfo)const;
+        
         public:
             explicit IndexMessage(
                     std::bitset<4> version,

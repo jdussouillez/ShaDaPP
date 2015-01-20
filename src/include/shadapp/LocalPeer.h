@@ -34,7 +34,7 @@ namespace shadapp {
         ~LocalPeer();
         
         shadapp::config::PeerConfig* getConfig();
-        shadapp::Network* getNetwork();
+        shadapp::Network* getNetwork() const;
         std::map<unsigned long, shadapp::fs::RequestedBlock*> getRequestedBlocks();
         
         void start();        

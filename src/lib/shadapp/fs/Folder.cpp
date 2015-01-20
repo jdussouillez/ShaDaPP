@@ -4,6 +4,8 @@
 #include <shadapp/fs/Folder.h>
 #include <algorithm>
 
+#include "shadapp/Logger.h"
+
 typedef std::map<std::string, std::string> TStrFileInfoMap;
 
 namespace shadapp {
@@ -11,7 +13,7 @@ namespace shadapp {
     namespace fs {
 
         Folder::Folder(std::string id, std::string path) : id(id), path(path) {
-            fileWatcher = new shadapp::fs::FileWatcher("test/Sync", 20);
+            
         }
 
         Folder::Folder(std::string id) : Folder(id, "") {
@@ -30,6 +32,14 @@ namespace shadapp {
 
         Folder::~Folder() {
             devices.clear();
+        }
+        
+        void Folder::startFileWatcher(std::string foldersPath){
+            fileWatcher = new shadapp::fs::FileWatcher(foldersPath + path, 10);
+            connect(fileWatcher,SIGNAL(newFileSignal(std::string)), this, SLOT(slotFileWatcherCreate(std::string)));
+            connect(fileWatcher,SIGNAL(deletedFileSignal(std::string)), this, SLOT(slotFileWatcherDelete(std::string)));
+            connect(fileWatcher,SIGNAL(modifiedFileSignal(std::string)), this, SLOT(slotFileWatcherModify(std::string)));
+            fileWatcher->start();
         }
 
         bool Folder::operator==(const Folder& f1) {
@@ -75,6 +85,48 @@ namespace shadapp {
                 bytes.insert(bytes.end(), deviceBytes.begin(), deviceBytes.end());
             }
             return bytes;
+        }
+
+        void Folder::slotFileWatcherCreate(std::string name) {
+            std::string fileName = name.substr(name.find_last_of("/\\") + 1);
+            bool exist = false;
+            shadapp::fs::FileInfo* fi;
+            for(auto &fileInfo : fileInfos){
+                if(fileInfo.getName().compare(fileName) == 0){
+                    exist = true;
+                    fi = &fileInfo;
+                }
+            }
+            if(!exist){
+                Logger::info("[FileWatcher] Create \"%s\"", fileName.c_str());
+                emit signalFileModify(this, fi);
+            }            
+        }
+
+        void Folder::slotFileWatcherDelete(std::string name) {
+            std::string fileName = name.substr(name.find_last_of("/\\") + 1);
+            Logger::debug("name : %s",name.c_str());
+            Logger::info("[FileWatcher] Delete \"%s\"", fileName.c_str());
+            for(auto &fileInfo : fileInfos){
+                if(fileInfo.getName().compare(fileName) == 0){
+                    fileInfo.setDeleted(true);                    
+                    emit signalFileModify(this, &fileInfo);
+                }                
+            }
+            
+        }
+//
+        void Folder::slotFileWatcherModify(std::string name) {
+            std::string fileName = name.substr(name.find_last_of("/\\") + 1);
+            Logger::info("[FileWatcher] Modify \"%s\"", fileName.c_str());
+            Logger::debug("file info size : %d", fileInfos.size());
+            for(auto &fileInfo : fileInfos){
+                Logger::debug("%s", fileInfo.getName().c_str());
+                if(fileInfo.getName().compare(fileName) == 0){                    
+                    fileInfo.increaseVersion(name);
+                    emit signalFileModify(this, &fileInfo);
+                }                
+            }            
         }
     }
 }

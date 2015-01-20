@@ -1,11 +1,15 @@
 #include <algorithm>
 #include <iostream>
 
+#include <QObject>
+
 #include <shadapp/Logger.h>
 #include <shadapp/Core.h>
 #include <shadapp/data/Serializer.h>
 #include <shadapp/protocol/ClusterConfigMessage.h>
 #include <shadapp/LocalPeer.h>
+
+#include "shadapp/Network.h"
 
 namespace shadapp {
 
@@ -87,7 +91,7 @@ namespace shadapp {
         void ClusterConfigMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
             //update de config
             Logger::info("[CLUSTERCONFIGMESSAGE] {");
-            for (auto &folder : this->folders) {
+            for (auto folder : this->folders) {
                 bool exist = false;
                 for (auto &configFolder : lp.getConfig()->getFolders()) {
                     if (folder->getId().compare(configFolder->getId()) == 0) {
@@ -97,7 +101,10 @@ namespace shadapp {
                 }
                 if (!exist) { // if the folder don't exist in the config, add it
                     shadapp::Logger::info("                         => %s : Added", folder->getId().c_str());
-                    lp.getConfig()->addFolder(folder);
+                    shadapp::fs::Folder* newFolder = new shadapp::fs::Folder(folder->getId(), folder->getId());
+                    lp.getConfig()->addFolder(newFolder);                    
+                    QObject::connect(newFolder, SIGNAL(signalFileModify(shadapp::fs::Folder*, shadapp::fs::FileInfo*)), lp.getNetwork(), SLOT(slotSendIndexUpdateMessage(shadapp::fs::Folder*, shadapp::fs::FileInfo*)));
+                    newFolder->startFileWatcher(lp.getConfig()->getFoldersPath());
                 }
             }
             Logger::info("}");

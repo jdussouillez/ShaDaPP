@@ -4,17 +4,20 @@
 #include <string>
 #include <vector>
 
+#include <QObject>
+
 #include <shadapp/data/Serializable.h>
 #include <shadapp/fs/Device.h>
 #include <shadapp/fs/FileWatcher.h>
-
 #include <shadapp/fs/FileInfo.h>
 
 namespace shadapp {
 
     namespace fs {
 
-        class Folder : public shadapp::data::Serializable {
+        class Folder : public QObject, public shadapp::data::Serializable {
+            Q_OBJECT
+
         private:
             std::string id;
             std::string path;
@@ -27,7 +30,7 @@ namespace shadapp {
             explicit Folder(std::string id);
             explicit Folder(std::vector<uint8_t>& bytes);
             virtual ~Folder();
-            
+
             bool operator==(const Folder &f1);
 
             void addDevice(Device* device);
@@ -37,10 +40,22 @@ namespace shadapp {
             std::string getPath() const;
             std::vector<Device*> getDevices() const;
             std::vector<shadapp::fs::FileInfo> getFileInfos();
-            
+
             void setPath(std::string path);
 
+            void startFileWatcher(std::string foldersPath);
+
             std::vector<uint8_t> serialize() const override;
+            
+        signals:
+            void signalFileModify(shadapp::fs::Folder*, shadapp::fs::FileInfo*);
+
+
+        public slots:
+            void slotFileWatcherCreate(std::string);
+            void slotFileWatcherModify(std::string);
+            void slotFileWatcherDelete(std::string);
+
         };
     }
 }

@@ -14,10 +14,10 @@
 #include <shadapp/protocol/PingMessage.h>
 #include <shadapp/protocol/PongMessage.h>
 #include <shadapp/protocol/ClusterConfigMessage.h>
-#include "shadapp/protocol/RequestMessage.h"
-#include "shadapp/protocol/ResponseMessage.h"
-#include "shadapp/protocol/IndexUpdateMessage.h"
-#include "shadapp/protocol/CloseMessage.h"
+#include <shadapp/protocol/RequestMessage.h>
+#include <shadapp/protocol/ResponseMessage.h>
+#include <shadapp/protocol/IndexUpdateMessage.h>
+#include <shadapp/protocol/CloseMessage.h>
 
 //AutoConnection
 //UniqueConnection
@@ -82,7 +82,7 @@ namespace shadapp {
 
     int Network::send(QTcpSocket *peer, const shadapp::protocol::AbstractMessage& msg) {
         std::vector<uint8_t> bytes = msg.serialize();
-        shadapp::Logger::info("[NETWORK] SEND => size : %d", bytes.size());
+        shadapp::Logger::debug("[NETWORK] SEND => size : %d", bytes.size());
         unsigned int sizeSend = peer->write((const char*) &bytes.at(0), bytes.size());
         if (sizeSend != bytes.size()) {
             return 0;
@@ -135,56 +135,56 @@ namespace shadapp {
         switch (shadapp::protocol::AbstractMessage::getType(*data)) {
             case shadapp::protocol::Type::CLUSTER_CONFIG:
             {
-                shadapp::Logger::info("[NETWORK] RECEIVE : ClusterConfigMessage from %s (%d) : ", device->getName().c_str(), data->size());
+                shadapp::Logger::debug("[NETWORK] RECEIVE : ClusterConfigMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::ClusterConfigMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::INDEX:
             {
-                shadapp::Logger::info("[NETWORK] RECEIVE : IndexMessage from %s (%d) : ", device->getName().c_str(), data->size());
+                shadapp::Logger::debug("[NETWORK] RECEIVE : IndexMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::IndexMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::REQUEST:
             {
-                shadapp::Logger::info("[NETWORK] RECEIVE : RequestMessage from %s (%d) : ", device->getName().c_str(), data->size());
+                shadapp::Logger::debug("[NETWORK] RECEIVE : RequestMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::RequestMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::RESPONSE:
             {
-                shadapp::Logger::info("[NETWORK] RECEIVE : ResponseMessage from %s (%d) : ", device->getName().c_str(), data->size());
+                shadapp::Logger::debug("[NETWORK] RECEIVE : ResponseMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::ResponseMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::PING:
             {
-                shadapp::Logger::info("[NETWORK] RECEIVE : PingMessage from %s (%d) : ", device->getName().c_str(), data->size());
+                shadapp::Logger::debug("[NETWORK] RECEIVE : PingMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::PingMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::PONG:
             {
-                shadapp::Logger::info("[NETWORK] RECEIVE : PongMessage from %s (%d) : ", device->getName().c_str(), data->size());
+                shadapp::Logger::debug("[NETWORK] RECEIVE : PongMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::PongMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::INDEX_UPDATE:
             {
-                shadapp::Logger::info("[NETWORK] RECEIVE : IndexUpdateMessage from %s (%d) : ", device->getName().c_str(), data->size());
+                shadapp::Logger::debug("[NETWORK] RECEIVE : IndexUpdateMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::IndexUpdateMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
                 break;
             case shadapp::protocol::Type::CLOSE:
             {
-                shadapp::Logger::info("[NETWORK] RECEIVE : CloseMessage from %s (%d) : ", device->getName().c_str(), data->size());
+                shadapp::Logger::debug("[NETWORK] RECEIVE : CloseMessage from %s (%d) : ", device->getName().c_str(), data->size());
                 shadapp::protocol::CloseMessage msg(*data);
                 msg.executeAction(*device, *lp);
             }
@@ -230,5 +230,19 @@ namespace shadapp {
         send(device->getSocket(), message);
         ccm.executeAction(*device, *lp);
     }
+    
+    void Network::slotSendIndexUpdateMessage(shadapp::fs::Folder* folder, shadapp::fs::FileInfo* fileInfo) {
+        shadapp::protocol::IndexUpdateMessage message(
+                *(lp->getConfig()->getVersion()),
+                folder->getId(),
+                folder->getFileInfos());
+        for(auto device : folder->getDevices()){
+            if(device->getSocket()->state() == QAbstractSocket::ConnectedState){
+                send(device->getSocket(), message);
+            }
+            
+        }
+    }
+
 
 }

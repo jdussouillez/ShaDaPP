@@ -46,6 +46,8 @@ namespace shadapp {
         void slotReceive(shadapp::fs::Device *device);
         void slotReceiveCCMfromNewPeer();
         
+        void slotSendIndexUpdateMessage(shadapp::fs::Folder*, shadapp::fs::FileInfo*);
+        
     };
 
 }

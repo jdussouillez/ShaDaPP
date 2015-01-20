@@ -50,7 +50,7 @@ namespace shadapp {
                     outfile.close();
                     if (rqBlock->decreaseDownloadBlockRemaning() == 0) {                        
                         rqBlock->getFileInfo()->setLocalVersion(rqBlock->getFileInfo()->getVersion());
-                        Logger::info("File fully download at version : %d", rqBlock->getFileInfo()->getLocalVersion());
+                        Logger::info("File %s fully download at version : %d", rqBlock->getFileName().c_str(), rqBlock->getFileInfo()->getLocalVersion());
                     }
 
                 } else {

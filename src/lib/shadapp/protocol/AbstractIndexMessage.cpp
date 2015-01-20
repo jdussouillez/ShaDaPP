@@ -1,6 +1,16 @@
 #include <shadapp/data/Serializer.h>
 #include <shadapp/protocol/AbstractIndexMessage.h>
+
+#include <shadapp/Core.h>
 #include <shadapp/LocalPeer.h>
+#include <shadapp/protocol/RequestMessage.h>
+#include <shadapp/fs/RequestedBlock.h>
+
+#include <fstream>
+#include <iostream>
+#include <stdio.h>
+
+#include <shadapp/Network.h>
 
 namespace shadapp {
 
@@ -50,6 +60,80 @@ namespace shadapp {
             // Set the message's length
             shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
             return bytes;
+        }
+        
+        void AbstractIndexMessage::createEmptyFile(shadapp::LocalPeer& lp, shadapp::fs::Folder* folder, shadapp::fs::FileInfo& fileInfo) const {
+            uint64_t fileSize = 0;
+            for (auto &block : fileInfo.getBlocks()) {
+                fileSize += block.getSize();
+            }
+            std::ofstream file(lp.getConfig()->getFoldersPath() + folder->getPath() + fileInfo.getName());
+            for (uint64_t i = 0; i < fileSize; i++) {
+                file << "0";
+            }
+        }
+
+        void AbstractIndexMessage::downloadFile(shadapp::LocalPeer& lp, shadapp::fs::Device& device, shadapp::fs::RequestedBlock* reqBlock) const {
+            shadapp::protocol::RequestMessage requestMessage(
+                    *(lp.getConfig()->getVersion()),
+                    reqBlock->getId(),
+                    getFolder(),
+                    reqBlock->getFileInfo()->getName(),
+                    reqBlock->getOffset(),
+                    reqBlock->getSize());
+            lp.getNetwork()->send(device.getSocket(), requestMessage);
+        }
+
+
+        //        void IndexMessage::downloadFile(shadapp::fs::FileInfo* fileInfo,
+        //                shadapp::fs::Folder& folder,
+        //                shadapp::fs::Device& device,
+        //                shadapp::LocalPeer& lp) const {
+        //            //            folder.addFileInfo(fileInfo);
+        //            uint64_t offset = 0;
+        //            long unsigned int totalBlocks = fileInfo->getBlocks().size();
+        //            for (auto &block : fileInfo->getBlocks()) {
+        //                std::cout << "taille du block" << block.getSize() << std::endl;
+        //                std::bitset<12> id = lp.generateMessageId();
+        //
+        //                shadapp::fs::RequestedBlock* reqBlock = new shadapp::fs::RequestedBlock(id,
+        //                        &folder,
+        //                        fileInfo,
+        //                        &totalBlocks,
+        //                        block.getHash(),
+        //                        offset,
+        //                        block.getSize());
+        //                lp.addRequestedBlock(reqBlock);
+        //
+        //                shadapp::protocol::RequestMessage requestMessage(
+        //                        *(lp.getConfig()->getVersion()),
+        //                        id,
+        //                        getFolder(),
+        //                        fileInfo->getName(),
+        //                        offset,
+        //                        block.getSize());
+        //                lp.getNetwork()->send(device.getSocket(), requestMessage);
+        //                offset += block.getSize();
+        //            }
+        //        }
+
+        void AbstractIndexMessage::createRequestedBlock(shadapp::LocalPeer& lp, shadapp::fs::Folder& folder, shadapp::fs::FileInfo* fileInfo) const {
+            uint64_t offset = 0;
+            //TODO: fix memory
+            long unsigned int* totalBlocks = new long unsigned int;
+            *totalBlocks = fileInfo->getBlocks().size();
+            for (auto &block : fileInfo->getBlocks()) {
+                std::bitset<12> id = lp.generateMessageId();
+                shadapp::fs::RequestedBlock* reqBlock = new shadapp::fs::RequestedBlock(id,
+                        &folder,
+                        fileInfo,
+                        totalBlocks,
+                        block.getHash(),
+                        offset,
+                        block.getSize());
+                lp.addRequestedBlock(reqBlock);
+                offset += block.getSize();
+            }
         }
 
         void AbstractIndexMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {

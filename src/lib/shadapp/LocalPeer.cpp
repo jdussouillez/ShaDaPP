@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QString>
 #include <QFileInfoList>
+#include <QObject>
 
 #include <chrono>
 #include <iostream>
@@ -47,15 +48,17 @@ namespace shadapp {
                         blocks.push_back(blockInfo);
                         offset += MAX_BLOCK_SIZE;
                     }
-                    std::chrono::milliseconds ms =
-                            std::chrono::duration_cast< std::chrono::milliseconds >
-                            (std::chrono::high_resolution_clock::now().time_since_epoch());
-                    //At initialization, version and localVersion are set to 0
+                    qint64 time = fileInfo.lastModified().toMSecsSinceEpoch()/1000;
+                    Logger::debug("TIME : %d", time);
+//                    std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
+//                    std::chrono::system_clock::duration dtn = tp.time_since_epoch();
+//                    unsigned long timeEpoch = dtn.count() * std::chrono::system_clock::period::num / std::chrono::system_clock::period::den;
                     shadapp::fs::FileInfo fInfo(fileInfo.fileName().toStdString(),
-                            0, (uint64_t) ms.count(), 0, 0, blocks);
+                            0, (uint64_t) time, 0, 0, blocks);
                     folder->addFileInfo(fInfo);
                 }
             }
+            folder->startFileWatcher(config->getFoldersPath());
         }
         network = new Network(0, this);
     }
@@ -69,11 +72,14 @@ namespace shadapp {
         return config;
     }
 
-    void LocalPeer::start() {
+    void LocalPeer::start() {        
         network->start();
+        for (auto &folder : config->getFolders()) {
+            QObject::connect(folder, SIGNAL(signalFileModify(shadapp::fs::Folder*, shadapp::fs::FileInfo*)), network, SLOT(slotSendIndexUpdateMessage(shadapp::fs::Folder*, shadapp::fs::FileInfo*)));
+        }
     }
 
-    shadapp::Network* LocalPeer::getNetwork() {
+    shadapp::Network* LocalPeer::getNetwork() const {
         return network;
     }
 
