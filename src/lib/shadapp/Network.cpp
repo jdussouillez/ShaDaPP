@@ -218,6 +218,9 @@ namespace shadapp {
             for (auto &device_temp : folder->getDevices()) {
                 if (device_temp->getId().compare(ccm.getClientName()) == 0) {
                     messageFolders.push_back(folder);
+                    for(auto device : folder->getDevices()){
+                        Logger::debug("device : %s", device->getName().c_str());
+                    }
                 }
             }
         }
@@ -232,6 +235,7 @@ namespace shadapp {
     }
     
     void Network::slotSendIndexUpdateMessage(shadapp::fs::Folder* folder, shadapp::fs::FileInfo* fileInfo) {
+        Logger::debug("name of the file %s", fileInfo->getName().c_str());
         shadapp::protocol::IndexUpdateMessage message(
                 *(lp->getConfig()->getVersion()),
                 folder->getId(),

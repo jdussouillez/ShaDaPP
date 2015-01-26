@@ -6,7 +6,9 @@
 #include <shadapp/data/Hash.h>
 
 #include <iostream>
-#include <fstream> 
+#include <fstream>
+
+#include "shadapp/Network.h" 
 
 namespace shadapp {
 
@@ -48,9 +50,15 @@ namespace shadapp {
                     outfile.seekp(rqBlock->getOffset());
                     outfile.write(getData().c_str(), rqBlock->getSize());
                     outfile.close();
+                    shadapp::fs::Folder* folder = rqBlock->getFolder();
+                    lp.removeRequestedBlock(getId().to_ulong());
                     if (rqBlock->decreaseDownloadBlockRemaning() == 0) {                        
                         rqBlock->getFileInfo()->setLocalVersion(rqBlock->getFileInfo()->getVersion());
                         Logger::info("File %s fully download at version : %d", rqBlock->getFileName().c_str(), rqBlock->getFileInfo()->getLocalVersion());
+                        if(lp.getRequestedBlocks().size() == 0){
+                            folder->startFileWatcher();
+                        }
+                        
                     }
 
                 } else {
@@ -67,6 +75,8 @@ namespace shadapp {
                     rqBlock->getFileName(),
                     rqBlock->getOffset(),
                     rqBlock->getSize());
+                lp.addRequestedBlock(rqBlock);
+                lp.getNetwork()->send(device.getSocket(), requestMessage);
             }
 
         }

@@ -48,7 +48,7 @@ namespace shadapp {
         }
 
         bool FileInfo::operator==(const FileInfo& f1) {
-            Logger::debug("string this : %s", this->getName().c_str());
+            Logger::debug("string this : %d", version);
             Logger::debug("string f1 : %s", f1.getName().c_str());
             return (name.compare(f1.getName()) == 0);
         }

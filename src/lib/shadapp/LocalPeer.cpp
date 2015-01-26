@@ -58,7 +58,7 @@ namespace shadapp {
                     folder->addFileInfo(fInfo);
                 }
             }
-            folder->startFileWatcher(config->getFoldersPath());
+            
         }
         network = new Network(0, this);
     }
@@ -75,6 +75,7 @@ namespace shadapp {
     void LocalPeer::start() {        
         network->start();
         for (auto &folder : config->getFolders()) {
+            folder->createFileWatcher(config->getFoldersPath());
             QObject::connect(folder, SIGNAL(signalFileModify(shadapp::fs::Folder*, shadapp::fs::FileInfo*)), network, SLOT(slotSendIndexUpdateMessage(shadapp::fs::Folder*, shadapp::fs::FileInfo*)));
         }
     }
@@ -90,6 +91,10 @@ namespace shadapp {
     void LocalPeer::addRequestedBlock(shadapp::fs::RequestedBlock* block) {
         requestedBlocks[block->getId().to_ulong()] = block;
     }
+    void LocalPeer::removeRequestedBlock(uint64_t id) {
+        requestedBlocks.erase(requestedBlocks.find(id));
+    }
+
 
     void LocalPeer::sendAllIndexMessage(shadapp::fs::Device *device, std::vector<shadapp::fs::Folder*> folders) {
         for (auto &folder : folders) {
@@ -122,6 +127,8 @@ namespace shadapp {
         }
         return id;
     }
+    
+    
 
 }
 

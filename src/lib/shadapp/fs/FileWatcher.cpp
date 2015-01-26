@@ -2,6 +2,8 @@
 
 #include <shadapp/fs/FileWatcher.h>
 
+#include "shadapp/Logger.h"
+
 namespace shadapp {
 
     namespace fs {

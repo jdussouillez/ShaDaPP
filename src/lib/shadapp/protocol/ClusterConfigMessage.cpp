@@ -26,6 +26,12 @@ namespace shadapp {
         clientVersion(clientVersion.substr(0, MAX_STR_LENGTH)),
         folders(folders),
         options(options) {
+            for (auto folder : folders) {
+                for (auto device : folder->getDevices()) {
+                    Logger::debug("device : %s", device->getName().c_str());
+                }
+            }
+
         }
 
         ClusterConfigMessage::ClusterConfigMessage(std::vector<uint8_t>& bytes)
@@ -102,13 +108,26 @@ namespace shadapp {
                 if (!exist) { // if the folder don't exist in the config, add it
                     shadapp::Logger::info("                         => %s : Added", folder->getId().c_str());
                     shadapp::fs::Folder* newFolder = new shadapp::fs::Folder(folder->getId(), folder->getId());
-                    lp.getConfig()->addFolder(newFolder);                    
+                    for (auto folderDevice : folder->getDevices()) {
+                        if (folderDevice->getId().compare(lp.getConfig()->getID()) != 0) {
+                            shadapp::fs::Device* newDevice = new shadapp::fs::Device(folderDevice->getId(), "",
+                                    folderDevice->getAddress(), folderDevice->getPort(),
+                                    0, folderDevice->getMaxLocalVersion());
+                            newFolder->addDevice(newDevice);
+                        }
+
+                    }
+                    lp.getConfig()->addFolder(newFolder);
                     QObject::connect(newFolder, SIGNAL(signalFileModify(shadapp::fs::Folder*, shadapp::fs::FileInfo*)), lp.getNetwork(), SLOT(slotSendIndexUpdateMessage(shadapp::fs::Folder*, shadapp::fs::FileInfo*)));
-                    newFolder->startFileWatcher(lp.getConfig()->getFoldersPath());
+                    QString path((lp.getConfig()->getFoldersPath() + newFolder->getPath()).c_str());
+                    QDir dir(path);
+                    dir.mkdir(path);
+                    newFolder->createFileWatcher(lp.getConfig()->getFoldersPath());
+                    newFolder->stopFileWatcher();
                 }
             }
             Logger::info("}");
-//            //send an indexMessage for each shared folders
+            //            //send an indexMessage for each shared folders
             std::vector<shadapp::fs::Folder*> imFolders;
             for (auto &folder : lp.getConfig()->getFolders()) {
                 for (auto &deviceFor : folder->getDevices()) {

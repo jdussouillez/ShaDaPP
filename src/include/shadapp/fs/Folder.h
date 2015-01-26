@@ -24,6 +24,7 @@ namespace shadapp {
             std::vector<Device*> devices;
             shadapp::fs::FileWatcher* fileWatcher;
             std::vector<shadapp::fs::FileInfo> fileInfos;
+            bool onWatch;
 
         public:
             explicit Folder(std::string id, std::string path);
@@ -35,6 +36,7 @@ namespace shadapp {
 
             void addDevice(Device* device);
             void addFileInfo(FileInfo& fileInfo);
+            void replaceFileInfo(std::string name, FileInfo& fileInfo);
 
             std::string getId() const;
             std::string getPath() const;
@@ -43,7 +45,9 @@ namespace shadapp {
 
             void setPath(std::string path);
 
-            void startFileWatcher(std::string foldersPath);
+            void createFileWatcher(std::string foldersPath);
+            void startFileWatcher();
+            void stopFileWatcher();
 
             std::vector<uint8_t> serialize() const override;
             
