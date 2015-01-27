@@ -19,6 +19,8 @@
 #include <shadapp/protocol/IndexUpdateMessage.h>
 #include <shadapp/protocol/CloseMessage.h>
 
+#include <QByteArray>
+
 //AutoConnection
 //UniqueConnection
 //BlockingQueuedConnection
@@ -92,11 +94,17 @@ namespace shadapp {
 
     std::vector<uint8_t>* Network::receive(QTcpSocket* socket) {
         QByteArray thirdByte = socket->peek(8);
-        std::vector<uint8_t> lengthBytes(thirdByte.begin() + 4, thirdByte.end());
-        int length = shadapp::data::Serializer::deserializeInt32(lengthBytes);
-        std::vector<uint8_t> *data = new std::vector<uint8_t>(length);
-        socket->read((char*) &data->at(0), length);
-        return data;
+        //try {
+            std::vector<uint8_t> lengthBytes(thirdByte.begin() + 4, thirdByte.end());
+            int length = shadapp::data::Serializer::deserializeInt32(lengthBytes);
+            std::vector<uint8_t> *data = new std::vector<uint8_t>(length);
+            socket->read((char*) &data->at(0), length);
+            return data;
+//        } catch (std::bad_alloc& ba) {
+//            Logger::debug("exeception");
+//            Logger::debug("exeception %s");
+//        }
+
     }
 
     void Network::slotAcceptConnection() {
@@ -218,7 +226,7 @@ namespace shadapp {
             for (auto &device_temp : folder->getDevices()) {
                 if (device_temp->getId().compare(ccm.getClientName()) == 0) {
                     messageFolders.push_back(folder);
-                    for(auto device : folder->getDevices()){
+                    for (auto device : folder->getDevices()) {
                         Logger::debug("device : %s", device->getName().c_str());
                     }
                 }
@@ -233,18 +241,18 @@ namespace shadapp {
         send(device->getSocket(), message);
         ccm.executeAction(*device, *lp);
     }
-    
+
     void Network::slotSendIndexUpdateMessage(shadapp::fs::Folder* folder, shadapp::fs::FileInfo* fileInfo) {
         Logger::debug("name of the file %s", fileInfo->getName().c_str());
         shadapp::protocol::IndexUpdateMessage message(
                 *(lp->getConfig()->getVersion()),
                 folder->getId(),
                 folder->getFileInfos());
-        for(auto device : folder->getDevices()){
-            if(device->getSocket()->state() == QAbstractSocket::ConnectedState){
+        for (auto device : folder->getDevices()) {
+            if (device->getSocket()->state() == QAbstractSocket::ConnectedState) {
                 send(device->getSocket(), message);
             }
-            
+
         }
     }
 

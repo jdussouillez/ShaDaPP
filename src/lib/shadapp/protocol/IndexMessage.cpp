@@ -57,12 +57,8 @@ namespace shadapp {
                         std::string pathFile = lp.getConfig()->getFoldersPath();
                         pathFile += indexFolder->getPath();
                         QDir dir(QString(pathFile.c_str()));
-                        QFileInfoList filesInfos = dir.entryInfoList();
                         bool exist = false;
-                        // parse directory files
-                        //for (auto &localFileInfo : filesInfos) {                            // if a file already exists
-                        //if (localFileInfo.fileName().toStdString().compare(messageFileInfo.getName()) == 0) {
-
+                        
                         // parse localFileInfos to find localFileInfo
                         for (auto &localFileInfo : indexFolder->getFileInfos()) {
                             if (localFileInfo.getName().compare(messageFileInfo.getName()) == 0) {
@@ -83,7 +79,6 @@ namespace shadapp {
                                             if (messageFileInfo.getVersion() > localFileInfo.getVersion()) {
                                                 Logger::debug("4");
                                                 Logger::info("                  => %s : download", messageFileInfo.getName().c_str());
-                                                //localFileInfo.setVersion(messageFileInfo.getVersion());
                                                 remove(pathFile.c_str());
                                                 shadapp::fs::FileInfo* newFileInfo = new shadapp::fs::FileInfo(
                                                         messageFileInfo.getName(),
@@ -92,8 +87,6 @@ namespace shadapp {
                                                         messageFileInfo.getVersion(),
                                                         localFileInfo.getVersion(),
                                                         messageFileInfo.getBlocks());
-                                                //                                                        std::remove(indexFolder->getFileInfos().begin(), indexFolder->getFileInfos().end(), localFileInfo);
-                                                //                                                        indexFolder->addFileInfo(*newFileInfo);
                                                 indexFolder->replaceFileInfo(localFileInfo.getName(), *newFileInfo);
                                                 createEmptyFile(lp, indexFolder, *newFileInfo);
                                                 createRequestedBlock(lp, *indexFolder, newFileInfo);
@@ -109,9 +102,6 @@ namespace shadapp {
                                                         messageFileInfo.getVersion(),
                                                         localFileInfo.getVersion(),
                                                         messageFileInfo.getBlocks());
-                                                //                                                        Logger::debug("nb file infos %d", indexFolder->getFileInfos().size());
-                                                //                                                        std::remove(indexFolder->getFileInfos().begin(), indexFolder->getFileInfos().end(), localFileInfo);
-                                                //                                                        indexFolder->addFileInfo(*newFileInfo);
                                                 indexFolder->replaceFileInfo(localFileInfo.getName(), *newFileInfo);
                                                 createEmptyFile(lp, indexFolder, *newFileInfo);
                                                 createRequestedBlock(lp, *indexFolder, newFileInfo);
@@ -135,8 +125,6 @@ namespace shadapp {
                                                 messageFileInfo.getVersion(),
                                                 localFileInfo.getVersion(),
                                                 messageFileInfo.getBlocks());
-                                        //                                                std::remove(indexFolder->getFileInfos().begin(), indexFolder->getFileInfos().end(), localFileInfo);
-                                        //                                                indexFolder->addFileInfo(*newFileInfo);
                                         indexFolder->replaceFileInfo(localFileInfo.getName(), *newFileInfo);
                                         createEmptyFile(lp, indexFolder, *newFileInfo);
                                         createRequestedBlock(lp, *indexFolder, newFileInfo);
@@ -152,12 +140,6 @@ namespace shadapp {
                                                 messageFileInfo.getVersion(),
                                                 localFileInfo.getVersion(),
                                                 messageFileInfo.getBlocks());
-                                        //Logger::debug("debug %d", pos);
-                                        //indexFolder->getFileInfos().erase();
-                                        //                                                Logger::debug("nb file infos %d", indexFolder->getFileInfos().size());
-                                        //                                                std::remove(indexFolder->getFileInfos().begin(), indexFolder->getFileInfos().end(), localFileInfo);
-                                        //indexFolder->getFileInfos().erase(indexFolder->getFileInfos().begin() + pos);
-                                        //                                                indexFolder->addFileInfo(*newFileInfo);
                                         indexFolder->replaceFileInfo(localFileInfo.getName(), *newFileInfo);
                                         createEmptyFile(lp, indexFolder, *newFileInfo);
                                         createRequestedBlock(lp, *indexFolder, newFileInfo);
@@ -167,8 +149,6 @@ namespace shadapp {
                                 }
                             }
                         }
-                        //}
-                        //}
                         if (!exist) {
                             Logger::info("                  => %s : download", messageFileInfo.getName().c_str());
                             shadapp::fs::FileInfo* newFileInfo = new shadapp::fs::FileInfo(
@@ -187,7 +167,6 @@ namespace shadapp {
 
 
             }
-            //}
             Logger::info("}");
 
             if (!lp.getRequestedBlocks().empty()) {

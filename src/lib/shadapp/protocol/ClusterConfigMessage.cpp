@@ -127,7 +127,6 @@ namespace shadapp {
                 }
             }
             Logger::info("}");
-            //            //send an indexMessage for each shared folders
             std::vector<shadapp::fs::Folder*> imFolders;
             for (auto &folder : lp.getConfig()->getFolders()) {
                 for (auto &deviceFor : folder->getDevices()) {

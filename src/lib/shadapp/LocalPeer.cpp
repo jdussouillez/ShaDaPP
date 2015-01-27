@@ -103,14 +103,7 @@ namespace shadapp {
     }
 
     void LocalPeer::sendIndexMessage(shadapp::fs::Device *device, shadapp::fs::Folder * folder) {
-        //        uint32_t flag; // ???
-        //        uint64_t modified; //
-        //        uint64_t version; // 0 ?
-        //        uint64_t localVersion; // 0 ?
-
         shadapp::protocol::IndexMessage msg(*config->getVersion(), folder->getId(), folder->getFileInfos());
-        //std::cout << "send IM" << folder->getId() << " path : " << folder->getPath() << " to : " << device->getId() << std::endl;
-        //std::cout << " TEST IM DEBUG : " << device->getSocket()->error() << std::endl;
         network->send(device->getSocket(), msg);
     }
 

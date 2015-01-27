@@ -27,7 +27,6 @@ namespace shadapp {
         int connectedPeers;
         shadapp::LocalPeer *lp;
         
-        void clusterConfigUpdate(std::vector<shadapp::fs::Folder> msgFolders);        
         void initQtSignals(shadapp::fs::Device *device);
         
     public:
@@ -35,6 +34,7 @@ namespace shadapp {
         ~Network();
         int start();
         int send(QTcpSocket *peer, const shadapp::protocol::AbstractMessage& msg);
+        int send2(QTcpSocket *peer, const shadapp::protocol::AbstractMessage& msg);
         std::vector<uint8_t>* receive(QTcpSocket* socket);
         
         LocalPeer* getLocalPeer();
