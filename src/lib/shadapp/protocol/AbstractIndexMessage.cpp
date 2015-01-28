@@ -123,6 +123,7 @@ namespace shadapp {
             long unsigned int* totalBlocks = new long unsigned int;
             *totalBlocks = fileInfo->getBlocks().size();
             for (auto &block : fileInfo->getBlocks()) {
+                Logger::debug("HASH 1 : %s", block.getHash().c_str());
                 std::bitset<12> id = lp.generateMessageId();
                 shadapp::fs::RequestedBlock* reqBlock = new shadapp::fs::RequestedBlock(id,
                         &folder,

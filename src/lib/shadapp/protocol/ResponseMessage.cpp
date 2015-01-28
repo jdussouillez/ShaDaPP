@@ -42,6 +42,7 @@ namespace shadapp {
             shadapp::fs::RequestedBlock* rqBlock = lp.getRequestedBlocks()[getId().to_ulong()];
             std::string hash;
             shadapp::data::Hash256::hash(static_cast<const uint8_t*> ((uint8_t*) (getData().c_str())), getData().size(), hash);
+            Logger::debug("HASH 1 : %s HASH 2 : %s", rqBlock->getHash().c_str(), hash.c_str());
             if (hash.compare(rqBlock->getHash()) == 0) {
                 std::string pathh = lp.getConfig()->getFoldersPath() + rqBlock->getFolder()->getPath();
                 std::fstream outfile;
