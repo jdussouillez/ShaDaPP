@@ -1,10 +1,15 @@
 #include <algorithm>
 #include <iostream>
 
+#include <QObject>
+
+#include <shadapp/Logger.h>
 #include <shadapp/Core.h>
 #include <shadapp/data/Serializer.h>
 #include <shadapp/protocol/ClusterConfigMessage.h>
 #include <shadapp/LocalPeer.h>
+
+#include "shadapp/Network.h"
 
 namespace shadapp {
 
@@ -14,13 +19,19 @@ namespace shadapp {
                 std::bitset<4> version,
                 std::string clientName,
                 std::string clientVersion,
-                std::vector<shadapp::fs::Folder> folders,
+                std::vector<shadapp::fs::Folder*> folders,
                 std::map<std::string, std::string> options)
         : AbstractMessage(version, Type::CLUSTER_CONFIG, false),
         clientName(clientName.substr(0, MAX_STR_LENGTH)),
         clientVersion(clientVersion.substr(0, MAX_STR_LENGTH)),
         folders(folders),
         options(options) {
+            for (auto folder : folders) {
+                for (auto device : folder->getDevices()) {
+                    Logger::debug("device : %s", device->getName().c_str());
+                }
+            }
+
         }
 
         ClusterConfigMessage::ClusterConfigMessage(std::vector<uint8_t>& bytes)
@@ -32,10 +43,8 @@ namespace shadapp {
             clientVersion = shadapp::data::Serializer::deserializeString(bytes, size);
             size = shadapp::data::Serializer::deserializeInt32(bytes);
             for (uint32_t i = 0; i < size; i++) {
-                folders.push_back(shadapp::fs::Folder(bytes));
+                folders.push_back(new shadapp::fs::Folder(bytes));
             }
-            std::cout << folders.size() << std::endl;
-            //   std::cout << folders[0].getDevices().size() << std::endl;
             uint32_t nbOptions = shadapp::data::Serializer::deserializeInt32(bytes);
             for (uint32_t i = 0; i < nbOptions; i++) {
                 size = shadapp::data::Serializer::deserializeInt32(bytes);
@@ -54,7 +63,7 @@ namespace shadapp {
             return clientVersion;
         }
 
-        std::vector<shadapp::fs::Folder> ClusterConfigMessage::getFolders() const {
+        std::vector<shadapp::fs::Folder*> ClusterConfigMessage::getFolders() const {
             return folders;
         }
 
@@ -70,7 +79,7 @@ namespace shadapp {
             shadapp::data::Serializer::serializeString(bytes, clientVersion);
             shadapp::data::Serializer::serializeInt32(bytes, folders.size());
             for (auto f : folders) {
-                std::vector<uint8_t> folderBytes = f.serialize();
+                std::vector<uint8_t> folderBytes = f->serialize();
                 bytes.insert(bytes.end(), folderBytes.begin(), folderBytes.end());
             }
             shadapp::data::Serializer::serializeInt32(bytes, options.size());
@@ -86,32 +95,47 @@ namespace shadapp {
         }
 
         void ClusterConfigMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
-            //lp.getNetwork()->
             //update de config
-            for (auto &folder : this->folders) {
+            Logger::info("[CLUSTERCONFIGMESSAGE] {");
+            for (auto folder : this->folders) {
                 bool exist = false;
                 for (auto &configFolder : lp.getConfig()->getFolders()) {
-                    if (folder.getId().compare(configFolder.getId()) == 0) {
+                    if (folder->getId().compare(configFolder->getId()) == 0) {
                         exist = true;
+                        shadapp::Logger::info("                         => %s : Already Exist", folder->getId().c_str());
                     }
                 }
                 if (!exist) { // if the folder don't exist in the config, add it
-                    std::cout << "add folder with id : " << folder.getId() << std::endl;
+                    shadapp::Logger::info("                         => %s : Added", folder->getId().c_str());
+                    shadapp::fs::Folder* newFolder = new shadapp::fs::Folder(folder->getId(), folder->getId());
+                    for (auto folderDevice : folder->getDevices()) {
+                        if (folderDevice->getId().compare(lp.getConfig()->getID()) != 0) {
+                            shadapp::fs::Device* newDevice = new shadapp::fs::Device(folderDevice->getId(), "",
+                                    folderDevice->getAddress(), folderDevice->getPort(),
+                                    0, folderDevice->getMaxLocalVersion());
+                            newFolder->addDevice(newDevice);
+                        }
+
+                    }
+                    lp.getConfig()->addFolder(newFolder);
+                    QObject::connect(newFolder, SIGNAL(signalFileModify(shadapp::fs::Folder*, shadapp::fs::FileInfo*)), lp.getNetwork(), SLOT(slotSendIndexUpdateMessage(shadapp::fs::Folder*, shadapp::fs::FileInfo*)));
+                    QString path((lp.getConfig()->getFoldersPath() + newFolder->getPath()).c_str());
+                    QDir dir(path);
+                    dir.mkdir(path);
+                    newFolder->createFileWatcher(lp.getConfig()->getFoldersPath());
+                    newFolder->stopFileWatcher();
                 }
             }
-            //send an indexMessage for each shared folders
-            std::vector<shadapp::fs::Folder> imFolders;
+            Logger::info("}");
+            std::vector<shadapp::fs::Folder*> imFolders;
             for (auto &folder : lp.getConfig()->getFolders()) {
-                for (auto &deviceFor : folder.getDevices()) {
+                for (auto &deviceFor : folder->getDevices()) {
                     if (deviceFor->getId().compare(device.getId()) == 0) {
                         imFolders.push_back(folder);
                     }
                 }
             }
-            //lp.sendPingMessage(&device);
             lp.sendAllIndexMessage(&device, imFolders);
-            //lp.sendPingMessage(&device);
-             
         }
     }
 }

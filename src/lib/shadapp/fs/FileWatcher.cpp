@@ -2,6 +2,8 @@
 
 #include <shadapp/fs/FileWatcher.h>
 
+#include "shadapp/Logger.h"
+
 namespace shadapp {
 
     namespace fs {
@@ -26,15 +28,15 @@ namespace shadapp {
         }
 
         void FileWatcher::newFile(std::string filePath) {
-            std::cout << "Created new file \"" << filePath << "\"!\n";
+            emit newFileSignal(filePath);
         }
 
         void FileWatcher::deletedFile(std::string filePath) {
-            std::cout << "Deleted file \"" << filePath << "\"!\n";
+            emit deletedFileSignal(filePath);
         }
 
         void FileWatcher::modifiedFile(std::string filePath) {
-            std::cout << "Modified file \"" << filePath << "\"!\n";
+            emit modifiedFileSignal(filePath);
         }
     }
 }

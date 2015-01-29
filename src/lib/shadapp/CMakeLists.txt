@@ -5,6 +5,7 @@ set(SHADAPP_MOC_FILES
   "${CMAKE_SOURCE_DIR}/include/shadapp/fs/FileWatcher.h"
   "${CMAKE_SOURCE_DIR}/include/shadapp/Network.h"
   "${CMAKE_SOURCE_DIR}/include/shadapp/fs/Device.h"
+  "${CMAKE_SOURCE_DIR}/include/shadapp/fs/Folder.h"
 )
 qt4_wrap_cpp(LIBSHADAPP_MOC ${SHADAPP_MOC_FILES})
 

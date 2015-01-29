@@ -14,7 +14,7 @@ namespace shadapp {
             std::string data;
 
         public:
-            explicit ResponseMessage(std::bitset<4> version, std::string data);
+            explicit ResponseMessage(std::bitset<4> version, std::bitset<12> id, std::string data);
             explicit ResponseMessage(std::vector<uint8_t>& bytes);
 
             std::string getData() const;

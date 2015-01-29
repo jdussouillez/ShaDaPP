@@ -5,6 +5,8 @@
 
 #include <shadapp/fs/FileWatcherWorker.h>
 
+#include "shadapp/Logger.h"
+
 namespace shadapp {
 
     namespace fs {
@@ -61,7 +63,7 @@ namespace shadapp {
                         !isSubFolderOfIgnoredFolders(f)) {
                     foldersToScan.insert(f);
                 } else {
-                    std::cout << "IGNORE FOLDER \"" << f.toStdString() << "\"" << std::endl;
+                    Logger::debug("IGNORE FOLDER \"%s\"" ,f.toStdString().c_str());
                 }
             }
             return foldersToScan;
@@ -100,7 +102,7 @@ namespace shadapp {
             QString relativePathFromBase = subPath(currentDir, dir, filename);
             for (auto pattern : patternsToIgnore) {
                 if (currentDir.match(pattern, filename) || dir.match(pattern, relativePathFromBase)) {
-                    std::cout << "IGNORE FILE \"" << it.filePath().toStdString() << "\"" << std::endl;
+                    Logger::debug("IGNORE FILE \"%s\"", it.filePath().toStdString().c_str());
                     return true;
                 }
             }
@@ -121,7 +123,7 @@ namespace shadapp {
             QString ignoreFilePath = dir.absoluteFilePath(IGNOREFILE);
             QFile input(ignoreFilePath);
             if (!input.open(QIODevice::ReadOnly)) {
-                std::cout << "Error while opening file" << std::endl;
+                Logger::error("Error while opening file");
                 return;
             }
             //std::cout << "refresh ignore patterns" << std::endl;

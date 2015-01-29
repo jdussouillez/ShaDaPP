@@ -3,6 +3,7 @@
     <id>4568976546554</id>
     <port>20002</port>
     <name>Dev_2</name>
+	<foldersPath>/home/thenion/NetBeansProjects/ShaDaPP/test/SyncDeux/</foldersPath>
     <scan-period>20</scan-period>
     <devices>
         <device id="1234567890ABC" trusted="true" introducer="true">
@@ -19,7 +20,10 @@
         </device>
     </devices>
     <folders>
-    </folders>
+		<folder id="f123456789" path="f123456789/">
+		        <device id="3141592265" />
+	    </folder>
+	</folders>
     <options>
         <option name="test" value="10"/>
     </options>

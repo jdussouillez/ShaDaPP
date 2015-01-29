@@ -25,6 +25,10 @@ namespace shadapp {
 
             void run() override;
 
+        signals:
+            void newFileSignal(std::string);
+            void deletedFileSignal(std::string);
+            void modifiedFileSignal(std::string);
         public slots:
             void newFile(std::string filePath);
             void deletedFile(std::string filePath);

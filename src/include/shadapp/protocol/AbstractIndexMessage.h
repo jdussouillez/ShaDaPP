@@ -23,7 +23,7 @@ namespace shadapp {
         private:
             std::string folder;
             std::vector<shadapp::fs::FileInfo> files;
-
+            
         protected:
             explicit AbstractIndexMessage(
                     Type type,
@@ -31,6 +31,10 @@ namespace shadapp {
                     std::string folder,
                     std::vector<shadapp::fs::FileInfo> files);
             explicit AbstractIndexMessage(std::vector<uint8_t>& bytes);
+            
+            void createEmptyFile(shadapp::LocalPeer& lp, shadapp::fs::Folder* folder, shadapp::fs::FileInfo& fileInfo) const;
+            void downloadFile(shadapp::LocalPeer& lp, shadapp::fs::Device& device, shadapp::fs::RequestedBlock* reqBlock) const;
+            void createRequestedBlock(shadapp::LocalPeer& lp, shadapp::fs::Folder& folder, shadapp::fs::FileInfo* fileInfo)const;
 
         public:
             void addFile(shadapp::fs::FileInfo file);

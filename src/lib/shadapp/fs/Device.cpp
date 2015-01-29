@@ -137,12 +137,10 @@ namespace shadapp {
         }
         
         void Device::slotDeviceConnected(){
-            std::cout<<"connected from device"<<std::endl;
             emit signalConnected(this);
         }
         
         void Device::slotReceive(){
-            std::cout<<"DEVICE : SOMETHING TO READ"<<std::endl;
             emit signalReceive(this);
         }
 

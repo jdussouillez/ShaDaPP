@@ -3,10 +3,14 @@
 #include <shadapp/protocol/RequestMessage.h>
 #include <shadapp/protocol/ResponseMessage.h>
 #include <shadapp/LocalPeer.h>
+#include <shadapp/fs/FileSplitter.h>
 
+#include <cstring>
 #include <iostream>
+#include <vector>
 
-#include "shadapp/Network.h"
+#include <shadapp/Network.h>
+#include <shadapp/data/Hash.h>
 
 namespace shadapp {
 
@@ -14,11 +18,12 @@ namespace shadapp {
 
         RequestMessage::RequestMessage(
                 std::bitset<4> version,
+                std::bitset<12> id,
                 std::string folder,
                 std::string name,
                 uint64_t offset,
                 uint32_t size)
-        : AbstractMessage(version, Type::REQUEST, false),
+        : AbstractMessage(id, version, Type::REQUEST, false),
         folder(folder.substr(0, MAX_FOLDERNAME_SIZE)),
         name(name.substr(0, MAX_FILENAME_SIZE)),
         offset(offset),
@@ -65,12 +70,26 @@ namespace shadapp {
             return bytes;
         }
 
-        void RequestMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {
-            shadapp::protocol::ResponseMessage responseMsg(*(lp.getConfig()->getVersion()), "coucou");
-            lp.getNetwork()->send(device.getSocket(), responseMsg);
-            std::cout << "Name : " << name << std::endl;
-            std::cout << "offset : " << offset << std::endl;
-            std::cout << "size : " << size << std::endl;
+        void RequestMessage::executeAction(shadapp::fs::Device& device, shadapp::LocalPeer& lp) const {            
+            //search folder
+            for(auto &forFolder : lp.getConfig()->getFolders()){
+                if(forFolder->getId().compare(folder) == 0){
+                    for(auto &fileInf : forFolder->getFileInfos()){
+                        if(getName().compare(fileInf.getName()) == 0){
+                            shadapp::fs::FileSplitter splitter(lp.getConfig()->getFoldersPath() + forFolder->getPath() + fileInf.getName());
+                            std::string strData(splitter.getBlock(offset,size).data());
+                            strData = strData.substr(0, size);
+                            shadapp::protocol::ResponseMessage responseMessage(*(lp.getConfig()->getVersion()), getId(), strData);
+                            std::string hash;
+                            std::vector<char> block = splitter.getBlock(offset, MAX_BLOCK_SIZE);
+                            shadapp::data::Hash256::hash(reinterpret_cast<uint8_t*> (&block[0]), block.size(), hash);
+                            Logger::debug("HASH send : %s ", hash.c_str());
+                            lp.getNetwork()->send(device.getSocket(), responseMessage);
+                        }
+                    }
+                }
+            }
         }
+        
     }
 }

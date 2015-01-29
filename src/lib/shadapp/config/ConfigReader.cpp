@@ -14,7 +14,7 @@ namespace shadapp {
 
         ConfigReader::ConfigReader()
         : folder(nullptr), device(nullptr), inID(false), inPort(false), inName(false),
-        inScanPeriod(false), inDevice(false), inAddress(false), inFolder(false) {
+        inFoldersPath(false), inScanPeriod(false), inDevice(false), inAddress(false), inFolder(false) {
             peerConfig = new PeerConfig();
         }
 
@@ -74,6 +74,8 @@ namespace shadapp {
                 inPort = true;
             } else if (qName.compare("name") == 0) {
                 inName = true;
+            } else if (qName.compare("foldersPath") == 0) {
+                inFoldersPath = true;
             } else if (qName.compare("scan-period") == 0) {
                 inScanPeriod = true;
             } else if (qName.compare("address") == 0) {
@@ -125,6 +127,9 @@ namespace shadapp {
                     peerConfig->setName(s);
                 }
                 inName = false;
+            }else if (inFoldersPath) {
+                peerConfig->setFoldersPath(s);
+                inFoldersPath = false;
             } else if (inScanPeriod) {
                 unsigned int scanPeriod = std::atoi(s.c_str());
                 peerConfig->setScanPeriod(scanPeriod);
@@ -145,8 +150,7 @@ namespace shadapp {
             DISABLE_UNUSED_WARN(namespaceURI);
             DISABLE_UNUSED_WARN(localName);
             if (qName.compare("folder") == 0) {
-                peerConfig->addFolder(*folder);
-                delete folder;
+                peerConfig->addFolder(folder);
                 inFolder = false;
             } else if (qName.compare("device") == 0) {
                 if (!inFolder) {
