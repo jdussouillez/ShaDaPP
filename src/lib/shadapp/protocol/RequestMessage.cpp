@@ -10,6 +10,7 @@
 #include <vector>
 
 #include <shadapp/Network.h>
+#include <shadapp/data/Hash.h>
 
 namespace shadapp {
 
@@ -79,6 +80,10 @@ namespace shadapp {
                             std::string strData(splitter.getBlock(offset,size).data());
                             strData = strData.substr(0, size);
                             shadapp::protocol::ResponseMessage responseMessage(*(lp.getConfig()->getVersion()), getId(), strData);
+                            std::string hash;
+                            std::vector<char> block = splitter.getBlock(offset, MAX_BLOCK_SIZE);
+                            shadapp::data::Hash256::hash(reinterpret_cast<uint8_t*> (&block[0]), block.size(), hash);
+                            Logger::debug("HASH send : %s ", hash.c_str());
                             lp.getNetwork()->send(device.getSocket(), responseMessage);
                         }
                     }

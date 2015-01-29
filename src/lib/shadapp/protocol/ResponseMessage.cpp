@@ -42,7 +42,10 @@ namespace shadapp {
             shadapp::fs::RequestedBlock* rqBlock = lp.getRequestedBlocks()[getId().to_ulong()];
             std::string hash;
             shadapp::data::Hash256::hash(static_cast<const uint8_t*> ((uint8_t*) (getData().c_str())), getData().size(), hash);
-            Logger::debug("HASH 1 : %s HASH 2 : %s", rqBlock->getHash().c_str(), hash.c_str());
+//            Logger::debug("HASH 1 : %s \n", rqBlock->getHash().c_str());
+//            Logger::debug("HASH 2 : %s \n", hash.c_str());
+//            Logger::debug("%s", getData().c_str());
+//                Logger::debug("size attendu %d sizeString %d ", rqBlock->getSize(), getData().size());
             if (hash.compare(rqBlock->getHash()) == 0) {
                 std::string pathh = lp.getConfig()->getFoldersPath() + rqBlock->getFolder()->getPath();
                 std::fstream outfile;
@@ -66,9 +69,16 @@ namespace shadapp {
                     shadapp::Logger::error("Cannot open file");
                 }
             }else{
-                Logger::error("Hashes are differents => re-send the request");
+//                Logger::error("Hashes are differents => re-send the request");
+//                Logger::debug("id %d", getId());                
                 std::bitset<12> newId = lp.generateMessageId();
+//                Logger::debug("new id %d", newId);
                 rqBlock->setId(newId);
+//                std::fstream outfile;
+//                outfile.open(lp.getConfig()->getFoldersPath() + rqBlock->getFolder()->getPath() + "../debug");                
+//                outfile.write(getData().c_str(), rqBlock->getSize());
+//               
+//                outfile.close();
                 shadapp::protocol::RequestMessage requestMessage(
                     *(lp.getConfig()->getVersion()),
                     newId,
