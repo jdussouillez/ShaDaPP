@@ -1,0 +1,5 @@
+# Executables and libraries
+build/
+
+# Temporary files
+*~

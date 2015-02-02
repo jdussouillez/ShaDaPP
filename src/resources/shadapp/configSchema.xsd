@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    
+    <xsd:element name="shadapp">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="id" type="type_nonemptystring"/>
+                <xsd:element name="port" type="type_integer"/>
+                <xsd:element name="name" type="type_nonemptystring"/>
+				<xsd:element name="foldersPath" type="type_nonemptystring"/>
+                <xsd:element name="scan-period" type="type_integer"/>
+                <xsd:element name="devices" type="type_devices"/>
+                <xsd:element name="folders" type="type_folders"/>
+                <xsd:element name="options" type="type_options"/>
+            </xsd:sequence>
+            <xsd:attribute name="version" type="type_nonemptystring" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:complexType name="type_folders">
+        <xsd:sequence>
+            <xsd:element name="folder" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="device" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:attribute name="id" type="type_nonemptystring"/>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                    <xsd:attribute name="id" type="type_nonemptystring" use="required"/>
+                    <xsd:attribute name="path" type="type_nonemptystring" use="required"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="type_devices">
+        <xsd:sequence>
+            <xsd:element name="device" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="name" type="type_nonemptystring"/>
+                        <xsd:element name="address" type="type_nonemptystring"/>
+                    </xsd:sequence>
+                    <xsd:attribute name="id" type="type_nonemptystring" use="required"/>
+                    <xsd:attribute name="trusted" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="read-only" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="introducer" type="xsd:boolean" default="false"/>
+                    <xsd:attribute name="priority" type="type_priority" default="default"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="type_options">
+        <xsd:sequence>
+            <xsd:element name="option" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:attribute name="name" type="type_nonemptystring"/>
+                    <xsd:attribute name="value" type="type_nonemptystring"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:simpleType name="type_nonemptystring">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="type_integer">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9]+"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="type_priority">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="default"/>
+            <xsd:enumeration value="high"/>
+            <xsd:enumeration value="low"/>
+            <xsd:enumeration value="disabled"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+</xsd:schema>

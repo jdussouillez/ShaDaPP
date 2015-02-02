@@ -40,4 +40,4 @@ cd ShaDaPP
 # Run ShaDaPP
 ./auto.sh r [ARGS]
 ```
-Note: Use the option "help" for more information
+Note: Use the script's option "--help" for more information.

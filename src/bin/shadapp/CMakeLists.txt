@@ -1,4 +1,5 @@
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${QT_INCLUDE_DIR})
 
 file(GLOB SHADAPP_SRC "*.cpp")
 
