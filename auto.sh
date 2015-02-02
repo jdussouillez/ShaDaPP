@@ -80,6 +80,7 @@ rebuild() {
 
 run() {
     build
+	#rm -rf ./test/SyncDeux/f123456789
     format_string "Running '$EXEC'..."
     $EXEC "$@"
     print_done

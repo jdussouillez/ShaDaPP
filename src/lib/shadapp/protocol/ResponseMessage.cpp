@@ -1,5 +1,6 @@
 #include <shadapp/protocol/ResponseMessage.h>
 #include <shadapp/protocol/RequestMessage.h>
+#include <shadapp/data/Compression.h>
 #include <shadapp/data/Serializer.h>
 #include <shadapp/LocalPeer.h>
 #include <shadapp/fs/RequestedBlock.h>
@@ -15,12 +16,15 @@ namespace shadapp {
     namespace protocol {
 
         ResponseMessage::ResponseMessage(std::bitset<4> version, std::bitset<12> id, std::string data)
-        : AbstractMessage(id, version, Type::RESPONSE, false),
+        : AbstractMessage(id, version, Type::RESPONSE, true),
         data(data.substr(0, MAX_BLOCK_SIZE)) {
         }
 
         ResponseMessage::ResponseMessage(std::vector<uint8_t>& bytes)
         : AbstractMessage(bytes) {
+            if (isCompressed()) {
+                shadapp::data::MsgCompresser::decompress(bytes);
+            }
             uint32_t length = shadapp::data::Serializer::deserializeInt32(bytes);
             data = shadapp::data::Serializer::deserializeString(bytes, length);
         }
@@ -35,6 +39,9 @@ namespace shadapp {
             shadapp::data::Serializer::serializeString(bytes, data);
             // Set the message's length
             shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
+            if (isCompressed()) {
+                shadapp::data::MsgCompresser::compress(bytes);
+            }
             return bytes;
         }
 
@@ -46,7 +53,7 @@ namespace shadapp {
 //            Logger::debug("HASH 2 : %s \n", hash.c_str());
 //            Logger::debug("%s", getData().c_str());
 //                Logger::debug("size attendu %d sizeString %d ", rqBlock->getSize(), getData().size());
-            if (hash.compare(rqBlock->getHash()) == 0) {
+//            if (hash.compare(rqBlock->getHash()) == 0) {
                 std::string pathh = lp.getConfig()->getFoldersPath() + rqBlock->getFolder()->getPath();
                 std::fstream outfile;
                 outfile.open(lp.getConfig()->getFoldersPath() + rqBlock->getFolder()->getPath() + rqBlock->getFileName());
@@ -68,27 +75,27 @@ namespace shadapp {
                 } else {
                     shadapp::Logger::error("Cannot open file");
                 }
-            }else{
+//            }else{
 //                Logger::error("Hashes are differents => re-send the request");
 //                Logger::debug("id %d", getId());                
-                std::bitset<12> newId = lp.generateMessageId();
-//                Logger::debug("new id %d", newId);
-                rqBlock->setId(newId);
+//                std::bitset<12> newId = lp.generateMessageId();
+////                Logger::debug("new id %d", newId);
+//                rqBlock->setId(newId);
 //                std::fstream outfile;
 //                outfile.open(lp.getConfig()->getFoldersPath() + rqBlock->getFolder()->getPath() + "../debug");                
 //                outfile.write(getData().c_str(), rqBlock->getSize());
-//               
+////               
 //                outfile.close();
-                shadapp::protocol::RequestMessage requestMessage(
-                    *(lp.getConfig()->getVersion()),
-                    newId,
-                    rqBlock->getFolder()->getId(),
-                    rqBlock->getFileName(),
-                    rqBlock->getOffset(),
-                    rqBlock->getSize());
-                lp.addRequestedBlock(rqBlock);
-                lp.getNetwork()->send(device.getSocket(), requestMessage);
-            }
+//                shadapp::protocol::RequestMessage requestMessage(
+//                    *(lp.getConfig()->getVersion()),
+//                    newId,
+//                    rqBlock->getFolder()->getId(),
+//                    rqBlock->getFileName(),
+//                    rqBlock->getOffset(),
+//                    rqBlock->getSize());
+//                lp.addRequestedBlock(rqBlock);
+//                lp.getNetwork()->send(device.getSocket(), requestMessage);
+//            }
 
         }
     }

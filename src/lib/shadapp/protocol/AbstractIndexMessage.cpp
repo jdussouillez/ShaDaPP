@@ -1,4 +1,5 @@
 #include <shadapp/data/Serializer.h>
+#include <shadapp/data/Compression.h>
 #include <shadapp/protocol/AbstractIndexMessage.h>
 
 #include <shadapp/Core.h>
@@ -9,6 +10,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
+#include <shadapp/data/Compression.h>
 
 #include <shadapp/Network.h>
 
@@ -20,14 +22,18 @@ namespace shadapp {
                 Type type,
                 std::bitset<4> version,
                 std::string folder,
-                std::vector<shadapp::fs::FileInfo> files)
-        : AbstractMessage(version, type, false),
+                std::vector<shadapp::fs::FileInfo> files,
+                bool compress)
+        : AbstractMessage(version, type, compress),
         folder(folder),
         files(files) {
         }
 
         AbstractIndexMessage::AbstractIndexMessage(std::vector<uint8_t>& bytes)
         : AbstractMessage(bytes) {
+            if(isCompressed()){
+                shadapp::data::MsgCompresser::decompress(bytes);                        
+            }
             uint32_t size = shadapp::data::Serializer::deserializeInt32(bytes);
             folder = shadapp::data::Serializer::deserializeString(bytes, size);
             size = shadapp::data::Serializer::deserializeInt32(bytes);
@@ -58,7 +64,10 @@ namespace shadapp {
                 bytes.insert(bytes.end(), fileBytes.begin(), fileBytes.end());
             }
             // Set the message's length
-            shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
+            shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);            
+            if (isCompressed()) {
+                shadapp::data::MsgCompresser::compress(bytes);
+            }            
             return bytes;
         }
         
@@ -123,7 +132,7 @@ namespace shadapp {
             long unsigned int* totalBlocks = new long unsigned int;
             *totalBlocks = fileInfo->getBlocks().size();
             for (auto &block : fileInfo->getBlocks()) {
-                Logger::debug("HASH 1 : %s", block.getHash().c_str());
+                //Logger::debug("HASH 1 : %s", block.getHash().c_str());
                 std::bitset<12> id = lp.generateMessageId();
                 shadapp::fs::RequestedBlock* reqBlock = new shadapp::fs::RequestedBlock(id,
                         &folder,

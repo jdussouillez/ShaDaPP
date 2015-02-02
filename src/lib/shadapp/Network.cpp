@@ -84,7 +84,6 @@ namespace shadapp {
 
     int Network::send(QTcpSocket *peer, const shadapp::protocol::AbstractMessage& msg) {
         std::vector<uint8_t> bytes = msg.serialize();
-        shadapp::Logger::debug("[NETWORK] SEND => size : %d", bytes.size());
         unsigned int sizeSend = peer->write((const char*) &bytes.at(0), bytes.size());
         if (sizeSend != bytes.size()) {
             return 0;
@@ -99,6 +98,7 @@ namespace shadapp {
             int length = shadapp::data::Serializer::deserializeInt32(lengthBytes);
             std::vector<uint8_t> *data = new std::vector<uint8_t>(length);
             socket->read((char*) &data->at(0), length);
+            Logger::debug("data receive size %d", length);
             return data;
 //        } catch (std::bad_alloc& ba) {
 //            Logger::debug("exeception");
@@ -129,7 +129,7 @@ namespace shadapp {
                 lp->getConfig()->getID(),
                 "V",
                 messageFolders,
-                options);
+                options);        
         send(connectedDevice->getSocket(), ccm);
 
     }
@@ -211,9 +211,15 @@ namespace shadapp {
         shadapp::protocol::ClusterConfigMessage ccm(*data);
         shadapp::fs::Device* device;
         //link socket to device
+        
+            Logger::debug("%s", ccm.getClientName().c_str());
+            Logger::debug("%s"),ccm.getClientVersion().c_str();
+            Logger::debug("%d",ccm.getVersion());
+            //exit(0);
         for (auto &device_temp : lp->getConfig()->getDevices()) {
             if (device_temp->getId().compare(ccm.getClientName()) == 0) {
                 device = device_temp;
+                Logger::debug("device conencted !!! ");
             }
         }
         device->setSocket(socket);

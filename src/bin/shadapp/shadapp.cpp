@@ -1,4 +1,5 @@
 #include <bitset>
+#include <csignal>
 #include <cstdint>
 #include <getopt.h>
 #include <iostream>
@@ -15,6 +16,7 @@
 #include <shadapp/data/Hash.h>
 #include <shadapp/fs/FileSplitter.h>
 #include <shadapp/fs/FileWatcher.h>
+#include <shadapp/Logger.h>
 #include <shadapp/protocol/ClusterConfigMessage.h>
 #include <shadapp/protocol/CloseMessage.h>
 #include <shadapp/protocol/IndexMessage.h>
@@ -67,9 +69,22 @@ static int parseArguments(int argc, char** argv, bool* usage, bool* version, cha
     return (*usage || *version || configFile != NULL) ? 0 : 1;
 }
 
+static shadapp::LocalPeer* localPeer;
+
+static void signal_handler(int sig) {
+    if (sig == SIGINT || sig == SIGTERM) {
+        // TODO: localPeer->getNetwork()
+        delete localPeer;
+        exit(1);
+    }
+}
+
 int main(int argc, char **argv) {
     // We have to start a QCoreApplication to use the XSD validation.
     // Otherwise, there is an error "QEventLoop: Cannot be used without QApplication".
+    std::signal(SIGINT, signal_handler);
+    std::signal(SIGTERM, signal_handler);
+
     shadapp::SafeApplication app(argc, argv);
 
     // Parse arguments
@@ -114,10 +129,30 @@ int main(int argc, char **argv) {
     shadapp::Logger::enableColors(true);
 
     //tests Maxime
-    shadapp::LocalPeer localPeer(0, std::string(configFile));
+    localPeer = new shadapp::LocalPeer(0, std::string(configFile));
     //shadapp::Network localPeer(0, std::string(configFile));
-    localPeer.start();
+    localPeer->start();
     //fin test Maxime
+
+    //test compress
+    std::map<std::string, std::string> options2;
+    std::vector<shadapp::fs::Folder*> messageFolders;
+    messageFolders.push_back(localPeer->getConfig()->getFolders()[0]);
+//    for (auto &folder : localPeer->getConfig()->getFolders()) {
+//        for (auto &device : folder->getDevices()) {
+//                messageFolders.push_back(folder);
+//        }
+//    }
+//    shadapp::protocol::ClusterConfigMessage ccm(
+//            *localPeer->getConfig()->getVersion(),
+//            localPeer->getConfig()->getID(),
+//            "V",
+//            messageFolders,
+//            options2);
+//    std::cout<< "taille non compressee : "<< sizeof(ccm) << std::endl;
+//    messageFolders.push_back(localPeer->getConfig()->getFolders()[0]);
+//    std::cout<< "taille compressee : "<< sizeof(ccm) << std::endl;
+    //fin test compress
 
     try {
         app.exec();
@@ -125,6 +160,7 @@ int main(int argc, char **argv) {
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
+    delete localPeer;
     delete config;
     return 0;
 }

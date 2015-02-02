@@ -14,14 +14,14 @@ namespace shadapp {
             this->id = id;
         }
 
-        AbstractMessage::AbstractMessage(std::vector<uint8_t>& bytes) {
-            uint8_t firstByte = shadapp::data::Serializer::deserializeInt8(bytes);
+        AbstractMessage::AbstractMessage(std::vector<uint8_t>& bytes) {            
+            uint8_t firstByte = shadapp::data::Serializer::deserializeInt8(bytes);           
             version = 0 | (firstByte >> 4);
             id = 0 | ((firstByte & 0xF) << 8) | shadapp::data::Serializer::deserializeInt8(bytes);
             type = static_cast<Type> (shadapp::data::Serializer::deserializeInt8(bytes));
             compressed = static_cast<bool> (shadapp::data::Serializer::deserializeInt8(bytes) & 0x1);
             // Message's length. Used to read the socket's content. Not used here
-            shadapp::data::Serializer::deserializeInt32(bytes);
+            shadapp::data::Serializer::deserializeInt32(bytes);            
         }
 
         std::bitset<4> AbstractMessage::getVersion() const {

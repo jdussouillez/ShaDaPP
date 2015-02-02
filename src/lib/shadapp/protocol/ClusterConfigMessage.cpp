@@ -5,6 +5,7 @@
 
 #include <shadapp/Logger.h>
 #include <shadapp/Core.h>
+#include <shadapp/data/Compression.h>
 #include <shadapp/data/Serializer.h>
 #include <shadapp/protocol/ClusterConfigMessage.h>
 #include <shadapp/LocalPeer.h>
@@ -21,7 +22,7 @@ namespace shadapp {
                 std::string clientVersion,
                 std::vector<shadapp::fs::Folder*> folders,
                 std::map<std::string, std::string> options)
-        : AbstractMessage(version, Type::CLUSTER_CONFIG, false),
+        : AbstractMessage(version, Type::CLUSTER_CONFIG, true),
         clientName(clientName.substr(0, MAX_STR_LENGTH)),
         clientVersion(clientVersion.substr(0, MAX_STR_LENGTH)),
         folders(folders),
@@ -36,6 +37,9 @@ namespace shadapp {
 
         ClusterConfigMessage::ClusterConfigMessage(std::vector<uint8_t>& bytes)
         : AbstractMessage(bytes) {
+            if (isCompressed()) {
+                shadapp::data::MsgCompresser::decompress(bytes);
+            }
             uint32_t size;
             size = shadapp::data::Serializer::deserializeInt32(bytes);
             clientName = shadapp::data::Serializer::deserializeString(bytes, size);
@@ -53,6 +57,7 @@ namespace shadapp {
                 std::string value = shadapp::data::Serializer::deserializeString(bytes, size);
                 options[key] = value;
             }
+            
         }
 
         std::string ClusterConfigMessage::getClientName() const {
@@ -91,6 +96,9 @@ namespace shadapp {
             }
             // Set the message's length
             shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
+            if (isCompressed()) {
+                shadapp::data::MsgCompresser::compress(bytes);
+            }
             return bytes;
         }
 

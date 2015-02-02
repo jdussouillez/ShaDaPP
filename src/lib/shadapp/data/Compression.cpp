@@ -40,12 +40,11 @@ namespace shadapp {
             // Compress the data
             std::vector<uint8_t> data(bytes.begin() + 8, bytes.end());
             uint32_t compressedDataLength = LZ4::compress(data);
-
             // Copy the msg's header. 4 bytes, not compressed
             compressedMsgBytes.insert(compressedMsgBytes.end(), bytes.begin(), bytes.begin() + 4);
 
-            // Insert the length of the compressed msg (not compressed part + compressed data). 4 bytes, not compressed
-            Serializer::serializeInt32(compressedMsgBytes, 8 + compressedDataLength);
+            // Insert the length of the compressed msg (12 = size Header + Size compressed + size uncompressed). 4 bytes, not compressed
+            Serializer::serializeInt32(compressedMsgBytes, 12 + compressedDataLength);
 
             // Copy the length of the uncompressed msg. 4 bytes, not compressed
             compressedMsgBytes.insert(compressedMsgBytes.end(), bytes.begin() + 4, bytes.begin() + 8);
@@ -57,29 +56,20 @@ namespace shadapp {
         }
 
         void MsgCompresser::decompress(std::vector<uint8_t>& bytes) {
+            // Here the header is consumed by the super class AbstractMessage (4 bytes)
             std::vector<uint8_t> decompressedMsgBytes;
-
-            // Copy the msg's header. 4 bytes, not compressed
-            decompressedMsgBytes.insert(decompressedMsgBytes.end(), bytes.begin(), bytes.begin() + 4);
-
-            // The bytes 4 -> 8 are the size of the compressed msg. Not used here (used when reading the socket to receive the msg)
-
+            // The bytes 4 -> 8 are the size of the compressed msg. Not used here (used when reading the socket to receive the msg)            
             // Get the length of the decompressed msg
-            std::vector<uint8_t> decompressedMsgLengthBytes(bytes.begin() + 8, bytes.begin() + 12);
-            uint32_t notCompressedMsgLength = Serializer::deserializeInt32(decompressedMsgLengthBytes, false);
-
-            // Copy the length of the decompressed msg. 4 bytes, not compressed
-            decompressedMsgBytes.insert(decompressedMsgBytes.end(), decompressedMsgLengthBytes.begin(), decompressedMsgLengthBytes.end());
-
+            std::vector<uint8_t> decompressedMsgLengthBytes(bytes.begin(), bytes.begin() + 4);
+            uint32_t notCompressedMsgLength = Serializer::deserializeInt32(decompressedMsgLengthBytes, true);
             // Decompress the data
-            std::vector<uint8_t> data(bytes.begin() + 12, bytes.end());
-            uint32_t maxDecompressedDataSize = notCompressedMsgLength - 8;
+            std::vector<uint8_t> data(bytes.begin() + 4, bytes.end());
+            uint32_t maxDecompressedDataSize = notCompressedMsgLength - 4;
             LZ4::decompress(data, maxDecompressedDataSize);
-
             // Insert the decompressed data
             decompressedMsgBytes.insert(decompressedMsgBytes.end(), data.begin(), data.end());
-
             bytes = decompressedMsgBytes;
+            
         }
     }
 }

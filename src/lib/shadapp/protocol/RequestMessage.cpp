@@ -1,4 +1,5 @@
 #include <shadapp/Core.h>
+#include <shadapp/data/Compression.h>
 #include <shadapp/data/Serializer.h>
 #include <shadapp/protocol/RequestMessage.h>
 #include <shadapp/protocol/ResponseMessage.h>
@@ -23,7 +24,7 @@ namespace shadapp {
                 std::string name,
                 uint64_t offset,
                 uint32_t size)
-        : AbstractMessage(id, version, Type::REQUEST, false),
+        : AbstractMessage(id, version, Type::REQUEST, true),
         folder(folder.substr(0, MAX_FOLDERNAME_SIZE)),
         name(name.substr(0, MAX_FILENAME_SIZE)),
         offset(offset),
@@ -32,6 +33,9 @@ namespace shadapp {
 
         RequestMessage::RequestMessage(std::vector<uint8_t>& bytes)
         : AbstractMessage(bytes) {
+            if (isCompressed()) {
+                shadapp::data::MsgCompresser::decompress(bytes);
+            }
             uint32_t length;
             length = shadapp::data::Serializer::deserializeInt32(bytes);
             folder = shadapp::data::Serializer::deserializeString(bytes, length);
@@ -67,6 +71,9 @@ namespace shadapp {
             shadapp::data::Serializer::serializeInt32(bytes, size);
             // Set the message's length
             shadapp::data::Serializer::serializeInt32(bytes, bytes.size(), 4);
+            if (isCompressed()) {
+                shadapp::data::MsgCompresser::compress(bytes);
+            }
             return bytes;
         }
 
@@ -83,7 +90,7 @@ namespace shadapp {
                             std::string hash;
                             std::vector<char> block = splitter.getBlock(offset, MAX_BLOCK_SIZE);
                             shadapp::data::Hash256::hash(reinterpret_cast<uint8_t*> (&block[0]), block.size(), hash);
-                            Logger::debug("HASH send : %s ", hash.c_str());
+                            //Logger::debug("HASH send : %s ", hash.c_str());
                             lp.getNetwork()->send(device.getSocket(), responseMessage);
                         }
                     }

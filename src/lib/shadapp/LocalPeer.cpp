@@ -44,7 +44,7 @@ namespace shadapp {
                         std::vector<char> block = splitter.getBlock(offset, MAX_BLOCK_SIZE);
                         std::string hash;
                         shadapp::data::Hash256::hash(reinterpret_cast<uint8_t*> (&block[0]), block.size(), hash);
-                        Logger::debug("hash local peer %s", hash.c_str());
+                        //Logger::debug("hash local peer %s", hash.c_str());
                         shadapp::fs::BlockInfo blockInfo(hash, block.size());
                         blocks.push_back(blockInfo);
                         offset += MAX_BLOCK_SIZE;
